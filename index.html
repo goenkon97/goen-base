@@ -221,6 +221,126 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
   .greet,.gk{font-size:clamp(22px,3vw,28px)}
 }
 
+
+/* ===================== 后端笔记：顶部分类栏 ===================== */
+.bl{--bar-h:56px;min-height:100%;display:flex;flex-direction:column;background:var(--paper)}
+.bl>*:last-child{flex:1 0 auto}
+.bl-bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;height:var(--bar-h);box-sizing:border-box;
+  display:flex;align-items:center;gap:10px;background:var(--paper);border-bottom:2px dashed var(--dot);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.bl-back{flex:none;display:inline-flex;align-items:center;gap:4px;padding:2px 10px 2px 6px;font-family:var(--hand);font-size:17px;
+  color:var(--ink);text-decoration:none;border:2px solid var(--ink);border-radius:10px;background:var(--card)}
+.bl-back svg{width:15px;height:15px}
+.bl-tabs{display:flex;gap:8px;min-width:0;overflow-x:auto;scrollbar-width:none;padding:4px 4px 6px 2px}
+.bl-tabs::-webkit-scrollbar{display:none}
+.bl-tab{flex:none;white-space:nowrap;font-family:var(--hand);font-size:17px;line-height:1.5;padding:1px 14px;color:var(--ink);text-decoration:none;
+  border:2px solid var(--ink);border-radius:16px 6px 16px 6px;background:var(--card);transition:transform .12s,box-shadow .12s}
+.bl-tab:hover{transform:translateY(-1px)}
+.bl-tab.router-link-active{background:var(--yellow);box-shadow:3px 3px 0 var(--ink)}
+@media (max-width:420px){.bl-bar{gap:8px}.bl-tabs{gap:6px}.bl-tab{padding:1px 10px;font-size:16px}.bl-back{padding:2px 8px 2px 4px}}
+.bl-back:focus-visible,.bl-tab:focus-visible{outline:2px dashed var(--ink);outline-offset:3px}
+
+/* ===================== 后端笔记 · 三篇手账（.nb 里的样式只作用于这三页）=====================*/
+
+/* 布局：单栏手账本。每一章一张"纸"，文件讲解用可折叠的小卡片；点阵纸背景，墨线轮廓加错位粉彩底 */
+.nb{
+  --paper:#f4f5f7; --dot:#c9ced6; --card:#ffffff; --ink:#23262b; --mute:#5d646e;
+  --p-yellow:#fff0a8; --p-pink:#ffd3dc; --p-blue:#cfe6ff; --p-green:#cdeccb; --p-purple:#e3d6fb;
+  --code-bg:#f0f2f5; --accent:#e0556b;
+  --f-display:"Patrick Hand","Noto Sans SC",cursive; --f-body:"Noto Sans SC",system-ui,sans-serif; --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+:root:not([data-theme="light"]) .nb{
+  --paper:#17191d; --dot:#2f343b; --card:#22252b; --ink:#e8eaee; --mute:#9aa2ad;
+  --p-yellow:#5a4f1c; --p-pink:#5c2c38; --p-blue:#243f5c; --p-green:#264a2d; --p-purple:#3f3360;
+  --code-bg:#1a1c20; --accent:#ff7d92; color-scheme:dark}}
+:root[data-theme="dark"] .nb{
+  --paper:#17191d; --dot:#2f343b; --card:#22252b; --ink:#e8eaee; --mute:#9aa2ad;
+  --p-yellow:#5a4f1c; --p-pink:#5c2c38; --p-blue:#243f5c; --p-green:#264a2d; --p-purple:#3f3360;
+  --code-bg:#1a1c20; --accent:#ff7d92; color-scheme:dark}
+.nb *{box-sizing:border-box}
+.nb{background:var(--paper);background-image:radial-gradient(var(--dot) 1.2px,transparent 1.2px);background-size:22px 22px;color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.75;
+  padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.nb .nb-wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:28px;min-width:0}
+.nb h1,.nb h2,.nb h3{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance;line-height:1.25}
+.nb h1{font-size:clamp(34px,7vw,52px)}
+.nb h2{font-size:30px;display:inline-block;padding:2px 14px;border:2.5px solid var(--ink);border-radius:255px 18px 225px 18px/18px 225px 18px 255px;background:var(--p-yellow);transform:rotate(-.8deg)}
+.nb h3{font-size:22px}
+.nb p{margin:.6em 0}
+.nb code{font-family:var(--f-mono);font-size:.86em;background:var(--code-bg);padding:1px 6px;border-radius:6px;border:1px solid var(--dot);overflow-wrap:anywhere}
+.nb pre{margin:10px 0;padding:14px 16px;background:var(--code-bg);border:2px solid var(--ink);border-radius:14px 6px 14px 6px;overflow-x:auto;font-family:var(--f-mono);font-size:13px;line-height:1.6}
+.nb pre code{background:none;border:0;padding:0;font-size:inherit}
+.nb .hero{display:flex;flex-direction:column;gap:12px;padding:6px 2px}
+.nb .hero p{color:var(--mute);max-width:60ch;margin:0}
+.nb .chips{display:flex;flex-wrap:wrap;gap:8px}
+.nb .chip{font-family:var(--f-display);font-size:17px;padding:1px 12px;border:2px solid var(--ink);border-radius:20px 8px 18px 8px;background:var(--p-blue)}
+.nb .chip.g{background:var(--p-green)}
+.nb .chip.p{background:var(--p-pink)}
+.nb .chip.y{background:var(--p-yellow)}
+.nb .chip.v{background:var(--p-purple)}
+.nb nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:6px;overflow-x:auto;padding:8px 2px;background:var(--paper);border-bottom:2px dashed var(--dot)}
+.nb nav a{white-space:nowrap;font-family:var(--f-display);font-size:17px;color:var(--ink);text-decoration:none;padding:0 12px;border:2px solid var(--ink);border-radius:16px 6px 16px 6px;background:var(--card)}
+.nb nav a:hover,.nb nav a:focus-visible{background:var(--p-yellow);outline:none}
+.nb::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+.nb section{display:flex;flex-direction:column;gap:14px;min-width:0;scroll-margin-top:60px}
+.nb .paper{background:var(--card);border:2.5px solid var(--ink);border-radius:20px 8px 22px 8px/8px 22px 8px 20px;box-shadow:5px 5px 0 var(--ink);padding:18px 20px;min-width:0}
+.nb .paper.y{background:var(--p-yellow)}
+.nb .paper.b{background:var(--p-blue)}
+.nb .paper.g{background:var(--p-green)}
+.nb .paper.p{background:var(--p-pink)}
+.nb .note{font-family:var(--f-display);font-size:19px;line-height:1.5}
+.nb .scroll{overflow-x:auto}
+.nb table{border-collapse:collapse;width:100%;font-size:14px}
+.nb th,.nb td{border:1.5px solid var(--ink);padding:6px 10px;text-align:left;vertical-align:top}
+.nb th{background:var(--p-yellow);font-family:var(--f-display);font-size:17px;font-weight:400}
+.nb td:first-child{white-space:normal}
+.nb details{background:var(--card);border:2.5px solid var(--ink);border-radius:16px 7px 18px 7px/7px 18px 7px 16px;box-shadow:4px 4px 0 var(--p-blue);min-width:0}
+.nb details[open]{box-shadow:4px 4px 0 var(--p-pink)}
+.nb summary{cursor:pointer;list-style:none;padding:12px 18px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.nb summary::-webkit-details-marker{display:none}
+.nb summary::before{content:"▸";font-family:var(--f-display);font-size:20px;transition:transform .15s}
+.nb details[open]>summary::before{transform:rotate(90deg)}
+.nb summary .fn{font-family:var(--f-display);font-size:22px}
+.nb summary .one{color:var(--mute);font-size:13.5px}
+.nb summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:12px}
+.nb .body{padding:2px 20px 16px;border-top:2px dashed var(--dot)}
+.nb .body ul,.nb .body ol{padding-left:1.3em;margin:.5em 0}
+.nb .body li{margin:.35em 0}
+.nb .takeaway{display:inline-block;margin-top:6px;font-family:var(--f-display);font-size:18px;padding:2px 12px;border:2px solid var(--ink);border-radius:14px 6px 14px 6px;background:var(--p-green)}
+.nb .warn{background:var(--p-pink)}
+.nb .tools{display:flex;gap:8px;flex-wrap:wrap}
+.nb button{font-family:var(--f-display);font-size:17px;padding:2px 14px;border:2px solid var(--ink);border-radius:16px 6px 16px 6px;background:var(--card);color:var(--ink);cursor:pointer}
+.nb button:hover,.nb button:focus-visible{background:var(--p-yellow);outline:none}
+.nb .diagram{min-width:640px}
+.nb svg text{font-family:var(--f-body)}
+.nb .k{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.nb .k .paper{padding:12px 16px;box-shadow:4px 4px 0 var(--ink)}
+.nb .k b{font-family:var(--f-display);font-size:20px;font-weight:400}
+.nb footer{color:var(--mute);font-size:13px;text-align:center}
+@media (max-width:520px){
+.nb .paper{padding:14px}
+.nb summary{padding:10px 14px}
+.nb .body{padding:2px 14px 14px}
+.nb h2{font-size:26px}}
+@media (prefers-reduced-motion:reduce){
+.nb summary::before{transition:none}}
+.nb .anat{font-family:var(--f-mono);font-size:13.5px;line-height:2.1;overflow-x:auto;white-space:nowrap;padding:12px 14px;background:var(--code-bg);border:2px solid var(--ink);border-radius:14px 6px 14px 6px}
+.nb .anat span{padding:2px 6px;border:1.5px solid var(--ink);border-radius:8px 3px 8px 3px;margin-right:2px}
+.nb .t1{background:var(--p-yellow)}
+.nb .t2{background:var(--p-pink)}
+.nb .t3{background:var(--p-blue)}
+.nb .t4{background:var(--p-green)}
+.nb .t5{background:var(--p-purple)}
+.nb .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;font-size:13.5px}
+.nb .legend span{padding:0 10px;border:1.5px solid var(--ink);border-radius:10px 4px 10px 4px}
+.nb .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.nb .two>*{min-width:0}
+
+/* 嵌进来之后：顶上多了一条分类栏，所以笔记自己的章节导航要贴在分类栏下面，跳转时也要多留出空间 */
+.nb{min-height:100%;box-sizing:border-box}
+.nb nav{top:calc(env(safe-area-inset-top,0px) + var(--bar-h))}
+.nb section{scroll-margin-top:calc(var(--bar-h) + 70px)}
+
 /* ===================== 后端图解页（.bk 里的样式只作用于这个页面）===================== */
 
 /* 布局概念：像笔记本上的手绘小图，每张卡一幅会动的插画 + 两三句话 + 一句结论。冷白纸底，墨蓝线条，彩色填充故意错位。 */
@@ -447,7 +567,7 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
 </template>
 
 <!-- ===== 后端图解页的模板（路由 /backend 显示它）===== -->
-<template id="tpl-backend">
+<template id="tpl-bk-diagram">
 <div class="bk">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
   <filter id="bwob" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/></filter>
@@ -455,7 +575,6 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
 </defs></svg>
 
 <div class="bk-wrap">
-<router-link to="/" class="bk-back"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 L5 8 L10 13"/></svg>回秘密基地</router-link>
 <h1>后端图解：Java · Spring · 数据库</h1>
 <p class="lead">从上往下看：先看三者分工，再一件件拆，最后是机器和网络层。每张图只讲一件事。</p>
 <div class="grid"><section class="card full">
@@ -916,6 +1035,1912 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
 </div>
 </template>
 
+<!-- ===== 后端笔记的外壳（路由 /backend/...）：上面一条分类栏，下面的 router-view 放当前选中的那一篇 ===== -->
+<template id="tpl-bk-layout">
+<div class="bl" ref="root" @click="onClick">
+  <header class="bl-bar">
+    <router-link to="/" class="bl-back" aria-label="回秘密基地">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 L5 8 L10 13"/></svg>基地
+    </router-link>
+    <nav class="bl-tabs" aria-label="后端笔记分类">
+      <router-link v-for="t in tabs" :key="t.to" :to="t.to" class="bl-tab">{{ t.label }}</router-link>
+    </nav>
+  </header>
+  <router-view></router-view>
+</div>
+</template>
+
+<template id="tpl-bk-map">
+<div class="nb">
+<div class="nb-wrap">
+<header class="hero">
+  <div class="chips"><span class="chip">Spring Boot 4.1.2</span><span class="chip g">JDK 21</span><span class="chip y">Maven</span><span class="chip p">H2 → PostgreSQL</span></div>
+  <h1>后端代码地图</h1>
+  <p>登录与收藏是怎么工作的。每个 Java 文件干什么、每个 @ 标签是什么意思、方法的参数从哪里来、配置文件里每一行在做什么。给第一次做后端的前端开发者看。</p>
+</header>
+
+<nav aria-label="章节">
+  <a href="#flow">全景图</a><a href="#files">文件总表</a><a href="#config">启动与配置</a><a href="#login">登录</a><a href="#guard">保护</a><a href="#fav">收藏</a><a href="#params">参数从哪来</a><a href="#annot">注解词典</a><a href="#deploy">上线前</a>
+</nav>
+
+<div class="tools"><button id="openAll" type="button">全部展开</button><button id="closeAll" type="button">全部收起</button></div>
+
+<!-- ===== 全景图 ===== -->
+<section id="flow">
+  <h2>全景图：点一下书签，后端发生了什么</h2>
+  <div class="paper">
+    <div class="scroll">
+    <svg class="diagram" viewBox="0 0 760 612" role="img" aria-label="点书签的请求先过门卫，userId 只从 token 里来" fill="none" stroke="var(--ink)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <defs>
+        <filter id="wob" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="3.2"/></filter>
+        <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L9 5L1 9" fill="none" stroke="var(--ink)" stroke-width="1.8"/></marker>
+      </defs>
+      <text x="24" y="30" font-size="20" font-weight="700" fill="var(--ink)" stroke="none">点书签的请求先过门卫，userId 只从 token 里来</text>
+      <text x="24" y="66" font-size="15" font-weight="700" fill="var(--ink)" stroke="none">登录（一个人只走一次）</text>
+      <text x="396" y="66" font-size="15" font-weight="700" fill="var(--ink)" stroke="none">点书签（每次收藏、取消、查看都走这条）</text>
+      <g filter="url(#wob)">
+        <rect x="24" y="84" width="340" height="72" rx="10" fill="var(--p-blue)"/>
+        <rect x="24" y="180" width="340" height="72" rx="10" fill="var(--p-yellow)"/>
+        <rect x="24" y="276" width="340" height="88" rx="10" fill="var(--p-green)"/>
+        <rect x="24" y="388" width="340" height="72" rx="10" fill="var(--p-purple)"/>
+        <rect x="24" y="484" width="340" height="72" rx="10" fill="var(--p-blue)"/>
+        <rect x="396" y="84" width="340" height="72" rx="10" fill="var(--p-blue)"/>
+        <rect x="396" y="180" width="340" height="72" rx="10" fill="var(--p-yellow)"/>
+        <rect x="396" y="276" width="340" height="88" rx="10" fill="var(--p-pink)" stroke-width="3.4"/>
+        <rect x="396" y="388" width="340" height="88" rx="10" fill="var(--p-green)"/>
+        <rect x="396" y="500" width="340" height="72" rx="10" fill="var(--p-purple)"/>
+        <path d="M194 156V180M194 252V276M194 364V388M194 460V484M566 156V180M566 252V276M566 364V388M566 476V500" marker-end="url(#ar)"/>
+        <path d="M364 520H380V120H394" marker-end="url(#ar)"/>
+      </g>
+      <g stroke="none" fill="var(--ink)" font-size="12.5">
+        <text x="40" y="108" font-size="14.5" font-weight="700">前端</text><text x="40" y="126">Google 登录成功后，前端拿到</text><text x="40" y="142">一串身份证明 idToken</text>
+        <text x="40" y="204" font-size="14.5" font-weight="700">GoogleTokenVerifier</text><text x="40" y="222">向 Google 核对：签名真不真、</text><text x="40" y="238">有没有过期、是不是发给我们的</text>
+        <text x="40" y="300" font-size="14.5" font-weight="700">AuthController · POST /auth/google</text><text x="40" y="318">经 AppUserRepository 查 app_user 表，</text><text x="40" y="334">用 Google 编号找用户，没有就新建</text><text x="40" y="350">（所以注册和登录是同一个流程）</text>
+        <text x="40" y="412" font-size="14.5" font-weight="700">JwtService</text><text x="40" y="430">用我们的用户 id 和密钥签名，</text><text x="40" y="446">发出 7 天有效的 token</text>
+        <text x="40" y="508" font-size="14.5" font-weight="700">浏览器 localStorage</text><text x="40" y="526">token 存在 ielts_token 里，</text><text x="40" y="542">之后每个请求都带着它</text>
+        <text x="412" y="108" font-size="14.5" font-weight="700">前端 fetch</text><text x="412" y="126">请求头带 Authorization: Bearer token</text><text x="412" y="142">先乐观更新界面，失败再回滚</text>
+        <text x="412" y="204" font-size="14.5" font-weight="700">CorsConfig</text><text x="412" y="222">浏览器先发 OPTIONS 预检，</text><text x="412" y="238">来源在白名单里才放行</text>
+        <text x="412" y="300" font-size="14.5" font-weight="700">AuthInterceptor 门卫</text><text x="412" y="318">验 token，失败直接回 401，</text><text x="412" y="334">成功就把 userId 放进请求便签；</text><text x="412" y="350">WebAuthConfig 规定它只守 /favorites</text>
+        <text x="412" y="412" font-size="14.5" font-weight="700">FavoriteWordController</text><text x="412" y="430">@RequestAttribute 取出 userId，</text><text x="412" y="446">校验 kind 和 word，去重，</text><text x="412" y="462">只读写属于这个 userId 的行</text>
+        <text x="412" y="524" font-size="14.5" font-weight="700">FavoriteWordRepository → 收藏表</text><text x="412" y="542">findByUserId、findByIdAndUserId 等</text><text x="412" y="558">每个查询都带着 userId 条件</text>
+      </g>
+    </svg>
+    </div>
+  </div>
+  <p class="note">左边是登录，一个人只走一次；右边是每次点书签都走的路。token 是两条线的接头：登录时签发，之后每个请求都靠它证明身份。粉色那一格是门卫，整套安全设计都押在它身上。</p>
+</section>
+
+<!-- ===== 文件总表 ===== -->
+<section id="files">
+  <h2>项目文件总表</h2>
+  <div class="paper"><div class="scroll">
+    <p style="margin-top:0">后端一共 18 个文件，其中 12 个是登录和收藏在用的，6 个是配置、早期练习或自动生成的。所有 Java 文件都在 <code>com.goenkon.ielts</code> 这一个包里，这不是巧合，原因见"启动与配置"。</p>
+    <table>
+      <tr><th>文件</th><th>一句话说明</th><th>属于</th></tr>
+      <tr><td><code>IeltsBackendApplication</code></td><td>程序入口，<code>main</code> 方法启动整个后端</td><td>启动</td></tr>
+      <tr><td><code>application.properties</code></td><td>数据库地址、Google Client ID、JWT 密钥等配置</td><td>配置</td></tr>
+      <tr><td><code>pom.xml</code></td><td>项目用到哪些外部库，相当于前端的 package.json</td><td>配置</td></tr>
+      <tr><td><code>CorsConfig</code></td><td>允许哪些网站的页面访问这个后端</td><td>配置</td></tr>
+      <tr><td><code>GoogleTokenVerifier</code></td><td>向 Google 核对前端发来的登录证明书是不是真的</td><td>登录</td></tr>
+      <tr><td><code>JwtService</code></td><td>签发和验证我们自己的 token</td><td>登录</td></tr>
+      <tr><td><code>AuthController</code></td><td>登录接口 <code>/auth/google</code> 和"我是谁"接口 <code>/me</code></td><td>登录</td></tr>
+      <tr><td><code>AppUser</code></td><td>用户表 <code>app_user</code> 对应的类</td><td>登录</td></tr>
+      <tr><td><code>AppUserRepository</code></td><td>查用户表的工具，比如按 Google 编号找人</td><td>登录</td></tr>
+      <tr><td><code>AuthInterceptor</code></td><td>门卫：没有有效 token 的请求，不让进 Controller</td><td>保护</td></tr>
+      <tr><td><code>WebAuthConfig</code></td><td>规定门卫守哪些网址</td><td>保护</td></tr>
+      <tr><td><code>FavoriteWord</code></td><td>收藏表 <code>favorite_word</code> 对应的类</td><td>收藏</td></tr>
+      <tr><td><code>NewFavoriteWord</code></td><td>前端发来的"新收藏"长什么样</td><td>收藏</td></tr>
+      <tr><td><code>FavoriteWordRepository</code></td><td>查收藏表的工具</td><td>收藏</td></tr>
+      <tr><td><code>FavoriteWordController</code></td><td>收藏的查、增、删、改接口</td><td>收藏</td></tr>
+      <tr><td><code>HelloController</code>、<code>Greeting</code></td><td>第一天的测试接口 <code>/hello</code></td><td>早期练习</td></tr>
+      <tr><td><code>WrongItem</code>、<code>NewWrongItem</code>、<code>WrongItemController</code></td><td>早期的错题本练习，数据存在内存里</td><td>早期练习</td></tr>
+      <tr><td><code>IeltsBackendApplicationTests</code></td><td>创建项目时自动生成的测试</td><td>自动生成</td></tr>
+    </table>
+  </div></div>
+</section>
+
+<!-- ===== 启动与配置 ===== -->
+<section id="config">
+  <h2>启动与配置类</h2>
+
+  <details>
+    <summary><span class="fn">IeltsBackendApplication</span><span class="one">程序入口</span></summary>
+    <div class="body">
+<pre><code>@SpringBootApplication
+public class IeltsBackendApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(IeltsBackendApplication.class, args);
+    }
+}</code></pre>
+      <p><b>它干嘛</b>：相当于前端 <code>main.js</code> 里的 <code>createApp(App).mount('#app')</code>。点 IntelliJ 的 Run，Java 虚拟机找到 <code>main</code> 方法开始执行，<code>SpringApplication.run</code> 把整个后端"点着"：开一个进程、占用 8080 端口、创建所有对象、等请求进来。</p>
+      <p><code>@SpringBootApplication</code> 做了三件事：</p>
+      <ol>
+        <li>打开自动配置：看到 classpath 里有 H2、JPA、Web，就自动配好数据库连接、路由、JSON 转换，不用手写。</li>
+        <li>打开组件扫描：从这个类所在的包（<code>com.goenkon.ielts</code>）开始往下找所有带 <code>@Component</code>、<code>@RestController</code>、<code>@Configuration</code>、<code>@Entity</code> 的类，自动创建对象。</li>
+        <li>允许这个类自己也当配置类用。</li>
+      </ol>
+      <p><b>所以所有 Java 文件必须放在 <code>com.goenkon.ielts</code> 或它的子包里</b>：放到包外面，扫描不到，就像一个 Vue 组件没被 import，永远不会运行。</p>
+      <p><code>args</code> 哪来：命令行启动时跟在后面的参数，比如 <code>java -jar app.jar --server.port=9000</code>。我们现在没传，是空数组。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">application.properties</span><span class="one">配置文件，相当于 .env</span></summary>
+    <div class="body">
+      <p>启动时 Spring 自动读取 <code>src/main/resources/application.properties</code>，每行一个 <code>key=value</code>。区别是这里的 key 有很多是 Spring 自己认识的"官方 key"，写对了它就自动生效。</p>
+      <div class="scroll"><table>
+        <tr><th>配置项</th><th>值</th><th>机器会怎么做</th></tr>
+        <tr><td><code>spring.application.name</code></td><td>项目名</td><td>只是个名字，日志和监控里显示，不影响功能</td></tr>
+        <tr><td><code>spring.datasource.url</code></td><td><code>jdbc:h2:file:./data/ielts</code></td><td>用 H2 数据库，数据存成文件，放在<b>启动目录</b>下的 <code>data/ielts.mv.db</code>。重启后数据还在。写成 <code>jdbc:h2:mem:</code> 就是存内存，重启就没了</td></tr>
+        <tr><td><code>spring.datasource.username</code> / <code>password</code></td><td><code>sa</code> / 空</td><td>连数据库的账号密码。H2 默认账号就是 sa，本地练习无所谓；换 PostgreSQL 上线时必须改成真账号并放进环境变量</td></tr>
+        <tr><td><code>spring.h2.console.enabled</code></td><td><code>true</code></td><td>打开网页版数据库管理器 <code>http://localhost:8080/h2-console</code>，开发时方便看表。<b>上线必须关掉</b></td></tr>
+        <tr><td><code>spring.jpa.hibernate.ddl-auto</code></td><td><code>update</code></td><td>启动时对比"实体类"和"数据库表"：表不存在就建，缺字段就补，<b>不会删</b>数据。开发很方便；上线后常改成 <code>validate</code></td></tr>
+        <tr><td><code>spring.jpa.show-sql</code></td><td><code>true</code></td><td>每次访问数据库，把真正执行的 SQL 打印在控制台。学习期很有用，上线可关</td></tr>
+        <tr><td><code>google.client-id</code></td><td>你的 Client ID</td><td>验证 Google token 时的"受众"，只接受发给这个应用的 token。它是公开信息，不是密码</td></tr>
+        <tr><td><code>app.jwt-secret</code></td><td><code>${APP_JWT_SECRET:local-dev-…}</code></td><td>签发 JWT 的密钥。写法是"先找环境变量 <code>APP_JWT_SECRET</code>，没有就用冒号后面的默认值"。<b>上线必须设置环境变量</b>，否则默认值公开写在代码里，别人能伪造登录</td></tr>
+      </table></div>
+      <p><code>google.client-id</code> 和 <code>app.jwt-secret</code> 是我们自己起的名字，Spring 不认识，靠代码里的 <code>@Value("${google.client-id}")</code> 去取的（见"参数从哪来"）。<code>spring.</code> 开头的才是 Spring 自带的官方 key。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">pom.xml</span><span class="one">依赖清单，相当于 package.json</span></summary>
+    <div class="body">
+      <p>Maven 的项目说明书。你点 IntelliJ 的 Maven 刷新，它就按这里下载 jar 包（Java 的"npm 包"）到本机。</p>
+      <ul>
+        <li><code>&lt;parent&gt;</code> 的 <code>spring-boot-starter-parent 4.1.2</code>：继承 Spring Boot 的"版本全家桶"，下面很多依赖<b>不用写版本号</b>，由它统一管理，保证互相兼容。</li>
+        <li><code>&lt;java.version&gt;21&lt;/java.version&gt;</code>：用 JDK 21 编译。</li>
+        <li><code>spring-boot-starter-webmvc</code>：写接口（Controller）、处理 HTTP 请求和 JSON。</li>
+        <li><code>spring-boot-starter-data-jpa</code>：用 Java 类操作数据库，不用手写 SQL。</li>
+        <li><code>h2</code>（runtime）：H2 数据库本体。<code>runtime</code> 表示只在运行时需要，编译时不用。</li>
+        <li><code>spring-boot-h2console</code>：网页版数据库管理器。</li>
+        <li><code>google-api-client 2.9.0</code>：Google 官方库，用来验证 Google ID token。</li>
+        <li><code>java-jwt 4.6.2</code>：签发和验证 JWT。</li>
+        <li>以 <code>-test</code> 结尾的：测试用，只在跑测试时需要。</li>
+        <li><code>spring-boot-maven-plugin</code>：打包插件，让 <code>mvn package</code> 能生成一个可以直接 <code>java -jar</code> 运行的大 jar，部署时用。</li>
+        <li>里面空的 <code>&lt;name/&gt;</code>、<code>&lt;licenses&gt;</code> 等是创建项目时留下的元数据，不影响运行，上线前可以清理。</li>
+      </ul>
+      <span class="takeaway">加新库：往 &lt;dependencies&gt; 里加一段，刷新 Maven，就像 npm install</span>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">CorsConfig</span><span class="one">跨域白名单</span></summary>
+    <div class="body">
+      <p><b>为什么需要它</b>：浏览器有"同源策略"。你的页面在 <code>localhost:5500</code> 或 <code>ielts.goenkon.com</code>，后端在 <code>localhost:8080</code>，域名或端口不同，浏览器默认<b>拦截</b>页面读取后端的响应。这是浏览器在保护用户，不是后端坏了。后端要在响应头里明确说"我允许这个来源"，浏览器才放行。</p>
+<pre><code>@Configuration
+public class CorsConfig implements WebMvcConfigurer {
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+            .allowedOrigins("http://localhost:5500", "https://ielts.goenkon.com")
+            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+            .allowedHeaders("*");
+    }
+}</code></pre>
+      <ul>
+        <li><code>@Configuration</code>：这是一个配置类，启动时 Spring 会读它、执行里面的设置。</li>
+        <li><code>implements WebMvcConfigurer</code>：Spring MVC 预留的"自定义入口"接口。实现它，就能重写它给的方法，插入自己的规则。</li>
+        <li><code>@Override</code>：声明"我在重写接口里已有的方法"，写错方法名编译器会报错，是个保险。</li>
+        <li><code>addCorsMappings(CorsRegistry registry)</code>：<b>这个方法不是你调用的，是 Spring 启动时调用的</b>，它把一个空的"跨域规则登记表"递给你，你往里登记。</li>
+        <li><code>addMapping("/**")</code>：规则适用于所有路径。</li>
+        <li><code>allowedOrigins</code>：白名单，<b>精确匹配</b>协议、域名、端口，多一个斜杠或写错 http/https 都不行。新增日语站、新端口都要加在这里。</li>
+        <li><code>allowedHeaders("*")</code>：允许前端带任意请求头，我们需要它放行 <code>Authorization</code> 和 <code>Content-Type</code>。</li>
+      </ul>
+      <p><b>预检请求（preflight）</b>：当前端带 <code>Authorization</code> 头或发 JSON 时，浏览器会先偷偷发一个 <code>OPTIONS</code> 请求问后端"我可以这样发吗"，后端答"可以"之后才发真正的请求。这个应答由上面的配置自动完成。你在浏览器网络面板里看到每次请求前多一条 OPTIONS，就是它。</p>
+    </div>
+  </details>
+</section>
+
+<!-- ===== 登录 ===== -->
+<section id="login">
+  <h2>登录相关的文件</h2>
+  <div class="paper y note">我们不存密码，也不自己认证人。认证交给 Google，我们只做两件事：核对前端交来的 Google 证明书是真是假；是真的，就发一张我们自己的"通行证"（JWT），以后前端靠通行证证明身份。<br>"注册"和"登录"是同一个流程：第一次来的 Google 账号在用户表里找不到，就自动建一行；下次来找得到，直接用。所以没有单独的注册页面。</div>
+
+  <details>
+    <summary><span class="fn">GoogleTokenVerifier</span><span class="one">向 Google 核对证明书</span></summary>
+    <div class="body">
+      <p>前端登录后拿到一串 Google 签发的"身份证明"（ID token），发给后端。后端<b>绝不能直接相信</b>，因为任何人都能伪造一个请求说"我是 xxx@gmail.com"。这个类用 Google 官方库，用 Google 公开的公钥检查三件事：签名是不是 Google 的、有没有过期、这张证明是不是发给我们这个应用的（audience = 我们的 Client ID）。第三项很重要，否则别的网站拿到的 Google token 也能拿来给我们用。</p>
+      <ul>
+        <li><code>@Component</code>：请 Spring 帮我 new 这个类的对象，全程序共用一个。别的类要用，在构造方法里声明就行，不用自己 new。</li>
+        <li>构造方法里 <code>@Value("${google.client-id}")</code>：启动时 Spring 去 <code>application.properties</code> 拿 <code>google.client-id</code> 的值填进参数。这个参数<b>不是任何人调用时传的，是启动时配置文件喂的</b>。</li>
+        <li><code>GoogleUser</code> 是一个 <code>record</code>（Java 的简写数据类）：一行声明字段，编译器自动给你构造方法和取值方法。像前端的只读对象 <code>{ sub, email, name, picture }</code>。</li>
+        <li><code>verify(String idToken)</code>：验证通过返回 <code>GoogleUser</code>，<b>任何失败都返回 <code>null</code></b>（签名错、过期、受众不对、邮箱未验证），由调用的人判断。</li>
+        <li><code>sub</code>：Google 给每个账号的永久唯一编号，比邮箱更稳定（邮箱可以改，sub 不会），所以我们用它判断"是不是同一个人"。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">JwtService</span><span class="one">签发和验证我们自己的 token</span></summary>
+    <div class="body">
+      <p><b>JWT 是什么</b>：一串带签名的字符串，由三段用点隔开：头、内容（这里存用户 id 和过期时间）、签名。内容谁都能解码看，所以<b>不要在里面放敏感信息</b>；但没有密钥就伪造不出正确的签名。后端只需要用密钥重算一遍签名，对得上就说明"这张通行证是我发的且没被改过"，不用查数据库。</p>
+      <ul>
+        <li>类上是 <code>@Service</code>，作用和 <code>@Component</code> 一样：让 Spring 启动时创建一个全程序共用的对象，只是名字表示"业务工具类"。所以对象里只放不变的东西，不放某个用户的数据。</li>
+        <li>构造器 <code>JwtService(@Value("${app.jwt-secret}") String secret)</code>：参数由 Spring 启动时从配置读出来，用它造好 HS256 签名工具 <code>Algorithm.HMAC256(secret)</code>，存在 <code>algo</code> 字段里，之后每次签发和验证都复用。密钥至少 32 个字符，泄露了别人就能伪造任何用户的 token。</li>
+        <li>有效期 7 天，写成常量 <code>EXPIRE_DAYS = 7</code>，以后只改这一处。</li>
+        <li><code>create(long userId)</code>：签发。subject 放用户 id（转成字符串），再加发行时间和过期时间，最后 <code>sign</code> 生成 token。不放邮箱和姓名，因为 token 内容没有加密，谁都能解码读出来。</li>
+        <li><code>verify(String token)</code>：重新用密钥算一遍签名对比，并检查有没有过期、格式对不对。通过就返回用户 id（<code>Long</code>），任何失败（捕获 <code>JWTVerificationException</code>）一律返回 <code>null</code>，调用方当作"未登录"。</li>
+        <li>token 里的 subject 存的是<b>我们自己数据库里的用户 id</b>，不是 Google 的 sub。这样就算换掉 Google 登录，收藏表里的 <code>userId</code> 也不用动。</li>
+      </ul>
+      <p><b>为什么有了 Google token 还要自己发一张</b>：Google token 只有约一小时有效，且每次验证都要跨网络对照公钥。我们自己发的可以自己决定有效期，验证只是本地计算，快且不依赖 Google 在线。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">AppUser</span><span class="one">用户表对应的类</span></summary>
+    <div class="body">
+      <p>每一个带 <code>@Entity</code> 的类，就是数据库里的一张表，类的每个字段是表的一列，类的每个对象是表里的一行。启动时因为 <code>ddl-auto=update</code>，Hibernate 看到这个类，就自动建表。</p>
+      <ul>
+        <li><code>@Table(name = "app_user")</code>：表名叫 <code>app_user</code>，不叫 <code>user</code>，因为 <code>user</code> 是数据库的保留字，当表名会出错（上线用的 PostgreSQL 也一样）。</li>
+        <li><code>@Entity</code>：这个类对应一张表。<code>@Id</code> + <code>@GeneratedValue(strategy = GenerationType.IDENTITY)</code>：<code>id</code> 是主键，由数据库自动递增分配，所以刚 new 出来时是 <code>null</code>，<code>save</code> 之后才有值。</li>
+        <li><code>googleSub</code>：Google 给每个账号的永久唯一编号。<code>@Column(unique = true, nullable = false)</code>：数据库保证不能为空，也不会有两行一样的。</li>
+        <li><code>email</code>、<code>name</code>、<code>picture</code>（头像地址）：只是资料，不当身份用，因为邮箱可能会变。</li>
+        <li><code>createdAt</code>（<code>Instant</code>）：第一次登录的时间，在有参构造器里用 <code>Instant.now()</code> 自动记录。</li>
+        <li><code>protected AppUser() {}</code>：空构造器，给 JPA 用。从数据库读数据时，JPA 要先 new 一个空对象，再把各列的值填进去，没有它就报错。<code>protected</code> 表示自己的代码不会随手调用它。</li>
+        <li>有参构造器 <code>(googleSub, email, name, picture)</code>：给我们自己的代码创建新用户时用。</li>
+        <li>只有 getter，没有 setter：用户创建之后，这些字段不允许被随便改。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">AppUserRepository</span><span class="one">查用户表的工具</span></summary>
+    <div class="body">
+<pre><code>public interface AppUserRepository extends JpaRepository&lt;AppUser, Long&gt; {
+    Optional&lt;AppUser&gt; findByGoogleSub(String googleSub);
+}</code></pre>
+      <p><b>这是个接口，里面没有任何实现代码，却能用。</b>原理：</p>
+      <ul>
+        <li><code>extends JpaRepository&lt;AppUser, Long&gt;</code>：泛型里第一个是操作哪张表的类，第二个是主键的类型。继承后自动拥有 <code>save</code>（新增或更新）、<code>findById</code>、<code>findAll</code>、<code>delete</code> 等现成方法。</li>
+        <li>启动时 Spring 看到这个接口，<b>自动在内存里生成一个实现类</b>并创建对象，谁需要就注入给谁。</li>
+        <li><code>findByGoogleSub</code> <b>这个方法名就是查询说明书</b>：Spring 把名字拆开读，<code>findBy</code> = 查询，<code>GoogleSub</code> = 按 <code>googleSub</code> 这个字段匹配，自动生成 <code>select * from app_user where google_sub = ?</code>。字段名拼写必须和实体类一致，写错启动直接报错。</li>
+        <li><code>Optional&lt;AppUser&gt;</code>：一个"可能有、可能没有"的盒子。查不到时不返回 <code>null</code>，而是返回一个空盒子，逼你处理"找不到"的情况（像前端的 <code>?.</code> 可选链）。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">AuthController</span><span class="one">登录接口 /auth/google 和 /me</span></summary>
+    <div class="body">
+      <ul>
+        <li><code>@RestController</code>：类里的方法是接口，返回值直接转成 JSON 发给前端。</li>
+        <li>类里面定义了三个 <code>record</code>（只装数据的小盒子）：<code>GoogleLoginRequest(String idToken)</code> 用来接前端发来的 <code>{"idToken":"..."}</code>；<code>UserView(id, email, name, picture)</code> 是返回给前端的用户信息，只挑前端需要的字段，<code>googleSub</code> 这类内部信息不给出去；<code>LoginResponse(token, user)</code> 是登录成功时的回复。</li>
+        <li>构造器接收 <code>GoogleTokenVerifier</code>、<code>AppUserRepository</code>、<code>JwtService</code>，由 Spring 启动时自动传入（依赖注入），我们从来没写过 <code>new AuthController(...)</code>。</li>
+        <li><b><code>POST /auth/google</code></b>（方法 <code>googleLogin</code>）：
+          <ol>
+            <li><code>verify(body.idToken())</code> 核对 Google 证明书，返回 <code>null</code> 就回 401 <code>{"error":"invalid_google_token"}</code>；</li>
+            <li><code>findByGoogleSub(g.sub())</code> 找用户，<code>orElseGet</code> 里 <code>save(new AppUser(...))</code>：只有找不到才新建，这就是"注册和登录是同一个流程"；</li>
+            <li><code>jwtService.create(user.getId())</code> 发 token，用的是我们的用户 id；</li>
+            <li>回 200，内容是 <code>LoginResponse</code>。</li>
+          </ol></li>
+        <li><b><code>GET /me</code></b>（方法 <code>me</code>）：<b>这个接口不经过门卫</b>，因为 <code>WebAuthConfig</code> 只守 <code>/favorites</code>。它自己用 <code>@RequestHeader(value = "Authorization", required = false)</code> 读请求头：检查是不是以 <code>Bearer </code> 开头，截出 token，<code>jwtService.verify</code> 验证，再 <code>findById</code> 查人；任何一步失败都回 401 <code>{"error":"unauthorized"}</code>。<code>required = false</code> 是让没带这个头时给我们一个 <code>null</code> 自己处理，而不是 Spring 自动回 400，这样错误格式统一。前端刷新页面时用它恢复登录状态。</li>
+        <li>两个私有工具方法：<code>toView(AppUser)</code> 把用户转成 <code>UserView</code>，<code>unauthorized()</code> 统一生成 401 回复，登录和 <code>/me</code> 共用，不重复写。</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+<!-- ===== 保护 ===== -->
+<section id="guard">
+  <h2>保护相关的文件</h2>
+  <div class="paper b note">收藏接口每个都要知道"是谁在请求"。如果在每个接口里都写一遍"取 token、验证、解出 userId"，代码会重复且容易漏。所以在所有收藏接口前面统一站一个"门卫"，一次写完。前端类比：像 Vue Router 的 <code>beforeEach</code> 导航守卫，每次跳转前先过一道检查。</div>
+
+  <details>
+    <summary><span class="fn">AuthInterceptor</span><span class="one">门卫</span></summary>
+    <div class="body">
+      <p>每一个被守护的请求在进入 Controller 之前，先路过它。按顺序做：</p>
+      <ol>
+        <li>如果是 <code>OPTIONS</code> 预检请求，直接放行（预检不会带 token，拦了浏览器就永远发不出真正的请求）。</li>
+        <li>从请求头取 <code>Authorization</code>，必须以 <code>Bearer </code> 开头，把后面的 token 切出来。</li>
+        <li>交给 <code>JwtService.verify</code> 验证。失败（没头、格式不对、签名不对、过期）就直接返回 401，请求到此为止，Controller 根本不会被执行。</li>
+        <li>成功就把 userId 放进这次请求的"便签"里：<code>request.setAttribute("userId", userId)</code>，然后返回 <code>true</code> 放行。</li>
+      </ol>
+      <ul>
+        <li><code>implements HandlerInterceptor</code>：Spring 预留的拦截器接口，实现它并重写 <code>preHandle</code> 方法。</li>
+        <li><code>preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)</code>：<b>这三个参数都是 Spring 在每次请求到达时自动传进来的</b>。<code>request</code> 是这次请求的全部信息（头、方法、路径、便签），<code>response</code> 是你用来回复的对象，<code>handler</code> 是即将执行的 Controller 方法（我们没用到）。</li>
+        <li>返回值：<code>true</code> = 放行；<code>false</code> = 拦住，到此结束。返回 <code>false</code> 之前先 <code>response.setStatus(401)</code> 把状态码设好并写出 <code>{"error":"unauthorized"}</code>。</li>
+        <li><code>public static final String USER_ID = "userId"</code>：把便签的名字定义成<b>常量</b>，门卫和 Controller 两边引用同一个，避免一边写 <code>userId</code>、另一边写成 <code>userID</code>。<code>static</code> = 属于类不属于某个对象，<code>final</code> = 不能再改，相当前端的 <code>const</code>。</li>
+        <li>它带 <code>@Component</code> 让 Spring 创建它，构造器里接收 <code>JwtService</code>（依赖注入），再由 <code>WebAuthConfig</code> 注册。</li>
+      </ul>
+      <p class="takeaway">安全设计核心：userId 只能来自验证过的 token，绝不从请求体或路径里取</p>
+      <p>否则坐在前端的人把请求里的 userId 改成别人的，就能读写别人的收藏（这类漏洞叫 IDOR）。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">WebAuthConfig</span><span class="one">规定门卫守哪些网址</span></summary>
+    <div class="body">
+<pre><code>@Configuration
+public class WebAuthConfig implements WebMvcConfigurer {
+    private final AuthInterceptor authInterceptor;
+    public WebAuthConfig(AuthInterceptor authInterceptor) {
+        this.authInterceptor = authInterceptor;
+    }
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(authInterceptor)
+                .addPathPatterns("/favorites", "/favorites/**");
+    }
+}</code></pre>
+      <ul>
+        <li>一个拦截器写好了也不会自己生效，<b>必须在这里登记</b>，跟 <code>CorsConfig</code> 一样是实现 <code>WebMvcConfigurer</code> 插入规则。</li>
+        <li>构造方法里的 <code>AuthInterceptor authInterceptor</code> 参数：Spring 启动时把那个已经创建好的门卫对象传进来（依赖注入）。<code>this.authInterceptor = authInterceptor</code> 把它保存到字段里，后面的方法才能用。</li>
+        <li><code>addPathPatterns("/favorites", "/favorites/**")</code>：只守这两类路径。<code>/favorites</code> 是列表和新增，<code>/favorites/**</code> 是带 id 的删除、修改。<code>**</code> 表示任意多层。</li>
+        <li><b>没列在里面的路径不会被保护</b>，比如 <code>/auth/google</code>（登录本身不能要求已登录）、早期练习的 <code>/hello</code>、<code>/wrong-items</code>。所以以后新写了需要登录的接口，必须回来这里加路径，忽略这一步会让接口裸奔。</li>
+        <li><code>/me</code> 也不在门卫的守护范围内：它在 <code>AuthController</code> 里自己读 <code>Authorization</code> 头、自己验 token。</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+<!-- ===== 收藏 ===== -->
+<section id="fav">
+  <h2>收藏相关的文件</h2>
+  <div class="paper g note">设计思路：后端只记"谁收藏了什么文字"，单词释义、例句这些详情数据仍然在前端，收藏本里用这段文字去匹配，不靠 ID。后端相当于一张"用户 × 文字"的清单。<br><code>kind</code> 只有两种：<code>w</code> 单词、<code>p</code> 短语，由前端判断：文字里没有空格是单词，有空格是短语。同一个人对同一个文字只能有一条收藏（后端去重），在哪个页面收藏的都算同一条。</div>
+
+  <details>
+    <summary><span class="fn">NewFavoriteWord</span><span class="one">前端发来的"新收藏"</span></summary>
+    <div class="body">
+<pre><code>public record NewFavoriteWord(String kind, String word, String status) {}</code></pre>
+      <p>一个只用来接收数据的类（常说的 DTO），只是一个「形状」：告诉 Spring，前端发来的 JSON 里的字段 <code>kind</code>、<code>word</code>、<code>status</code> 要对应填进这三个位置。前端类比：TypeScript 里的 <code>interface NewFav { kind: string; word: string; status: string }</code>。</p>
+      <p><b>为什么不直接用 <code>FavoriteWord</code> 来接收</b>：<code>FavoriteWord</code> 里有 <code>id</code> 和 <code>userId</code>，这两个必须由服务器决定，不能让前端传。用一个只包含"允许前端决定的字段"的类来接收，就从源头堵死了前端伪造 <code>userId</code> 的可能。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">FavoriteWord</span><span class="one">收藏表对应的类</span></summary>
+    <div class="body">
+      <p>和 <code>AppUser</code> 同理，是一个 <code>@Entity</code>，对应数据库表 <code>favorite_word</code>。</p>
+      <div class="scroll"><table>
+        <tr><th>字段</th><th>说明</th><th>谁填</th></tr>
+        <tr><td><code>id</code></td><td>这条收藏记录的编号，主键，自动递增</td><td>数据库</td></tr>
+        <tr><td><code>userId</code></td><td>这条收藏属于哪个用户</td><td>后端从 token 里取到后填</td></tr>
+        <tr><td><code>kind</code></td><td><code>w</code> 或 <code>p</code></td><td>前端传、后端检查</td></tr>
+        <tr><td><code>word</code></td><td>单词或短语的文字</td><td>前端传、后端去掉首尾空格</td></tr>
+        <tr><td><code>status</code></td><td>掌握状态，默认 <code>unknown</code></td><td>前端传或默认</td></tr>
+      </table></div>
+      <ul>
+        <li><b>没有 <code>userId</code> 的 getter</b>：Spring 转 JSON 靠 getter，没有 getter 就不会输出。所以前端拿到的收藏列表里只有 <code>id</code>、<code>kind</code>、<code>word</code>、<code>status</code>，用户编号不会露出去。</li>
+        <li><b>只有 <code>word</code> 和 <code>status</code> 有 setter</b>：<code>id</code>、<code>userId</code>、<code>kind</code> 创建后不允许再改。只有该改的地方才给开口，这是一个很好的习惯。</li>
+        <li>有参构造 <code>(Long userId, String kind, String word, String status)</code>，和一个给 JPA 用的空构造。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">FavoriteWordRepository</span><span class="one">查收藏表的工具</span></summary>
+    <div class="body">
+      <p>和 <code>AppUserRepository</code> 是同一套路，继承 <code>JpaRepository&lt;FavoriteWord, Long&gt;</code>，有三个我们自己设的查询方法，方法名就是查询条件：</p>
+      <div class="scroll"><table>
+        <tr><th>方法</th><th>最终的查询含义</th><th>用在哪</th></tr>
+        <tr><td><code>findByUserId(Long userId)</code></td><td>找这个用户的所有收藏</td><td>列表</td></tr>
+        <tr><td><code>findByIdAndUserId(Long id, Long userId)</code></td><td>找编号是 id 且属于这个用户的那一条</td><td>删除、修改</td></tr>
+        <tr><td><code>findByUserIdAndKindAndWord(Long, String, String)</code></td><td>找这个用户、这种类型、这段文字的收藏</td><td>新增时检查是否重复</td></tr>
+      </table></div>
+      <p class="takeaway">findByIdAndUserId 是安全的关键</p>
+      <p>如果只用 id 查，坐在前端的人把 id 改成别人的，就能删别人的收藏。"带上 userId 一起查"，查不到就是"不是你的"，干脆当作不存在处理。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">FavoriteWordController</span><span class="one">四个收藏接口</span></summary>
+    <div class="body">
+      <p>类上有 <code>@RestController</code> 和 <code>@RequestMapping("/favorites")</code>，后者的意思是这个类里的所有接口路径都以 <code>/favorites</code> 开头。构造方法里接收 <code>FavoriteWordRepository</code>，由 Spring 注入。</p>
+      <div class="scroll"><table>
+        <tr><th>请求</th><th>干什么</th><th>关键逻辑</th></tr>
+        <tr><td><code>GET /favorites</code></td><td>查我的所有收藏</td><td><code>findByUserId(userId)</code></td></tr>
+        <tr><td><code>POST /favorites</code></td><td>新增一条收藏</td><td>校验 <code>kind</code> 是 <code>w</code> 或 <code>p</code>、<code>word</code> 不能为空（不对就返回 400）；<code>word</code> 去掉首尾空格；<code>status</code> 为空就用 <code>unknown</code>；已经有同样的就直接返回那条，没有就 <code>save</code></td></tr>
+        <tr><td><code>DELETE /favorites/{id}</code></td><td>取消收藏</td><td><code>findByIdAndUserId</code> 找到才删，找不到什么都不做</td></tr>
+        <tr><td><code>PUT /favorites/{id}</code></td><td>修改我的某条收藏的 <code>word</code> 或 <code>status</code></td><td>同样先用 <code>findByIdAndUserId</code> 找，找不到返回 <code>null</code></td></tr>
+      </table></div>
+      <p><b>这几个方法里的参数都从哪来</b>（详细见"参数从哪来"）：</p>
+      <ul>
+        <li><code>@RequestAttribute(AuthInterceptor.USER_ID) Long userId</code>：门卫放进便签的那个 userId。</li>
+        <li><code>@RequestBody NewFavoriteWord body</code>：前端发来的 JSON 请求体，按字段名对应填进 <code>NewFavoriteWord</code>。</li>
+        <li><code>@PathVariable Long id</code>：路径 <code>/favorites/12</code> 里的那个 12。</li>
+      </ul>
+      <p><b>返回值</b>：直接返回对象或列表，Spring 自动转成 JSON，状态码 200。<code>ResponseEntity.badRequest().build()</code> 表示返回 400 且没有内容；<code>ResponseEntity</code> 是把"状态码 + 头 + 内容"打包在一起的返回类型，需要自己控制状态码时才用。</p>
+      <p class="takeaway">点一下收藏：乐观更新 → POST（带 token）→ 门卫放行 → 校验去重 → 写表 → 返回带 id 的记录；失败就回滚界面</p>
+    </div>
+  </details>
+</section>
+
+<!-- ===== 参数从哪来 ===== -->
+<section id="params">
+  <h2>参数从哪来</h2>
+  <div class="paper y note">这是初学后端最容易迷的点：方法的括号里写了一堆参数，却找不到谁在调用它。答案是：整个后端程序里，绝大部分方法都不是你的代码调用的，而是 Spring 在合适的时机调用的。Spring 看你参数前面的注解和类型，决定从哪里取值填进来。可以把 Controller 的方法想成前端的事件处理函数：浏览器调用 <code>onClick(event)</code>，你不会自己去调用它，<code>event</code> 也是浏览器填的。</div>
+
+  <h3>总表：每一种参数的来源</h3>
+  <div class="paper"><div class="scroll"><table>
+    <tr><th>你看到的写法</th><th>值从哪里来</th><th>什么时候填</th><th>用在哪些文件</th></tr>
+    <tr><td><code>@RequestBody X body</code></td><td>前端发来的 HTTP 请求体（JSON），按字段名对应转成 X</td><td>每次请求到达时</td><td>AuthController、FavoriteWordController</td></tr>
+    <tr><td><code>@PathVariable Long id</code></td><td>路径里 <code>{id}</code> 的那一段</td><td>每次请求到达时</td><td>FavoriteWordController</td></tr>
+    <tr><td><code>@RequestAttribute("userId") Long userId</code></td><td>门卫验证 token 后放进这次请求便签的值</td><td>每次请求到达时，先经过门卫</td><td>FavoriteWordController</td></tr>
+    <tr><td><code>@RequestHeader("Authorization") String authorization</code></td><td>请求头里 Authorization 那一行，没有就是 <code>null</code></td><td>每次请求到达时</td><td>AuthController 的 <code>/me</code></td></tr>
+    <tr><td>构造方法的参数（如传进来的 <code>Repository</code>、<code>JwtService</code>）</td><td>Spring 创建的那个现成对象</td><td>程序启动时一次</td><td>几乎所有类</td></tr>
+    <tr><td><code>@Value("${...}")</code> 的参数</td><td><code>application.properties</code> 里的配置值</td><td>程序启动时一次</td><td>GoogleTokenVerifier、JwtService</td></tr>
+    <tr><td><code>HttpServletRequest request</code></td><td>这次请求的全部信息（头、方法、路径）</td><td>每次请求到达时</td><td>AuthInterceptor</td></tr>
+    <tr><td><code>HttpServletResponse response</code></td><td>用来回复的对象，可以设置状态码</td><td>每次请求到达时</td><td>AuthInterceptor</td></tr>
+    <tr><td><code>CorsRegistry registry</code>、<code>InterceptorRegistry registry</code></td><td>Spring 递给你的"登记表"</td><td>程序启动时一次</td><td>CorsConfig、WebAuthConfig</td></tr>
+    <tr><td><code>String[] args</code>（main 方法）</td><td>命令行启动参数</td><td>程序启动时</td><td>IeltsBackendApplication</td></tr>
+  </table></div></div>
+  <p class="note">记住一个简化的规则：参数分两类。一类是"启动时填一次"（构造方法、<code>@Value</code>、登记表），另一类是"每次请求都重新填"（请求体、路径、便签、request/response）。</p>
+
+  <h3>一次真实请求，参数是怎么被填上的</h3>
+  <div class="paper">
+    <p style="margin-top:0">以前端请求 <code>DELETE /favorites/12</code> 为例，请求头里带着 <code>Authorization: Bearer xxx</code>：</p>
+    <ol>
+      <li>浏览器先发 <code>OPTIONS</code> 预检，<code>CorsConfig</code> 的规则让 Spring 自动答"可以"。</li>
+      <li>真正的 DELETE 到达。Spring 把这次请求封装成 <code>HttpServletRequest</code> 对象。</li>
+      <li>路径 <code>/favorites/12</code> 匹配了 <code>WebAuthConfig</code> 里登记的 <code>/favorites/**</code>，所以先调 <code>AuthInterceptor.preHandle(request, response, handler)</code>。这三个参数都是 Spring 填的。</li>
+      <li>门卫验证 token 通过，<code>request.setAttribute("userId", 5)</code>（假设用户编号是 5），返回 <code>true</code>。</li>
+      <li>Spring 找到匹配 <code>DELETE /favorites/{id}</code> 的 Controller 方法。看到参数 <code>@PathVariable Long id</code>，去路径里取出 12 并转成 Long；看到 <code>@RequestAttribute("userId") Long userId</code>，去便签里取出 5。</li>
+      <li>调用你的方法 <code>delete(12, 5)</code>。</li>
+      <li>方法返回后，Spring 把返回值转成 HTTP 响应发回浏览器。</li>
+    </ol>
+  </div>
+
+  <details>
+    <summary><span class="fn">依赖注入</span><span class="one">为什么构造方法里有参数，却从没写过 new</span></summary>
+    <div class="body">
+<pre><code>public FavoriteWordController(FavoriteWordRepository repository) {
+    this.repository = repository;
+}</code></pre>
+      <ul>
+        <li>如果不用注入，你得自己写 <code>new FavoriteWordController(new FavoriteWordRepositoryImpl(...))</code>，每次改一处要改一堆。</li>
+        <li>Spring 启动时扫描到所有 <code>@Component</code>、<code>@RestController</code>、<code>@Configuration</code> 等类，按依赖顺序一个个创建对象。看到构造方法需要 <code>FavoriteWordRepository</code>，就先创建那个对象，再传进来。</li>
+        <li>每个类只创建一个对象（单例），整个程序共用。所以这些类里的字段不要存"某个用户的数据"，不然会串到别人请求上。每个用户的数据都放在方法的参数和局部变量里，每次请求各用各的。</li>
+        <li>字段写成 <code>private final</code>：<code>final</code> 保证只在构造方法里赋值一次，之后不会被改掉。</li>
+      </ul>
+      <p>这就像 Vue 的 <code>provide / inject</code>，不自己去创建一个 store，而是让框架把现成的传进来。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">@Value 怎么读配置</span><span class="one">启动时从配置文件取值</span></summary>
+    <div class="body">
+<pre><code>public JwtService(@Value("${app.jwt-secret}") String secret) { ... }</code></pre>
+      <ul>
+        <li><code>${app.jwt-secret}</code> 是一个占位符，Spring 启动时去 <code>application.properties</code> 里找对应的 key，把值字符串填进 <code>secret</code>。</li>
+        <li>key 拼错了，程序<b>启动就报错</b>，这比运行时才发现要好。</li>
+        <li>配置值里的 <code>${APP_JWT_SECRET:默认值}</code> 是另一层：先找操作系统环境变量，没有就用默认值。</li>
+      </ul>
+    </div>
+  </details>
+
+  <div class="k">
+    <div class="paper p"><b>不可信：来自前端</b><br><code>@RequestBody</code>、<code>@PathVariable</code> 任何人都能用 curl 构造，所以要校验（比如 <code>kind</code> 只能是 w/p）。</div>
+    <div class="paper g"><b>可信：来自服务器内部</b><br><code>@RequestAttribute</code> 来自门卫。前端请求里即使写了同名字段，也进不了便签，因为便签只有服务器代码能写。</div>
+  </div>
+  <p class="note">所以身份信息（userId）永远用 @RequestAttribute，业务数据用 @RequestBody。方法 return 的值，不是给你自己的代码，是给 Spring：它用 Jackson 把对象转成 JSON 写进 HTTP 响应，字段要有 getter 才会输出（<code>record</code> 自带），没有就隐藏，这就是 <code>FavoriteWord</code> 里 <code>userId</code> 不会露出去的原因。</p>
+</section>
+
+<!-- ===== 注解词典 ===== -->
+<section id="annot">
+  <h2>注解小词典</h2>
+  <div class="paper b note">注解（以 @ 开头）就是贴在类、方法、字段、参数上的标签，它自己不干活，是 Spring 启动时扫描到标签，再按标签的含义干活。类比前端：像 Vue 模板里的 <code>v-if</code>、<code>v-for</code>、<code>@click</code>，写下指令，框架负责执行。</div>
+
+  <h3>贴在类上：你是谁</h3>
+  <div class="paper"><div class="scroll"><table>
+    <tr><th>注解</th><th>意思</th><th>前端类比</th><th>用在</th></tr>
+    <tr><td><code>@SpringBootApplication</code></td><td>程序入口类，打开自动配置和组件扫描</td><td><code>createApp(App)</code></td><td>IeltsBackendApplication</td></tr>
+    <tr><td><code>@Configuration</code></td><td>这是一个配置类，启动时按它的规则设置</td><td><code>vite.config.js</code></td><td>CorsConfig、WebAuthConfig</td></tr>
+    <tr><td><code>@Component</code></td><td>请 Spring 帮我创建并管理这个类的对象</td><td>注册全局组件</td><td>GoogleTokenVerifier、AuthInterceptor</td></tr>
+    <tr><td><code>@Service</code></td><td>和 <code>@Component</code> 一样，只是名字表示"业务工具类"</td><td>同上</td><td>JwtService</td></tr>
+    <tr><td><code>@RestController</code></td><td>这是接口类，返回值直接转 JSON</td><td>一组 API 路由处理函数</td><td>AuthController、FavoriteWordController</td></tr>
+    <tr><td><code>@RequestMapping("/favorites")</code></td><td>这个类所有接口的路径前缀</td><td>路由的父路径</td><td>FavoriteWordController</td></tr>
+    <tr><td><code>@Entity</code></td><td>这个类对应一张数据库表</td><td>表结构定义</td><td>AppUser、FavoriteWord</td></tr>
+    <tr><td><code>@Table(name = "app_user")</code></td><td>指定表名（避开保留字 user）</td><td>给表起名</td><td>AppUser</td></tr>
+  </table></div></div>
+
+  <h3>贴在方法上：这个方法在什么时候执行</h3>
+  <div class="paper"><div class="scroll"><table>
+    <tr><th>注解</th><th>意思</th><th>前端类比</th></tr>
+    <tr><td><code>@GetMapping</code>、<code>@PostMapping</code>、<code>@PutMapping</code>、<code>@DeleteMapping</code></td><td>这个方法处理对应 HTTP 方法和路径的请求，括号里写路径</td><td><code>router.get('/path', handler)</code></td></tr>
+    <tr><td><code>@Override</code></td><td>我在重写父类或接口里的方法，写错会编译报错</td><td>类型标注的保险</td></tr>
+  </table></div></div>
+
+  <h3>贴在参数上：这个值从哪来</h3>
+  <div class="paper"><div class="scroll"><table>
+    <tr><th>注解</th><th>意思</th></tr>
+    <tr><td><code>@RequestBody</code></td><td>从请求体 JSON 填进来</td></tr>
+    <tr><td><code>@PathVariable</code></td><td>从路径的 <code>{id}</code> 那一段填进来</td></tr>
+    <tr><td><code>@RequestAttribute</code></td><td>从服务器内部的便签里填进来</td></tr>
+    <tr><td><code>@RequestHeader(value = "Authorization", required = false)</code></td><td>从请求头的某一行填进来，没有就给 <code>null</code></td></tr>
+    <tr><td><code>@Value("${key}")</code></td><td>从配置文件或环境变量里填进来</td></tr>
+  </table></div></div>
+
+  <h3>贴在字段上：这一列怎么存</h3>
+  <div class="paper"><div class="scroll"><table>
+    <tr><th>注解</th><th>意思</th></tr>
+    <tr><td><code>@Id</code></td><td>主键，每行唯一</td></tr>
+    <tr><td><code>@GeneratedValue(strategy = GenerationType.IDENTITY)</code></td><td>主键由数据库自动递增分配</td></tr>
+    <tr><td><code>@Column(unique = true, nullable = false)</code></td><td>这列不能为空，值不能重复</td></tr>
+  </table></div></div>
+
+  <h3>不是注解，但容易混的词</h3>
+  <div class="paper">
+    <ul style="margin:0;padding-left:1.3em">
+      <li><code>record</code>：Java 的简写数据类。一行声明字段，编译器自动给你构造方法、取值方法、<code>equals</code>、<code>toString</code>。字段创建后不能改。</li>
+      <li><code>interface</code>：只规定"有哪些方法"，不写具体实现。<code>JpaRepository</code> 就是这样的接口，实现由 Spring 自动生成。</li>
+      <li><code>extends</code> / <code>implements</code>：继承某个父类 / 实现某个接口。<code>implements WebMvcConfigurer</code> = "我要按这个接口规定的方法写"。</li>
+      <li><code>private final</code>：<code>private</code> 只有本类能访问，<code>final</code> 赋值后不能再改，常用来存注入进来的依赖。</li>
+      <li><code>static</code>：属于类本身，不属于某个对象，调用时不需要 new。</li>
+      <li><code>Optional&lt;T&gt;</code>：可能有、可能没有的盒子，用 <code>ifPresent</code>、<code>isPresent</code>、<code>orElse</code> 等处理。</li>
+      <li>泛型 <code>&lt;AppUser, Long&gt;</code>：尖括号里的类型参数，相当于 TypeScript 的 <code>Array&lt;string&gt;</code>。</li>
+    </ul>
+    <p class="takeaway">遇到不认识的 @xxx，只问三件事</p>
+    <p style="margin-bottom:0">它贴在什么位置？是谁（Spring 还是数据库框架）在读它？它让框架最终做了什么动作？</p>
+  </div>
+</section>
+
+<!-- ===== 上线前 ===== -->
+<section id="deploy">
+  <h2>遗留旧代码和上线前必改</h2>
+
+  <h3>早期练习的文件（现在不在用）</h3>
+  <div class="paper warn">
+    <ul style="margin:0;padding-left:1.3em">
+      <li><code>HelloController</code> + <code>Greeting</code>：<code>GET /hello</code>，返回一个带 <code>message</code> 和 <code>version</code> 的 JSON，第一天验证"后端跑起来了"用的。</li>
+      <li><code>WrongItem</code> + <code>NewWrongItem</code> + <code>WrongItemController</code>：错题本练习。数据存在内存的列表里，重启就没了；路径 <code>/wrong-items</code> 不在门卫的保护范围内，任何人都能访问。</li>
+      <li><code>IeltsBackendApplicationTests</code>：创建项目时自动生成的测试，只检查程序能不能启动。</li>
+    </ul>
+    <p style="margin-bottom:0"><b>建议</b>：上线前把 <code>/hello</code> 和 <code>/wrong-items</code> 相关文件删掉，留着就是多一块公开的攻击面。没有用到的代码不要上线。</p>
+  </div>
+
+  <h3>上线前必改清单</h3>
+  <div class="paper"><div class="scroll"><table>
+    <tr><th>事项</th><th>现状</th><th>要改成</th><th>不改的后果</th></tr>
+    <tr><td>JWT 密钥</td><td>默认值公开写在 <code>application.properties</code> 里</td><td>服务器上设置环境变量 <code>APP_JWT_SECRET</code>，使用长随机字符串</td><td>别人能伪造任何用户的登录 token</td></tr>
+    <tr><td>H2 控制台</td><td><code>spring.h2.console.enabled=true</code></td><td>生产环境关掉或去掉相关依赖</td><td>外部可访问数据库管理页面</td></tr>
+    <tr><td>数据库</td><td>H2 文件库，存在启动目录下</td><td>换成 PostgreSQL，账号密码用环境变量</td><td>部署平台重建容器时数据会丢</td></tr>
+    <tr><td><code>ddl-auto</code></td><td><code>update</code></td><td>上线后改成 <code>validate</code>，表结构变更用迁移工具</td><td>自动改表结构可能在你不知道的时候改了生产库</td></tr>
+    <tr><td><code>show-sql</code></td><td><code>true</code></td><td>关掉</td><td>日志里满是 SQL，可能泄露数据且拖慢</td></tr>
+    <tr><td>CORS 白名单</td><td><code>localhost:5500</code> + <code>ielts.goenkon.com</code></td><td>去掉 localhost，加上日语站的域名</td><td>所有本地页面都能访问你的生产后端</td></tr>
+    <tr><td>Google 授权来源</td><td>只有本地</td><td>在 Google Cloud 里给 OAuth 客户端加上 <code>https://ielts.goenkon.com</code></td><td>线上登录按钮报错</td></tr>
+    <tr><td>HTTPS</td><td>本地 http</td><td>后端必须是 HTTPS（平台自带）</td><td>token 在网络上裸传，浏览器也会拦截混合内容</td></tr>
+    <tr><td>前端 <code>API_BASE</code></td><td>空（线上隐藏收藏功能）</td><td>写成生产后端地址</td><td>线上看不到收藏功能</td></tr>
+    <tr><td><code>.gitignore</code></td><td>—</td><td>排除 <code>data/</code>、<code>target/</code>、所有密钥文件</td><td>把数据库文件或密钥推到 GitHub</td></tr>
+    <tr><td>项目位置</td><td><code>~/Downloads/Developer/</code></td><td>移到固定的开发目录</td><td>下载目录容易被清理</td></tr>
+    <tr><td><code>pom.xml</code> 里的空标签</td><td><code>&lt;name/&gt;</code>、<code>&lt;licenses&gt;</code> 等为空</td><td>填上项目名或删掉</td><td>不影响运行，只是整洁</td></tr>
+  </table></div></div>
+
+  <h3>已规划、尚未做</h3>
+  <div class="paper">
+    <ul style="margin:0;padding-left:1.3em">
+      <li><b>给收藏表加 <code>site</code> 列</b>（比如 <code>ielts</code>、<code>jlpt</code>），让同一个后端服务英语站和日语站。前端发请求时带上 <code>site</code>，后端查询条件也要加上。最好在上线前完成，因为表里有数据再加列比较麻烦。</li>
+      <li><b>好的习惯</b>：每次改完代码，用 curl 或前端页面走一遍登录、收藏、取消收藏、刷新、退出，确认没有弄坏。</li>
+      <li>本地数据库里的测试数据（例如 id=4 的测试收藏）可以手动删除；上线后的 PostgreSQL 是全新的库，不会带过去。</li>
+    </ul>
+  </div>
+</section>
+
+<footer>后端代码地图 · 笔记涂鸦风 · 随代码更新</footer>
+</div>
+</div>
+</template>
+
+<template id="tpl-bk-java">
+<div class="nb">
+<div class="nb-wrap">
+<header class="hero">
+  <div class="chips"><span class="chip">Java 21</span><span class="chip g">Spring Boot</span><span class="chip y">JPA / SQL</span><span class="chip p">JVM 在底下做什么</span></div>
+  <h1>Java 与 Spring 速查</h1>
+  <p>从分号、private、Long 这些最小的符号，到每个 @ 标签、请求在机器里怎么走、数据库怎么存。从"后端到底是什么"讲起，不假设你懂任何后端概念。例子都取自你自己的代码，看到陌生的写法就回这里查。</p>
+</header>
+
+<nav aria-label="章节"><a href="#what">后端是什么</a><a href="#tree">文件夹</a><a href="#read">读一行代码</a><a href="#syntax">基础语法</a><a href="#mods">修饰符</a><a href="#types">类型</a><a href="#oop">接口与注解</a><a href="#jvm">机器在做什么</a><a href="#spring">Spring 核心</a><a href="#at">@ 全表</a><a href="#walk">走一遍登录</a><a href="#db">数据库</a><a href="#unique">唯一约束</a><a href="#hands">动手验证</a><a href="#err">报错</a><a href="#gloss">名词表</a></nav>
+<div class="tools"><button id="openAll" type="button">全部展开</button><button id="closeAll" type="button">全部收起</button></div>
+
+<!-- ===== 后端是什么 ===== -->
+<section id="what">
+  <h2>先搞懂：后端到底是什么</h2>
+  <div class="paper y note">把整个网站想成一家餐厅。<b>前端</b>是大堂和菜单，客人在这里点菜；<b>后端</b>是厨房，收到点菜单就做菜；<b>数据库</b>是仓库，存着所有食材。客人不能直接进仓库，只能通过厨房拿。后端就是这个"厨房"：一个<b>一直开着的程序</b>，不画界面，只做三件事：<b>收请求 → 处理 → 回响应</b>。</div>
+
+  <h3>一次完整的往返</h3>
+  <div class="paper">
+    <p style="margin-top:0">你在页面上点一下书签，前端大概执行了这样一段（你前端里的 <code>authFetch</code> 就在干这件事）：</p>
+<pre><code>fetch('http://localhost:8080/favorites', {
+  method: 'POST',
+  headers: { 'Authorization': 'Bearer eyJhbGciOi...', 'Content-Type': 'application/json' },
+  body: JSON.stringify({ kind: 'w', word: 'mitigate' })
+})</code></pre>
+    <p>浏览器把它变成一段<b>纯文字</b>，通过网络发到 8080 端口。这段文字就是 HTTP 请求：</p>
+<pre><code>POST /favorites HTTP/1.1                      ← 第一行：方法 + 路径
+Host: localhost:8080                          ← 头（Header）：对这次请求的附加说明，一行一个
+Authorization: Bearer eyJhbGciOi...           ← 头：出示通行证
+Content-Type: application/json                ← 头：告诉后端正文是 JSON
+                                              ← 空一行，下面是正文
+{"kind":"w","word":"mitigate"}                ← 体（Body）：真正要交给后端的数据</code></pre>
+    <p>后端处理完，同样回一段文字，就是 HTTP 响应：</p>
+<pre><code>HTTP/1.1 200                                  ← 状态码：200 = 成功
+Content-Type: application/json
+
+{"id":4,"kind":"w","word":"mitigate","status":"unknown"}   ← 体：后端返回的数据</code></pre>
+    <p>注意响应里没有 <code>userId</code>，因为 <code>FavoriteWord</code> 没写它的 getter，这是故意的。</p>
+    <p><b>所以一次请求就是四样东西</b>：<b>方法</b>（想干什么）、<b>路径</b>（对哪个资源）、<b>头</b>（附加说明）、<b>体</b>（数据）。响应是：<b>状态码</b>（结果怎么样）、<b>头</b>、<b>体</b>。你写的每个 Controller 方法，就是在回答"收到这样的请求，该回什么响应"。</p>
+  </div>
+
+  <details open>
+    <summary><span class="fn">方法：GET / POST / PUT / DELETE / OPTIONS</span><span class="one">"动词"，说明想干什么</span></summary>
+    <div class="body">
+      <div class="scroll"><table>
+        <tr><th>方法</th><th>约定的含义</th><th>你项目里</th></tr>
+        <tr><td><code>GET</code></td><td>读取，不改任何数据</td><td><code>GET /favorites</code> 查我的收藏；<code>GET /me</code> 我是谁</td></tr>
+        <tr><td><code>POST</code></td><td>新建，或提交数据</td><td><code>POST /favorites</code> 新增收藏；<code>POST /auth/google</code> 登录</td></tr>
+        <tr><td><code>PUT</code></td><td>修改已有的</td><td><code>PUT /favorites/3</code> 修改第 3 条</td></tr>
+        <tr><td><code>DELETE</code></td><td>删除</td><td><code>DELETE /favorites/3</code> 取消收藏</td></tr>
+        <tr><td><code>OPTIONS</code></td><td>浏览器自己发的"预检"，问后端允不允许跨域</td><td>你不会手写它，<code>CorsConfig</code> 自动回答</td></tr>
+      </table></div>
+      <p>这是约定，不是强制，但大家都遵守，所以一看"方法 + 路径"就能猜出接口在干什么：<code>DELETE /favorites/3</code> = 删除收藏 3。</p>
+    </div>
+  </details>
+
+  <details open>
+    <summary><span class="fn">状态码</span><span class="one">响应第一行的数字，告诉前端结果怎么样</span></summary>
+    <div class="body">
+      <div class="scroll"><table>
+        <tr><th>数字</th><th>名字</th><th>意思</th><th>你项目里什么时候出现</th></tr>
+        <tr><td>200</td><td>OK</td><td>成功</td><td>正常返回</td></tr>
+        <tr><td>400</td><td>Bad Request</td><td>你发来的请求有问题</td><td><code>kind</code> 不是 w/p，或 <code>word</code> 为空</td></tr>
+        <tr><td>401</td><td>Unauthorized</td><td>没通过身份验证</td><td>没带 token、token 过期或是假的</td></tr>
+        <tr><td>404</td><td>Not Found</td><td>没有这个路径</td><td>路径拼错</td></tr>
+        <tr><td>405</td><td>Method Not Allowed</td><td>路径对，方法不对</td><td>该 POST 的发了 GET</td></tr>
+        <tr><td>500</td><td>Internal Server Error</td><td>后端代码自己出错了</td><td>空指针等异常，看后端控制台</td></tr>
+      </table></div>
+      <p>规律：<b>2xx 成功，4xx 是调用方（前端）的问题，5xx 是后端自己的问题</b>。排查时先看第一位数字，就知道该查前端还是后端。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">JSON 和 Java 对象怎么互相转</span><span class="one">Jackson 在中间翻译</span></summary>
+    <div class="body">
+      <p>网络上传的只能是文字，所以数据都写成 JSON 文字。前端用 <code>JSON.stringify</code> / <code>JSON.parse</code> 转换，后端有个叫 <b>Jackson</b> 的库自动转换，你不用写。</p>
+      <div class="two">
+        <div><p style="margin-top:0"><b>请求体 JSON</b></p><pre><code>{"idToken":"eyJ..."}</code></pre></div>
+        <div><p style="margin-top:0"><b>对应的 Java</b></p><pre><code>record GoogleLoginRequest(String idToken) {}</code></pre></div>
+      </div>
+      <ul>
+        <li><b>按字段名对应</b>：JSON 里的 <code>idToken</code> 被填进 record 里同名的字段。</li>
+        <li>JSON 里多出来的字段（比如有人乱传 <code>userId</code>）因为 record 里没有，会被直接丢掉。<b>这就是为什么要专门定义 <code>NewFavoriteWord</code></b>：它只有三个字段，前端想传别的也进不来。</li>
+        <li>反方向：Controller 返回一个对象，Jackson 找它的 getter（record 是自带的取值方法），把字段写成 JSON。<b>没有 getter 的字段就不会出现在 JSON 里</b>。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">"无状态"：为什么每次都要带 token</span><span class="one">后端不记得你是谁</span></summary>
+    <div class="body">
+      <ul>
+        <li>后端不会"记住"上一次是谁来过。每个请求对它来说都是陌生人，所以<b>每次都要出示通行证</b>。就像进电影院，每次进场都要出示票，门口的人不会靠认脸。</li>
+        <li><code>Bearer</code> 是"持票人"的意思：谁拿着这张票，谁就被当作这个人。所以 token 一旦泄露，别人就能冒充你，这也是为什么要设 7 天过期，并且线上必须用 HTTPS。</li>
+        <li>前端把 token 存在 <code>localStorage</code>，是因为页面刷新后 JS 变量会丢，而 <code>localStorage</code> 会保留。</li>
+        <li>这种"服务器不存登录状态，靠每次带票"的设计，叫<b>无状态</b>。好处是服务器可以随便重启、可以同时开多台，用户都不会掉线。</li>
+      </ul>
+    </div>
+  </details>
+
+  <h3>你这个后端现在提供的全部接口</h3>
+  <div class="paper"><div class="scroll"><table>
+    <tr><th>请求</th><th>要不要登录</th><th>谁负责检查</th><th>干什么</th></tr>
+    <tr><td><code>POST /auth/google</code></td><td>不要</td><td>—（登录本身）</td><td>交 Google 证明书，换我们的 token</td></tr>
+    <tr><td><code>GET /me</code></td><td>要</td><td>AuthController 自己验</td><td>返回当前用户信息</td></tr>
+    <tr><td><code>GET /favorites</code></td><td>要</td><td>门卫 AuthInterceptor</td><td>列出我的收藏</td></tr>
+    <tr><td><code>POST /favorites</code></td><td>要</td><td>门卫</td><td>新增收藏</td></tr>
+    <tr><td><code>PUT /favorites/{id}</code></td><td>要</td><td>门卫</td><td>修改收藏</td></tr>
+    <tr><td><code>DELETE /favorites/{id}</code></td><td>要</td><td>门卫</td><td>取消收藏</td></tr>
+    <tr><td><code>GET /hello</code>、<code>/wrong-items</code></td><td>不要</td><td>无</td><td>早期练习，上线前删除</td></tr>
+    <tr><td><code>/h2-console</code></td><td>不要</td><td>无</td><td>开发用的数据库网页，上线前关闭</td></tr>
+  </table></div></div>
+</section>
+
+<!-- ===== 文件夹结构 ===== -->
+<section id="tree">
+  <h2>项目文件夹长什么样</h2>
+<div class="paper"><pre style="margin:0"><code>ielts-backend/
+├── pom.xml                         依赖清单（相当于 package.json）
+├── src/
+│   ├── main/
+│   │   ├── java/com/goenkon/ielts/     你写的全部 Java 代码都在这一层
+│   │   └── resources/
+│   │       └── application.properties  配置文件
+│   └── test/java/com/goenkon/ielts/    测试代码
+├── data/                           H2 数据库文件（运行后自动生成）
+└── target/                         编译和打包的输出（自动生成）</code></pre></div>
+  <ul>
+    <li><b><code>src/main/java</code></b>：Java 源码的根目录。下面的 <code>com/goenkon/ielts</code> 三层文件夹对应代码里的 <code>package com.goenkon.ielts;</code>，<b>文件夹路径必须和包名一致</b>。</li>
+    <li><b><code>src/main/resources</code></b>：非代码资源，配置文件放这里。打包时会和代码一起进 jar。</li>
+    <li><b><code>src/test</code></b>：测试代码。打包上线时不会包含。</li>
+    <li><b><code>data/</code></b>：H2 数据库文件 <code>ielts.mv.db</code> 在这里。<b>它是数据，不是代码</b>：别手动编辑，别推到 GitHub（要写进 <code>.gitignore</code>）。</li>
+    <li><b><code>target/</code></b>：Maven 编译和打包的产物（<code>.class</code>、jar）。<b>自动生成，随时可以删，别推到 GitHub</b>。出现奇怪的"改了没生效"问题时，删掉它重新构建往往能解决。</li>
+    <li>你的项目里可能还有 <code>mvnw</code>、<code>.mvn</code>、<code>HELP.md</code> 之类，是 Maven 包装脚本和说明，平时不用管。</li>
+  </ul>
+</section>
+
+<!-- ===== 读一行代码 ===== -->
+<section id="read">
+  <h2>先学会拆一行 Java</h2>
+  <div class="paper y note">Java 的每一行都是"几个词按固定顺序排好"。认得每个位置放什么，陌生代码就不再吓人。下面把你项目里的两行拆开。</div>
+
+  <h3>一个字段</h3>
+  <div class="paper">
+    <div class="anat"><span class="t1">private</span> <span class="t2">final</span> <span class="t3">FavoriteWordRepository</span> <span class="t4">repository</span><span class="t5">;</span></div>
+    <div class="legend"><span class="t1">谁能访问</span><span class="t2">能不能改</span><span class="t3">类型</span><span class="t4">变量名</span><span class="t5">语句结束</span></div>
+    <p>读法：一个<b>只有本类能访问</b>、<b>赋值一次后不能再改</b>的变量，类型是 <code>FavoriteWordRepository</code>，名字叫 <code>repository</code>。顺序固定：<b>修饰词 → 类型 → 名字</b>。和 TypeScript 相反，类型写在名字前面，没有 <code>:</code>。</p>
+  </div>
+
+  <h3>一个方法</h3>
+  <div class="paper">
+    <div class="anat"><span class="t1">public</span> <span class="t3">ResponseEntity&lt;?&gt;</span> <span class="t4">googleLogin</span>(<span class="t2">@RequestBody</span> <span class="t3">GoogleLoginRequest</span> <span class="t4">body</span>) <span class="t5">{ ... }</span></div>
+    <div class="legend"><span class="t1">谁能访问</span><span class="t3">返回类型 / 参数类型</span><span class="t4">方法名 / 参数名</span><span class="t2">参数上的标签</span><span class="t5">方法体</span></div>
+    <p>读法：一个公开方法，名字叫 <code>googleLogin</code>，接收一个参数 <code>body</code>（类型 <code>GoogleLoginRequest</code>，值由 Spring 从请求体 JSON 里填），做完返回一个 <code>ResponseEntity</code>。顺序固定：<b>修饰词 → 返回类型 → 方法名 → (参数类型 参数名)</b>。</p>
+    <p>对照前端：<code>async function googleLogin(body: GoogleLoginRequest): Promise&lt;Response&gt;</code>，只是 Java 把类型挪到了前面。</p>
+  </div>
+</section>
+
+<!-- ===== 基础语法 ===== -->
+<section id="syntax">
+  <h2>基础语法</h2>
+
+  <details open>
+    <summary><span class="fn">分号 ; 和大括号 { }</span><span class="one">哪里要写，哪里不写</span></summary>
+    <div class="body">
+      <ul>
+        <li><b>分号 <code>;</code> 表示"这一条语句结束了"</b>。Java 不看换行，只认分号，所以一行可以写多条，一条也可以拆成多行。漏了分号，编译器直接报错。</li>
+        <li><b>大括号 <code>{ }</code> 圈出一个"代码块"</b>：类体、方法体、<code>if</code> 体、<code>try</code> 体都用它。<b>块的结尾 <code>}</code> 后面不写分号</b>。</li>
+        <li>需要分号：<code>this.repository = repository;</code>（赋值）、<code>return x;</code>、<code>import ...;</code>、<code>package ...;</code>、字段声明、方法调用。</li>
+        <li>不需要分号：<code>if (...) { }</code> 的 <code>}</code>、方法的 <code>}</code>、类的 <code>}</code>。</li>
+        <li>接口里的方法声明<b>没有方法体</b>，所以用分号直接结束：<code>Optional&lt;AppUser&gt; findByGoogleSub(String googleSub);</code>。</li>
+        <li><code>record Greeting(String message, int version) {}</code>：空的 <code>{}</code> 是方法体位置，里面没东西，后面也不写分号。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">package 和 import</span><span class="one">文件放哪、用了谁</span></summary>
+    <div class="body">
+      <ul>
+        <li><code>package com.goenkon.ielts;</code>：这个文件属于哪个"文件夹"（包）。必须和它在项目里的实际目录一致：<code>src/main/java/com/goenkon/ielts/</code>。包名反过来写域名是 Java 的惯例，用来避免和别人的类重名。</li>
+        <li><code>import org.springframework.stereotype.Component;</code>：告诉编译器"下面用到的 <code>Component</code> 是这个包里的那个"。相当于前端的 <code>import { Component } from '...'</code>。</li>
+        <li>同一个包里的类不用 import，直接用（所以 <code>AuthController</code> 用 <code>JwtService</code> 不用写 import）。</li>
+        <li><code>import jakarta.persistence.*;</code>：星号表示"这个包里的全部"。</li>
+        <li><code>java.lang</code> 包（<code>String</code>、<code>Long</code>、<code>Integer</code>、<code>Object</code>）是自动导入的，不用写。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">类、对象、字段、方法、构造方法</span><span class="one">五个最基本的名词</span></summary>
+    <div class="body">
+      <ul>
+        <li><b>类（class）</b>：图纸。<code>class AppUser</code> 描述"一个用户长什么样、能做什么"。</li>
+        <li><b>对象（object）</b>：按图纸造出来的实物，占内存。<code>new AppUser(...)</code> 造一个。</li>
+        <li><b>字段（field）</b>：对象身上的数据，比如 <code>private String email;</code>。</li>
+        <li><b>方法（method）</b>：对象能做的事，比如 <code>getEmail()</code>。</li>
+        <li><b>构造方法（constructor）</b>：和类同名、<b>没有返回类型</b>的特殊方法，在 <code>new</code> 的时候被调用，用来给字段赋初始值。</li>
+        <li><b><code>this</code></b>：指"这个对象自己"。<code>this.email = email;</code> 左边是对象的字段，右边是参数，同名时用 <code>this.</code> 区分。</li>
+        <li><b><code>new</code></b>：在内存里造一个对象，返回它的引用（地址）。我们自己写 <code>new</code> 的地方很少，大部分对象由 Spring 代为 new。</li>
+        <li><b>getter / setter</b>：Java 习惯字段都 <code>private</code>，只通过 <code>getXxx()</code> / <code>setXxx()</code> 读写。这样想"不让某个字段被改"，只要不写它的 setter。Spring 转 JSON 也是靠 getter 找字段。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">if / null / return / try-catch</span><span class="one">流程控制</span></summary>
+    <div class="body">
+<pre><code>if (g == null) {                       // 条件必须是 boolean
+    return ResponseEntity.status(401)...;   // return：结束方法并把值交出去
+}
+
+try {
+    return Long.valueOf(JWT.require(algo).build().verify(token).getSubject());
+} catch (JWTVerificationException e) {
+    return null;                        // 出错时走这里，程序不会崩
+}</code></pre>
+      <ul>
+        <li><code>null</code> 表示"这个引用没有指向任何对象"。对 <code>null</code> 调用方法会抛 <code>NullPointerException</code>（空指针，最常见的 Java 错误）。</li>
+        <li><code>==</code> 比较的是"是不是同一个东西"：对数字等基本类型是比较值；对对象是比较<b>地址</b>。比较字符串内容要用 <code>"a".equals(b)</code>，不能用 <code>==</code>。<code>"OPTIONS".equals(request.getMethod())</code> 把确定不为 null 的写在前面，是为了避免空指针。</li>
+        <li><code>try { } catch (类型 e) { }</code>：先试着执行 try 里的代码，中途抛异常就跳到 catch，而不是让程序崩溃。<code>e</code> 是异常对象，描述出了什么错。</li>
+        <li><code>throws Exception</code>：写在方法声明后面，表示"这个方法里可能抛出异常，我不处理，交给调用我的人"。</li>
+        <li><code>return</code>：结束当前方法。<code>void</code> 方法不返回值，其余都要 <code>return</code> 对应类型的值。</li>
+        <li>逻辑运算：<code>&amp;&amp;</code> 且、<code>||</code> 或、<code>!</code> 非。<code>authorization == null || !authorization.startsWith("Bearer ")</code>：左边为真就不再算右边，所以先判 null 再用它是安全的。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">-&gt; 和 ::</span><span class="one">lambda 与方法引用</span></summary>
+    <div class="body">
+<pre><code>userRepository.findByGoogleSub(g.sub())
+    .orElseGet(() -&gt; userRepository.save(new AppUser(...)));
+
+.orElseGet(this::unauthorized);
+repository.findByIdAndUserId(id, userId).ifPresent(repository::delete);</code></pre>
+      <ul>
+        <li><code>() -&gt; 表达式</code> 是 <b>lambda</b>，"一小段待执行的代码"，类似 JS 的 <code>() =&gt; ...</code>。括号里是参数，箭头右边是做的事。<code>orElseGet(() -&gt; ...)</code> 只有在 Optional 是空的时才会执行括号里的内容。</li>
+        <li><code>类::方法</code> 是<b>方法引用</b>，lambda 的简写：<code>repository::delete</code> 等于 <code>x -&gt; repository.delete(x)</code>。<code>this::unauthorized</code> 是"调用本对象的 unauthorized 方法"。</li>
+        <li><b>链式调用</b>：每个方法返回一个对象，可以接着 <code>.</code> 调用下一个，像 JS 的 <code>promise.then().catch()</code>。<code>JWT.create().withSubject(...).withIssuedAt(...).sign(algo)</code> 就是一条链，最后一个方法才真正产出结果。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">注释</span><span class="one">三种写法</span></summary>
+    <div class="body">
+      <ul>
+        <li><code>// 单行注释</code></li>
+        <li><code>/* 多行注释 */</code></li>
+        <li><code>/** 文档注释 */</code>：写在类或方法上面，IDE 悬停时会显示。</li>
+        <li>注释不会被编译，也不影响运行。</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+<!-- ===== 修饰符与关键字 ===== -->
+<section id="mods">
+  <h2>修饰符与关键字</h2>
+  <div class="paper"><div class="scroll"><table>
+    <tr><th>词</th><th>意思</th><th>你项目里的例子</th></tr>
+    <tr><td><code>public</code></td><td>谁都能访问</td><td><code>public class AuthController</code></td></tr>
+    <tr><td><code>private</code></td><td>只有本类内部能访问</td><td><code>private final JwtService jwtService;</code></td></tr>
+    <tr><td><code>protected</code></td><td>本包和子类能访问</td><td><code>protected AppUser() {}</code></td></tr>
+    <tr><td>（什么都不写）</td><td>只有同一个包能访问</td><td>很少用</td></tr>
+    <tr><td><code>static</code></td><td>属于类本身，不属于某个对象；不用 new 就能用，整个程序只有一份</td><td><code>public static final String USER_ID</code></td></tr>
+    <tr><td><code>final</code></td><td>赋值一次后不能再改。字段 final = 常量；类 final = 不能被继承</td><td><code>private final Algorithm algo;</code></td></tr>
+    <tr><td><code>void</code></td><td>这个方法不返回任何值</td><td><code>public void addCorsMappings(...)</code></td></tr>
+    <tr><td><code>class</code></td><td>声明一个类（图纸）</td><td><code>public class CorsConfig</code></td></tr>
+    <tr><td><code>interface</code></td><td>只规定"有哪些方法"，不写实现</td><td><code>public interface AppUserRepository</code></td></tr>
+    <tr><td><code>record</code></td><td>只装数据的简写类，自动生成构造器、取值方法；字段创建后不能改</td><td><code>public record NewFavoriteWord(String kind, ...)</code></td></tr>
+    <tr><td><code>extends</code></td><td>继承：拿到父类的全部能力。接口继承接口也用它</td><td><code>extends JpaRepository&lt;AppUser, Long&gt;</code></td></tr>
+    <tr><td><code>implements</code></td><td>实现接口：承诺写出接口规定的所有方法</td><td><code>implements WebMvcConfigurer</code></td></tr>
+    <tr><td><code>throws</code></td><td>声明方法里可能抛出的异常</td><td><code>preHandle(...) throws Exception</code></td></tr>
+    <tr><td><code>this</code></td><td>当前对象自己</td><td><code>this.algo = Algorithm.HMAC256(secret);</code></td></tr>
+    <tr><td><code>new</code></td><td>在内存里创建对象</td><td><code>new AppUser(g.sub(), ...)</code></td></tr>
+  </table></div></div>
+  <p class="note">四个访问级别按"开放程度"排：public &gt; protected &gt; 默认 &gt; private。原则：能小就小，字段默认 private，需要给别人用的方法才 public。</p>
+</section>
+
+<!-- ===== 类型 ===== -->
+<section id="types">
+  <h2>类型：Long、String、Optional 这一大堆</h2>
+
+  <h3>基本类型和它们的"对象版本"</h3>
+  <div class="paper"><div class="scroll"><table>
+    <tr><th>基本类型</th><th>对象版本</th><th>范围 / 说明</th></tr>
+    <tr><td><code>int</code></td><td><code>Integer</code></td><td>32 位整数，约 ±21 亿</td></tr>
+    <tr><td><code>long</code></td><td><code>Long</code></td><td>64 位整数，约 ±9.2×10<sup>18</sup>。数据库主键、时间戳常用，不怕用完</td></tr>
+    <tr><td><code>double</code></td><td><code>Double</code></td><td>小数（64 位浮点）</td></tr>
+    <tr><td><code>boolean</code></td><td><code>Boolean</code></td><td><code>true</code> 或 <code>false</code></td></tr>
+    <tr><td><code>char</code></td><td><code>Character</code></td><td>单个字符，用单引号 <code>'a'</code></td></tr>
+  </table></div></div>
+  <div class="paper y">
+    <p style="margin-top:0"><b><code>long</code> 和 <code>Long</code> 到底差在哪</b></p>
+    <ul style="margin:0;padding-left:1.3em">
+      <li><code>long</code>（小写）是<b>值本身</b>，直接存数字，<b>永远有值</b>，不能是 <code>null</code>，没有方法可调。</li>
+      <li><code>Long</code>（大写）是<b>装着数字的对象</b>，要通过引用访问，所以<b>可以是 <code>null</code></b>，也有方法（<code>Long.valueOf</code> 等）。</li>
+      <li>为什么我们用 <code>Long</code>：<code>AppUser</code> 的 <code>id</code> 刚 new 出来还没存数据库时<b>没有值</b>，要用 <code>null</code> 表示"还没分配"，所以只能用 <code>Long</code>。<code>JwtService.verify</code> 返回 <code>Long</code> 也是因为"验证失败"要返回 <code>null</code>。</li>
+      <li>Java 会在两者之间<b>自动转换</b>（装箱、拆箱）。注意：两个 <code>Long</code> 比较要用 <code>.equals()</code>，别用 <code>==</code>。</li>
+      <li>泛型尖括号里只能放对象版本：<code>List&lt;Long&gt;</code> 可以，<code>List&lt;long&gt;</code> 不行。</li>
+    </ul>
+  </div>
+
+  <details>
+    <summary><span class="fn">String</span><span class="one">字符串</span></summary>
+    <div class="body">
+      <ul>
+        <li>是对象，不是基本类型；字符串用<b>双引号</b>，单引号是 char。</li>
+        <li><b>不可变</b>：一旦创建，内容不能改。<code>s.trim()</code> 不是修改 <code>s</code>，而是返回一个新字符串。所以要写 <code>word = word.trim();</code>。</li>
+        <li>常用：<code>trim()</code> 去首尾空格、<code>isBlank()</code> 是否为空或全空白、<code>startsWith("Bearer ")</code>、<code>substring(7)</code> 从第 7 位截取、<code>equals(x)</code> 比较内容、<code>String.valueOf(5)</code> 把别的类型转成字符串。</li>
+        <li><code>Long.valueOf("5")</code> 反过来，把字符串转成 <code>Long</code>。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">泛型 &lt; &gt; 和 ?</span><span class="one">尖括号里是什么</span></summary>
+    <div class="body">
+      <ul>
+        <li>尖括号表示"这个容器里装什么类型"，相当于 TypeScript 的 <code>Array&lt;string&gt;</code>。<code>List&lt;FavoriteWord&gt;</code> = 装收藏的列表。</li>
+        <li><code>JpaRepository&lt;AppUser, Long&gt;</code>：两个参数，依次是"操作哪个实体"和"主键什么类型"。</li>
+        <li><code>ResponseEntity&lt;?&gt;</code>：问号是"类型不固定，什么都行"。我们的方法成功时返回 <code>LoginResponse</code>，失败时返回 <code>Map</code>，所以用问号。</li>
+        <li><code>Optional&lt;AppUser&gt;</code>：一个盒子，装着 <code>AppUser</code> 或空。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">Optional</span><span class="one">"可能有，可能没有"的盒子</span></summary>
+    <div class="body">
+      <ul>
+        <li>查数据库可能查不到。直接返回 <code>null</code> 容易让人忘记检查，忘了就空指针。<code>Optional</code> 把"可能没有"写进类型里，逼你处理。</li>
+        <li><code>isPresent()</code>：里面有没有东西。<code>get()</code> 取出来（空的会抛异常，不推荐直接用）。</li>
+        <li><code>ifPresent(x -&gt; ...)</code>：有的话才执行。</li>
+        <li><code>orElse(默认值)</code>、<code>orElseGet(() -&gt; 计算默认值)</code>：没有就用默认值。后者只在真的为空时才执行括号里的代码，适合"没有就去创建"。</li>
+        <li><code>map(u -&gt; 转换)</code>：有的话把里面的东西转成别的，再装进新盒子。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">List、Map、Instant</span><span class="one">容器与时间</span></summary>
+    <div class="body">
+      <ul>
+        <li><code>List&lt;T&gt;</code>：有顺序的列表，像 JS 数组。Spring 返回它会自动变成 JSON 数组。</li>
+        <li><code>Map&lt;K, V&gt;</code>：键值对，像 JS 对象。<code>Map.of("error", "unauthorized")</code> 创建一个只读的，会被转成 <code>{"error":"unauthorized"}</code>。</li>
+        <li><code>Instant</code>：时间轴上的某一个时刻，精确到毫秒，和时区无关。<code>Instant.now()</code> 取现在，<code>now.plus(7, ChronoUnit.DAYS)</code> 加 7 天。展示给用户时才转成某个时区。</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+<!-- ===== 接口、继承与注解原理 ===== -->
+<section id="oop">
+  <h2>接口、继承、注解：它们到底是怎么回事</h2>
+
+  <details open>
+    <summary><span class="fn">接口 interface 和 implements</span><span class="one">像一份"合同"</span></summary>
+    <div class="body">
+      <p>类比：手机充电口有统一标准（比如 Type-C），任何厂家只要按标准做，就能互相插。<b>接口就是这份"标准"</b>：只写"必须有哪些方法"，不写怎么做。</p>
+      <ul>
+        <li><code>WebMvcConfigurer</code> 是 Spring 定好的接口，里面写着"可以重写 <code>addCorsMappings</code>、<code>addInterceptors</code>……"。</li>
+        <li><code>class CorsConfig implements WebMvcConfigurer</code> = "我按这份合同来做"。然后你只重写自己关心的那个方法，其他的用默认的。</li>
+        <li>Spring 不认识你的 <code>CorsConfig</code>，但认识 <code>WebMvcConfigurer</code> 这个"插口"，所以能调用你。<b>这就是"框架在调用你"的机制：它只依赖接口，不依赖你的具体类</b>。</li>
+        <li><code>@Override</code>：重写时贴上，意思是"我确实是在重写合同里的方法"。方法名或参数写错，编译器会立刻报错，而不是悄悄变成一个不会被调用的新方法。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">继承 extends</span><span class="one">拿到父类的全部本事</span></summary>
+    <div class="body">
+      <ul>
+        <li><code>interface AppUserRepository extends JpaRepository&lt;AppUser, Long&gt;</code>：你的接口"继承"了 <code>JpaRepository</code>，自动拥有 <code>save</code>、<code>findById</code>、<code>findAll</code>、<code>delete</code> 等几十个方法，你一行都没写。</li>
+        <li>子类可以再加自己的：你加了 <code>findByGoogleSub</code>。</li>
+        <li><code>implements</code> 用于"类实现接口"，<code>extends</code> 用于"类继承类"或"接口继承接口"。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details open>
+    <summary><span class="fn">为什么 Repository 是空接口却能用</span><span class="one">Spring 在启动时偷偷造了一个类</span></summary>
+    <div class="body">
+      <ol>
+        <li>启动时，Spring 扫描到 <code>AppUserRepository</code> 是个接口，没有实现类。</li>
+        <li>它用一种叫<b>动态代理</b>的技术，在内存里<b>临时生成一个实现了这个接口的类</b>，并 new 出一个对象。你在磁盘上找不到这个类的文件，它只存在于运行中的内存里。</li>
+        <li>这个临时类里每个方法的做法是：看方法名（<code>findByGoogleSub</code> → 查 <code>googleSub</code> 列）→ 生成 SQL → 交给 Hibernate 执行 → 把结果包装成返回类型。</li>
+        <li>这个对象放进"对象仓库"。别的类（比如 <code>AuthController</code>）构造方法里要 <code>AppUserRepository</code>，Spring 递过去的就是它。</li>
+      </ol>
+      <p>你看到的是接口，运行时真正干活的是那个临时生成的类。</p>
+    </div>
+  </details>
+
+  <details open>
+    <summary><span class="fn">注解到底是怎么起作用的</span><span class="one">标签自己什么都不做</span></summary>
+    <div class="body">
+      <ul>
+        <li>注解本身<b>只是一张贴纸，上面写着信息</b>，没有任何执行能力。类比 HTML 里的 <code>data-*</code> 属性：<code>&lt;div data-role="admin"&gt;</code> 自己不会让 div 变成管理员，必须有 JS 去读它。</li>
+        <li>读这些贴纸的是<b>框架</b>：Spring 启动时用<b>反射</b>（程序在运行时检查自己有哪些类、方法、注解的能力），扫描每个类，看到 <code>@RestController</code> 就把它登记为接口类，看到 <code>@GetMapping("/me")</code> 就在"网址 → 方法"表里记一条。</li>
+        <li><b>所以</b>：忘了贴 <code>@Component</code>，Spring 不知道要创建这个对象，用它时会报"找不到 Bean"；<code>@GetMapping</code> 路径写错，请求就找不到方法，返回 404。<b>绝大部分"明明写了代码却不生效"，都是这张贴纸没贴对。</b></li>
+        <li>括号里的内容是给贴纸"填空"：<code>@Column(unique = true, nullable = false)</code> 的意思是"列的属性：唯一、非空"；<code>@GetMapping("/me")</code> 括号里只有一个值时可以省略参数名。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">三种"形状"：为什么要分 NewFavoriteWord、FavoriteWord、UserView</span><span class="one">入口、存储、出口各有各的</span></summary>
+    <div class="body">
+      <div class="scroll"><table>
+        <tr><th>形状</th><th>例子</th><th>管什么</th><th>为什么单独定义</th></tr>
+        <tr><td>进来的</td><td><code>NewFavoriteWord</code>、<code>GoogleLoginRequest</code></td><td>前端能传什么</td><td>只放前端该决定的字段，堵死前端伪造 <code>userId</code>、<code>id</code></td></tr>
+        <tr><td>存起来的</td><td><code>FavoriteWord</code>、<code>AppUser</code></td><td>数据库一行长什么样</td><td>包含全部字段，包括内部的</td></tr>
+        <tr><td>出去的</td><td><code>UserView</code>、<code>LoginResponse</code></td><td>前端能看到什么</td><td>只给前端需要的，<code>googleSub</code> 这类不外露</td></tr>
+      </table></div>
+      <p>看上去很啰嗦，但这是后端最基本的安全习惯：<b>进来的、存的、出去的，分开控制</b>。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">异常：抛出、捕获、读堆栈</span><span class="one">出错了程序是怎么反应的</span></summary>
+    <div class="body">
+      <ul>
+        <li><b>异常</b>是"出错了"的信号。代码里 <code>throw</code> 一个（或库替你抛），程序会立刻<b>中断当前方法，一层层往外找能处理它的 <code>catch</code></b>。一直找不到，这次请求就以 500 结束。</li>
+        <li><code>catch (JWTVerificationException e)</code>：只接住这一种异常。你的 <code>JwtService.verify</code> 就靠它把"所有验证失败"统一变成 <code>null</code>。</li>
+        <li>两大类：<b>受检异常</b>（编译器强制你处理或用 <code>throws</code> 声明），和<b>运行时异常</b>（如空指针，不强制）。</li>
+        <li><b>堆栈（stack trace）</b>是出错时打印的一长串，列出"出错时一层层调用了哪些方法"。<b>第一行是什么异常，往下第一条以 <code>com.goenkon.ielts</code> 开头的行就是你自己的代码出事的位置</b>，其余是框架内部的，先不用看。</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+<!-- ===== 机器在做什么 ===== -->
+<section id="jvm">
+  <h2>机器在做什么</h2>
+  <div class="paper b note">前端代码跑在浏览器里，页面交互是它的主要工作。后端是一个<b>常驻的进程</b>：启动后一直占着内存和一个端口，等着别人来敲门。下面是几块底层知识，理解了它们，很多"为什么这样写"就通了。</div>
+
+  <details open>
+    <summary><span class="fn">从 .java 到跑起来</span><span class="one">编译、打包、JVM</span></summary>
+    <div class="body">
+      <ol>
+        <li>你写 <code>.java</code> 源码（人看得懂）。</li>
+        <li><b>编译</b>：<code>javac</code> 把它变成 <code>.class</code> 字节码（JVM 看得懂，CPU 看不懂）。拼写错误、类型不对、漏分号都在这一步报错，所以 Java 的错误很多出在"启动之前"。</li>
+        <li><b>打包</b>：<code>mvn package</code> 把所有 <code>.class</code> 和依赖的 jar 合成一个可运行的大 jar。</li>
+        <li><b>运行</b>：<code>java -jar app.jar</code> 启动一个<b>JVM（Java 虚拟机）进程</b>。JVM 读字节码，边解释边把热点代码编译成机器码执行。</li>
+      </ol>
+      <p>"Write once, run anywhere"：同一份 jar 在 Mac、Linux 服务器上都能跑，因为各平台上装的 JVM 负责翻译。所以服务器上只要装 JDK 或 JRE，就能运行你在 Mac 上打的包。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">内存：栈和堆</span><span class="one">变量和对象住在哪</span></summary>
+    <div class="body">
+      <ul>
+        <li><b>栈（stack）</b>：每次调用一个方法，就在栈上开一小块，放这个方法的局部变量和参数；方法一结束，这块就自动回收。速度很快。</li>
+        <li><b>堆（heap）</b>：<code>new</code> 出来的对象都放在堆上，体积较大、存活时间不固定。栈上的变量里存的只是一个<b>引用（地址）</b>，指向堆里的对象。</li>
+        <li>所以 <code>AppUser user = ...</code>：<code>user</code> 在栈上，是个地址；真正的用户数据在堆上。<code>null</code> 就是"这个地址什么也没指"。</li>
+        <li><b>垃圾回收（GC）</b>：JVM 定期找出堆里"已经没有任何引用指着"的对象并回收内存。Java 不用你手动释放内存，这是它和 C 的一个大区别。</li>
+        <li><code>long</code>、<code>int</code> 这些基本类型的值直接放在栈上或对象里；<code>Long</code>、<code>String</code> 是对象，放堆上。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">端口、进程、线程</span><span class="one">请求是怎么被接住的</span></summary>
+    <div class="body">
+      <ul>
+        <li><b>进程</b>：运行中的程序，操作系统给它独立的内存。你点 Run，就是启动了一个 JVM 进程。</li>
+        <li><b>端口</b>：一台机器上的"门牌号"。我们的后端在 <b>8080</b> 端口监听，别的程序想用同一个端口会报"Port 8080 was already in use"，通常是因为你上一次启动的后端还没关。</li>
+        <li><b>内嵌 Tomcat</b>：Spring Boot 把一个叫 Tomcat 的服务器打包在程序里。它负责在 8080 监听、把网络上一串字节解析成 HTTP 请求。</li>
+        <li><b>线程</b>：一个进程里可以同时有多条执行线。Tomcat 有一个线程池，<b>每个到来的请求由一个线程处理</b>，同时来 100 个请求就有大约 100 个线程在并行跑你的 Controller 方法。</li>
+        <li><b>所以单例对象里不能存"某个用户的数据"</b>：<code>FavoriteWordController</code> 整个程序只有一个对象，所有线程共用它。如果在字段里存 <code>currentUserId</code>，两个请求同时进来就会互相覆盖。每个请求自己的数据放在方法参数和局部变量里，它们在各自线程的栈上，互不干扰。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">文件和数据库在哪</span><span class="one">H2 文件、jar、配置</span></summary>
+    <div class="body">
+      <ul>
+        <li><code>jdbc:h2:file:./data/ielts</code>：<code>./</code> 是<b>启动命令所在的目录</b>。在 IntelliJ 里运行，就是项目目录下生成一个 <code>data/ielts.mv.db</code> 文件，数据库的内容都在这个文件里。把它删了，数据就没了。</li>
+        <li>部署平台（云服务器、容器）重启后文件系统常常是全新的，所以上线要用独立的数据库服务（如 PostgreSQL），不能靠本地文件。</li>
+        <li>环境变量：操作系统给进程的一组键值，进程启动时带着。<code>${APP_JWT_SECRET:默认值}</code> 就是读它。密钥这类东西放环境变量，不写进代码，也不推到 GitHub。</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+<!-- ===== Spring 核心 ===== -->
+<section id="spring">
+  <h2>Spring 核心思想</h2>
+
+  <details open>
+    <summary><span class="fn">它到底是什么</span><span class="one">一个"帮你 new 对象并接线"的框架</span></summary>
+    <div class="body">
+      <p>没有 Spring 时，你要自己写：创建数据库连接、创建 Repository、创建 Controller、把它们互相传来传去、监听端口、解析 HTTP……Spring 把这些通用工作全包了，你只写"业务那一小段"。</p>
+      <ul>
+        <li><b>IoC 容器（对象仓库）</b>：Spring 启动时创建所有被标记的对象，放进一个仓库里，这些对象叫 <b>Bean</b>。</li>
+        <li><b>依赖注入（DI）</b>：一个对象需要别的对象时，在构造方法里声明，Spring 从仓库里取出来递给它。你从不写 <code>new</code> 它们。</li>
+        <li><b>组件扫描</b>：从启动类所在的包往下，找所有带 <code>@Component / @Service / @RestController / @Configuration</code> 的类，登记成 Bean。</li>
+        <li><b>自动配置</b>：看到 classpath 里有 H2、JPA、Web 等库，就自动做好对应的配置。<code>pom.xml</code> 里的 <code>starter</code> 就是"一包相关的依赖加自动配置"。</li>
+        <li><b>控制反转</b>：本来是你的代码去创建、调用别人；现在是<b>框架创建你的对象、在合适的时机调用你的方法</b>。控制权反过来了，所以叫"反转"。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details open>
+    <summary><span class="fn">一个请求在 Spring 里的旅程</span><span class="one">从 8080 到 JSON</span></summary>
+    <div class="body">
+      <ol>
+        <li><b>Tomcat</b> 在 8080 收到一串字节，解析成 HTTP 请求，从线程池拿一个线程来处理。</li>
+        <li><b>CORS 检查</b>：如果是 OPTIONS 预检，按 <code>CorsConfig</code> 的规则直接应答。</li>
+        <li><b>DispatcherServlet</b>（Spring MVC 的总调度）根据 <b>方法 + 路径</b>，查启动时登记好的"网址 → 方法"表，找到该调用哪个 Controller 方法。</li>
+        <li><b>拦截器</b>：如果路径在 <code>WebAuthConfig</code> 登记的范围里，先执行 <code>AuthInterceptor.preHandle</code>。返回 <code>false</code> 就在这里结束。</li>
+        <li><b>参数解析</b>：Spring 看着方法参数上的注解（<code>@RequestBody</code>、<code>@PathVariable</code>、<code>@RequestAttribute</code>……），从请求里取出对应的值，转成参数类型。请求体 JSON 由 <b>Jackson</b> 转成 Java 对象。</li>
+        <li><b>调用你的方法</b>。</li>
+        <li><b>返回值转换</b>：Jackson 把返回的对象转成 JSON 字符串，写进 HTTP 响应，状态码默认 200；如果返回的是 <code>ResponseEntity</code>，就用你指定的状态码。</li>
+        <li>响应从同一个 Tomcat 连接发回浏览器，线程回到线程池。</li>
+      </ol>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">Controller → Repository → 数据库</span><span class="one">三层分工</span></summary>
+    <div class="body">
+      <ul>
+        <li><b>Controller</b>：接请求、校验参数、决定返回什么状态码和内容。<b>只管"HTTP 这一层"</b>。</li>
+        <li><b>Service</b>（业务层，我们的 <code>JwtService</code> 是个例子）：放"业务规则"。业务变复杂后，Controller 里的逻辑应该下沉到 Service，我们现在规模小，直接写在 Controller 里。</li>
+        <li><b>Repository</b>：只负责和数据库打交道，增删改查。</li>
+        <li><b>Entity</b>：和数据库表一一对应的类。</li>
+        <li>分层的好处：换数据库只改 Repository 一层；加登录方式只改 Auth 相关；每一层只做一件事，出错时更容易定位。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">Spring Boot 的"约定大于配置"</span><span class="one">为什么写得这么少就能跑</span></summary>
+    <div class="body">
+      <ul>
+        <li>端口默认 8080、配置文件默认叫 <code>application.properties</code>、静态资源默认放哪里……都有默认值，你只改要改的。</li>
+        <li>配置文件里的 <code>spring.xxx</code> 全是官方定义的 key；想改端口就写 <code>server.port=9000</code>。</li>
+        <li>文件放对位置就生效：<code>src/main/java</code> 放代码，<code>src/main/resources</code> 放配置，<code>src/test/java</code> 放测试。位置错了，Spring 看不到它们。</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+<!-- ===== @ 全表 ===== -->
+<section id="at">
+  <h2>@ 标签全表</h2>
+  <div class="paper y note">@ 开头的叫<b>注解</b>：贴在类、方法、字段、参数上的标签。它自己不干活，是 Spring 或 JPA 在启动时（或请求到来时）扫描到标签，再按含义干活。遇到不认识的，问三件事：贴在什么位置？谁在读它？让框架做了什么？</div>
+
+  <h3>你项目里已经在用的</h3>
+  <div class="paper"><div class="scroll"><table>
+    <tr><th>注解</th><th>位置</th><th>意思</th><th>谁读它</th></tr>
+    <tr><td><code>@SpringBootApplication</code></td><td>类</td><td>程序入口；打开自动配置和组件扫描</td><td>Spring Boot</td></tr>
+    <tr><td><code>@Configuration</code></td><td>类</td><td>配置类，启动时执行里面的设置</td><td>Spring</td></tr>
+    <tr><td><code>@Component</code></td><td>类</td><td>创建这个类的一个对象（Bean）放进仓库</td><td>Spring</td></tr>
+    <tr><td><code>@Service</code></td><td>类</td><td>同 @Component，表示业务层</td><td>Spring</td></tr>
+    <tr><td><code>@RestController</code></td><td>类</td><td>接口类，方法返回值直接转 JSON</td><td>Spring MVC</td></tr>
+    <tr><td><code>@RequestMapping("/x")</code></td><td>类或方法</td><td>路径前缀（类）或指定路径</td><td>Spring MVC</td></tr>
+    <tr><td><code>@GetMapping("/x")</code></td><td>方法</td><td>处理 GET 请求，括号里写路径</td><td>Spring MVC</td></tr>
+    <tr><td><code>@PostMapping("/x")</code></td><td>方法</td><td>处理 POST 请求</td><td>Spring MVC</td></tr>
+    <tr><td><code>@PutMapping("/x/{id}")</code></td><td>方法</td><td>处理 PUT 请求（修改）</td><td>Spring MVC</td></tr>
+    <tr><td><code>@DeleteMapping("/x/{id}")</code></td><td>方法</td><td>处理 DELETE 请求（删除）</td><td>Spring MVC</td></tr>
+    <tr><td><code>@RequestBody</code></td><td>参数</td><td>把请求体 JSON 转成这个参数</td><td>Spring MVC + Jackson</td></tr>
+    <tr><td><code>@PathVariable</code></td><td>参数</td><td>取路径里 <code>{id}</code> 那一段</td><td>Spring MVC</td></tr>
+    <tr><td><code>@RequestHeader</code></td><td>参数</td><td>取请求头的某一行</td><td>Spring MVC</td></tr>
+    <tr><td><code>@RequestAttribute</code></td><td>参数</td><td>取服务器内部放进请求便签的值</td><td>Spring MVC</td></tr>
+    <tr><td><code>@Value("${key}")</code></td><td>参数或字段</td><td>从配置文件或环境变量取值</td><td>Spring</td></tr>
+    <tr><td><code>@Override</code></td><td>方法</td><td>声明我在重写父类或接口的方法；写错会编译报错</td><td>Java 编译器</td></tr>
+    <tr><td><code>@Entity</code></td><td>类</td><td>这个类对应一张数据库表</td><td>JPA / Hibernate</td></tr>
+    <tr><td><code>@Table(name = "x")</code></td><td>类</td><td>指定表名</td><td>JPA / Hibernate</td></tr>
+    <tr><td><code>@Id</code></td><td>字段</td><td>主键</td><td>JPA / Hibernate</td></tr>
+    <tr><td><code>@GeneratedValue</code></td><td>字段</td><td>主键由数据库自动生成，<code>IDENTITY</code> 表示自增</td><td>JPA / Hibernate</td></tr>
+    <tr><td><code>@Column(unique = true, nullable = false)</code></td><td>字段</td><td>列属性：唯一、不能为空等</td><td>JPA / Hibernate</td></tr>
+  </table></div></div>
+
+  <h3>以后会遇到的</h3>
+  <div class="paper"><div class="scroll"><table>
+    <tr><th>注解</th><th>意思</th><th>什么时候用</th></tr>
+    <tr><td><code>@Autowired</code></td><td>让 Spring 自动注入依赖（字段或构造器上）</td><td>老代码常见；我们用构造器注入，不需要写它</td></tr>
+    <tr><td><code>@Bean</code></td><td>写在配置类的方法上：这个方法的返回值放进对象仓库</td><td>要手动创建第三方库的对象时</td></tr>
+    <tr><td><code>@Transactional</code></td><td>这个方法里的所有数据库操作要么全成功，要么全回滚</td><td>一次业务要写多张表时</td></tr>
+    <tr><td><code>@RequestParam</code></td><td>取查询字符串参数 <code>?q=abc</code></td><td>搜索、分页接口</td></tr>
+    <tr><td><code>@ResponseStatus</code></td><td>直接指定方法返回的状态码</td><td>想简化 <code>ResponseEntity</code> 时</td></tr>
+    <tr><td><code>@ControllerAdvice</code> + <code>@ExceptionHandler</code></td><td>全局统一处理异常，把异常转成统一格式的错误回复</td><td>接口变多后</td></tr>
+    <tr><td><code>@CrossOrigin</code></td><td>给单个 Controller 开跨域</td><td>我们用 <code>CorsConfig</code> 全局配置，不需要</td></tr>
+    <tr><td><code>@ManyToOne</code> / <code>@OneToMany</code></td><td>表和表之间的关系（外键）</td><td>表之间有关联时</td></tr>
+    <tr><td><code>@Test</code></td><td>这个方法是一个测试</td><td>写自动化测试</td></tr>
+    <tr><td><code>@SpringBootTest</code></td><td>测试时启动完整的 Spring 环境</td><td>你的 <code>IeltsBackendApplicationTests</code> 就带它</td></tr>
+  </table></div></div>
+</section>
+
+<!-- ===== 走一遍 googleLogin ===== -->
+<section id="walk">
+  <h2>把 googleLogin 一行行走一遍</h2>
+  <div class="paper y note">场景：Goen 第一次点"用 Google 登录"。前端把 Google 给的证明书发来：<code>POST /auth/google</code>，请求体 <code>{"idToken":"eyJ...xyz"}</code>。下面是机器逐步在做的事，以及每一步之后"内存里有什么"。</div>
+  <div class="paper"><div class="scroll"><table>
+    <tr><th>步骤</th><th>代码</th><th>机器在做什么</th><th>这时内存里</th></tr>
+    <tr><td>0<br>启动时</td><td>构造器 <code>AuthController(verifier, repo, jwt)</code></td><td>Spring 先创建那三个对象，再 <code>new AuthController</code>，把三个对象存进字段。<b>只发生一次</b>，之后所有请求共用</td><td>堆里有 4 个长期存在的对象，互相指着</td></tr>
+    <tr><td>1<br>请求到达</td><td>—（框架）</td><td>Tomcat 收到字节，解析成 HTTP 请求，分配一个线程；DispatcherServlet 查表找到 <code>googleLogin</code>；Jackson 把请求体 JSON 变成 <code>GoogleLoginRequest</code> 对象</td><td>栈：参数 <code>body</code> → 堆里的对象，里面 <code>idToken = "eyJ...xyz"</code></td></tr>
+    <tr><td>2</td><td><code>googleTokenVerifier.verify(body.idToken())</code></td><td>先取出字符串；verifier 用 Google 公钥核对签名、有效期、受众，通过后 new 一个 <code>GoogleUser</code></td><td>栈：<code>g</code> → <code>GoogleUser(sub="1045…", email, name, picture)</code></td></tr>
+    <tr><td>3</td><td><code>if (g == null) return 401</code></td><td>这里 <code>g</code> 不是 null，条件为假，直接跳过这个块</td><td>不变</td></tr>
+    <tr><td>4</td><td><code>userRepository.findByGoogleSub(g.sub())</code></td><td>临时代理对象生成 <code>select ... where google_sub = ?</code>，从连接池借一条连接发给 H2。<b>新用户，没查到</b>，返回空的 <code>Optional</code></td><td>栈上一个空 Optional（还没赋给 <code>user</code>）</td></tr>
+    <tr><td>5</td><td><code>.orElseGet(() -&gt; userRepository.save(new AppUser(...)))</code></td><td>盒子是空的，所以<b>现在才执行 lambda</b>：new 一个 <code>AppUser</code>（<code>id = null</code>、<code>createdAt = 现在</code>），<code>save</code> 发出 <code>INSERT</code>，H2 自增分配 <code>id = 1</code>，回填到对象上，返回它</td><td>栈：<code>user</code> → 堆里的 <code>AppUser(id=1, googleSub=…)</code>。数据库多了一行</td></tr>
+    <tr><td>6</td><td><code>jwtService.create(user.getId())</code></td><td><code>1</code> 转成字符串 <code>"1"</code>，加上发行和过期时间，用密钥做 HMAC 签名，拼成 <code>"头.内容.签名"</code></td><td>栈：<code>token</code> → 字符串 <code>"eyJ…"</code></td></tr>
+    <tr><td>7</td><td><code>ResponseEntity.ok(new LoginResponse(token, toView(user)))</code></td><td><code>toView</code> 只挑 id、email、name、picture 造一个 <code>UserView</code>（没有 googleSub），再包进 <code>LoginResponse</code>，包进状态 200 的 <code>ResponseEntity</code></td><td>堆里新增几个短命对象</td></tr>
+    <tr><td>8<br>收尾</td><td><code>return</code></td><td>方法结束，栈上的 <code>body</code>、<code>g</code>、<code>user</code>、<code>token</code> 随之消失。Spring 用 Jackson 把返回值转成 JSON，状态码 200，发回浏览器，线程回线程池。堆里没人指着的对象等 GC 回收；<b>数据库里那行用户会一直在</b></td><td>方法局部变量全部清空</td></tr>
+  </table></div></div>
+  <p class="note"><b>同一个人第二次登录时</b>：步骤 4 会查到用户，返回里面装着 <code>AppUser</code> 的 Optional；步骤 5 里 <code>orElseGet</code> 发现盒子不空，<b>括号里的 lambda 根本不执行</b>，直接拿现成的用户。这就是"注册和登录是同一个流程"的全部秘密。</p>
+</section>
+
+<!-- ===== 数据库 ===== -->
+<section id="db">
+  <h2>数据库</h2>
+  <div class="paper g note">数据库就是"一组表格，加一套查询它们的语言（SQL）"。你可以把一张表想成一个 Excel 工作表：表头是<b>列</b>，每一行是一条<b>记录</b>。</div>
+
+  <details open>
+    <summary><span class="fn">你的两张表</span><span class="one">app_user 和 favorite_word</span></summary>
+    <div class="body">
+      <div class="two">
+        <div>
+          <p style="margin-top:0"><b>app_user</b></p>
+          <div class="scroll"><table>
+            <tr><th>id</th><th>google_sub</th><th>email</th><th>name</th></tr>
+            <tr><td>1</td><td>1045…</td><td>a@gmail.com</td><td>Goen</td></tr>
+            <tr><td>2</td><td>9921…</td><td>b@gmail.com</td><td>Amy</td></tr>
+          </table></div>
+        </div>
+        <div>
+          <p style="margin-top:0"><b>favorite_word</b></p>
+          <div class="scroll"><table>
+            <tr><th>id</th><th>user_id</th><th>kind</th><th>word</th><th>status</th></tr>
+            <tr><td>1</td><td>1</td><td>w</td><td>mitigate</td><td>unknown</td></tr>
+            <tr><td>2</td><td>1</td><td>p</td><td>give rise to</td><td>unknown</td></tr>
+            <tr><td>3</td><td>2</td><td>w</td><td>mitigate</td><td>unknown</td></tr>
+          </table></div>
+        </div>
+      </div>
+      <p><code>favorite_word.user_id</code> 的值指向 <code>app_user.id</code>：这就是"这条收藏属于谁"。同一个单词 <code>mitigate</code> 在两个用户名下各有一行。</p>
+      <p>Java 字段 <code>googleSub</code> 在数据库里自动变成列名 <code>google_sub</code>（驼峰变下划线）。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">表里的几个基本概念</span><span class="one">主键、唯一、非空、外键、索引</span></summary>
+    <div class="body">
+      <ul>
+        <li><b>主键（primary key）</b>：每一行唯一的身份编号。<code>@Id</code> 标出来，数据库保证不重复、不为空。</li>
+        <li><b>自增</b>：<code>GenerationType.IDENTITY</code>，每插入一行数据库自动给下一个编号，所以你 <code>save</code> 之前 id 是 null，之后才有值。</li>
+        <li><b>唯一约束（unique）</b>：这一列的值不能重复。<code>googleSub</code> 就设了，数据库本身保证同一个 Google 账号不会有两行。</li>
+        <li><b>非空（not null）</b>：这一列必须有值。</li>
+        <li><b>外键（foreign key）</b>：一列的值必须指向另一张表的主键。我们目前没有设数据库层面的外键，<code>userId</code> 只是个普通数字，"它指向谁"由代码保证。关系变复杂后会用 <code>@ManyToOne</code> 等声明。</li>
+        <li><b>索引（index）</b>：像书的目录，让"按某一列查"变快。主键和唯一列自带索引。数据量变大后，经常用来查的列（比如 <code>user_id</code>）应该加索引。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details open>
+    <summary><span class="fn">SQL：四个基本动作</span><span class="one">增、删、改、查</span></summary>
+    <div class="body">
+      <p>你的 Controller 每个方法，最终都变成其中一条 SQL，运行时 <code>show-sql=true</code> 会把它们打印在控制台：</p>
+<pre><code>-- 查：GET /favorites → findByUserId(1)
+SELECT * FROM favorite_word WHERE user_id = 1;
+
+-- 增：POST /favorites → save(new FavoriteWord(...))
+INSERT INTO favorite_word (user_id, kind, word, status)
+VALUES (1, 'w', 'mitigate', 'unknown');
+
+-- 改：PUT /favorites/3 → 改完 status 再 save
+UPDATE favorite_word SET status = 'known' WHERE id = 3 AND user_id = 1;
+
+-- 删：DELETE /favorites/3 → delete(...)
+DELETE FROM favorite_word WHERE id = 3;</code></pre>
+      <ul>
+        <li><code>WHERE</code> 是条件。<code>AND</code> 连接多个条件，<code>findByIdAndUserId</code> 里的 <code>And</code> 就对应它。</li>
+        <li>不写 <code>WHERE</code> 的 <code>DELETE</code> 会删掉整张表。所以删除一定要带条件。</li>
+        <li>字符串在 SQL 里用单引号。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">JPA / Hibernate</span><span class="one">不写 SQL 也能操作数据库</span></summary>
+    <div class="body">
+      <ul>
+        <li><b>JDBC</b>：Java 连接数据库的最底层标准，自己写 SQL、自己处理结果集，繁琐。</li>
+        <li><b>JPA</b>：一套"用 Java 对象操作数据库"的规范；<b>Hibernate</b> 是它最常用的实现。这类工具叫 <b>ORM</b>（对象关系映射）：类 ↔ 表，对象 ↔ 行，字段 ↔ 列。</li>
+        <li>启动时 Hibernate 读 <code>@Entity</code> 类，按 <code>ddl-auto</code> 的设置建表或补列。</li>
+        <li><code>repository.save(x)</code>：如果 <code>x.id</code> 是 <code>null</code>，生成 <code>INSERT</code>；有 id 就生成 <code>UPDATE</code>。</li>
+        <li>派生查询：<code>findByUserIdAndKindAndWord</code> 这个方法名被 Spring Data 拆成 <code>WHERE user_id = ? AND kind = ? AND word = ?</code>。字段名写错启动就报错。</li>
+        <li><b>JDBC 地址</b>：<code>jdbc:h2:file:./data/ielts</code> 从左到右是：<b>协议 jdbc : 数据库类型 h2 : 存储方式 file : 路径</b>。换成 PostgreSQL 会变成 <code>jdbc:postgresql://主机:5432/库名</code>。</li>
+        <li><b>连接池</b>：每次请求都新建数据库连接很慢，所以 Spring Boot 默认用 HikariCP 提前建好几条连接放着，请求来了借一条，用完还回去。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">H2 和 PostgreSQL</span><span class="one">为什么上线要换</span></summary>
+    <div class="body">
+      <div class="scroll"><table>
+        <tr><th></th><th>H2</th><th>PostgreSQL</th></tr>
+        <tr><td>运行方式</td><td>嵌在你的 Java 程序里，数据是一个文件</td><td>独立的数据库服务器，另一个进程，通过网络连接</td></tr>
+        <tr><td>适合</td><td>本地开发、练习</td><td>上线、多用户、长期保存</td></tr>
+        <tr><td>数据位置</td><td>启动目录下的 <code>data/</code></td><td>数据库服务器自己的磁盘</td></tr>
+        <tr><td>多个程序同时用</td><td>基本不行</td><td>可以，很多服务可以连同一个库</td></tr>
+        <tr><td>账号权限</td><td>只有默认的 <code>sa</code></td><td>完整的用户和权限管理，要用环境变量保存账号密码</td></tr>
+      </table></div>
+      <p>你的 Java 代码<b>几乎不用改</b>，因为都是通过 JPA 操作的，只需换 <code>pom.xml</code> 里的驱动依赖和 <code>application.properties</code> 里的连接信息。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">事务和并发</span><span class="one">两个请求同时来会怎样</span></summary>
+    <div class="body">
+      <ul>
+        <li><b>事务（transaction）</b>：一组数据库操作，要么全部成功，要么全部撤销，像转账"扣钱和加钱必须一起成功"。<code>@Transactional</code> 就是声明这一点。</li>
+        <li>我们现在每个接口基本只做一次写入，不需要显式事务。</li>
+        <li><b>一个潜在问题</b>：新增收藏的流程是"先查有没有 → 没有就写入"。如果同一个用户连点两次，两个请求几乎同时到达，两个线程都查到"没有"，就都会写入，出现重复。上线前的稳妥做法是在数据库里给 <code>(user_id, kind, word)</code> 加一个<b>联合唯一约束</b>，让数据库本身拒绝重复，代码里的检查只当第一道关。</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+<!-- ===== 联合唯一约束 ===== -->
+<section id="unique">
+  <h2>上线前建议加的一道保险：联合唯一约束</h2>
+  <div class="paper p note">问题：新增收藏是"先查有没有，没有再写入"。查和写之间有一个间隙。同一个人连点两下，两个请求几乎同时到达，两个线程都查到"没有"，就会各写一条，出现重复收藏。<br>解法：让<b>数据库自己</b>拒绝重复。数据库在写入的那一刻原子地检查，不会有间隙。</div>
+
+  <details open>
+    <summary><span class="fn">怎么改（三步，改的都是你已有的文件）</span><span class="one">不着急，上线前做就行</span></summary>
+    <div class="body">
+      <p><b>第一步：在 <code>FavoriteWord</code> 类上加约束。</b>找到类上面的 <code>@Entity</code>，在它下面加一行 <code>@Table</code>：</p>
+<pre><code>@Entity
+@Table(
+    name = "favorite_word",
+    uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "kind", "word"})
+)
+public class FavoriteWord {</code></pre>
+      <ul>
+        <li><code>@Table</code>：指定表名并附加约束。这里表名保持默认的 <code>favorite_word</code>。</li>
+        <li><code>@UniqueConstraint(columnNames = {...})</code>：这三列<b>合起来</b>不能重复。同一个人的 <code>(w, mitigate)</code> 只能有一行；不同的人可以各有一行。</li>
+        <li><code>columnNames</code> 里写的是<b>数据库的列名</b>（下划线），不是 Java 字段名：<code>userId</code> → <code>user_id</code>。</li>
+        <li>文件顶部要能识别 <code>@Table</code> 和 <code>@UniqueConstraint</code>：如果你的 import 是 <code>import jakarta.persistence.*;</code> 就已经包含；如果是一个个 import 的，补上 <code>import jakarta.persistence.Table;</code> 和 <code>import jakarta.persistence.UniqueConstraint;</code>。</li>
+      </ul>
+      <p><b>第二步：让 Controller 在撞到约束时优雅处理。</b>现在 <code>POST</code> 里的"先查再存"保留，它是第一道关。只在极少数并发时才会撞到约束，那时 <code>save</code> 会抛出 <code>DataIntegrityViolationException</code>。把 <code>save</code> 那一句包进 <code>try/catch</code>，捕获后重新查一次并返回已有的那条：</p>
+<pre><code>try {
+    return repository.save(new FavoriteWord(userId, kind, word, status));
+} catch (DataIntegrityViolationException e) {
+    // 另一个请求刚好抢先写入了同一条：直接返回那一条
+    return repository.findByUserIdAndKindAndWord(userId, kind, word).orElseThrow();
+}</code></pre>
+      <p>需要 <code>import org.springframework.dao.DataIntegrityViolationException;</code>。变量名请换成你 Controller 里实际用的那几个。<code>orElseThrow()</code> 表示"盒子是空的就抛异常"，这里理论上不会空。</p>
+      <p><b>第三步：重启后检查。</b>启动时看控制台，因为 <code>ddl-auto=update</code>，Hibernate 会尝试给已有的表加上这个约束。<b>如果你的 <code>favorite_word</code> 里已经有重复的行，加约束会失败</b>（会在日志里报错但不一定停止启动）。先在 H2 控制台查一下：</p>
+<pre><code>SELECT user_id, kind, word, COUNT(*) FROM favorite_word
+GROUP BY user_id, kind, word HAVING COUNT(*) &gt; 1;</code></pre>
+      <p>没有结果就没有重复；有结果就把多余的行 <code>DELETE</code> 掉再重启。上线用的是全新的 PostgreSQL，不会有这个问题，建表时就直接带着约束。</p>
+    </div>
+  </details>
+</section>
+
+<!-- ===== 动手验证 ===== -->
+<section id="hands">
+  <h2>自己动手看一遍：比读十遍都有用</h2>
+  <div class="paper g note">下面三件事都不会改动你的代码，只是"看"。看到真实的数据，概念就不再模糊了。</div>
+
+  <details open>
+    <summary><span class="fn">一、用断点看变量（IntelliJ Debug）</span><span class="one">亲眼看 googleLogin 一步步走</span></summary>
+    <div class="body">
+      <ol>
+        <li>打开 <code>AuthController.java</code>，点击 <code>googleLogin</code> 方法里某一行<b>左边的灰色行号区</b>，出现一个红点，这就是<b>断点</b>，意思是"程序跑到这一行先停下"。建议点在 <code>GoogleTokenVerifier.GoogleUser g = ...</code> 这一行。</li>
+        <li>不要点 Run，点它旁边的<b>小虫子图标（Debug）</b>启动后端。</li>
+        <li>在前端页面点一次 Google 登录。后端会在红点那一行<b>停住</b>，IntelliJ 弹到前台。</li>
+        <li>看下面的 <b>Variables（变量）</b>面板：能直接看到 <code>body</code>、<code>idToken</code> 的真实值。</li>
+        <li>点 <b>Step Over（单步执行）</b>，一行一行往下走，每走一行看 <code>g</code>、<code>user</code>、<code>token</code> 怎么出现、值是什么，和上面"走一遍"那张表对照。</li>
+        <li>看完点 <b>Resume（继续）</b>让请求跑完。再点红点可以取消断点。</li>
+      </ol>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">二、用 H2 控制台看表里的数据</span><span class="one">看看数据库里到底存了什么</span></summary>
+    <div class="body">
+      <ol>
+        <li>后端启动着时，浏览器打开 <code>http://localhost:8080/h2-console</code>。</li>
+        <li>JDBC URL 填 <code>jdbc:h2:file:./data/ielts</code>，User Name 填 <code>sa</code>，密码留空，点 Connect。控制台本身就跑在你的后端里，所以<b>后端必须先启动</b>；它和后端用的是同一个数据库，看到的就是实时数据。</li>
+        <li>左边列出 <code>APP_USER</code>、<code>FAVORITE_WORD</code> 两张表，点进去会自动填好 <code>SELECT * FROM ...</code>，点 Run 就能看到每一行。</li>
+        <li>可以在上方输入框自己写 SQL，比如 <code>SELECT * FROM FAVORITE_WORD WHERE USER_ID = 1;</code>，对照前端收藏本里看到的内容。</li>
+        <li>小心：在这里的 <code>DELETE</code> 和 <code>UPDATE</code> 是真的改数据。</li>
+      </ol>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">三、看控制台打印的 SQL</span><span class="one">把"方法名 → SQL"亲眼对上</span></summary>
+    <div class="body">
+      <ul>
+        <li>因为 <code>show-sql=true</code>，你在前端每点一次收藏，IntelliJ 底部的控制台会打印出 <code>insert into favorite_word ...</code> 这样的 SQL。</li>
+        <li>点开收藏本时会看到 <code>select ... from favorite_word where user_id=?</code>，正是 <code>findByUserId</code> 翻译出来的。</li>
+        <li>多看几次，你就会发现 Repository 的方法名和 SQL 是一一对应的。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">四、用浏览器开发者工具看请求</span><span class="one">你熟悉的前端工具，现在能看懂后端那一半</span></summary>
+    <div class="body">
+      <ul>
+        <li>F12 → Network（网络）。点一次收藏，能看到 <code>favorites</code> 这条请求，点开看：<b>Request Headers</b> 里有 <code>Authorization: Bearer ...</code>；<b>Payload</b> 是你发的 JSON；<b>Response</b> 是后端回的 JSON；状态码在最上面。</li>
+        <li>每个请求前面多一条 <code>OPTIONS</code> 的就是预检，状态码应该是 200 或 204。</li>
+        <li>出现红色 <code>401</code>，就是门卫拦住了；红色的跨域错误，就去查 <code>CorsConfig</code>。</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+<!-- ===== 常见报错 ===== -->
+<section id="err">
+  <h2>常见报错对照表</h2>
+  <div class="paper"><div class="scroll"><table>
+    <tr><th>你看到的</th><th>大概意思</th><th>先查什么</th></tr>
+    <tr><td><code>Port 8080 was already in use</code></td><td>8080 端口已经被占用</td><td>上一次启动的后端没关，先 Stop 再 Run</td></tr>
+    <tr><td>浏览器报 CORS error</td><td>后端没有允许你页面的来源</td><td><code>CorsConfig</code> 的 <code>allowedOrigins</code> 有没有这个 <b>协议+域名+端口</b>；改完要重启后端</td></tr>
+    <tr><td><code>400 Bad Request</code></td><td>请求格式不对，或被我们的校验拒绝</td><td>JSON 字段名对不对；<code>kind</code> 是不是 w/p；<code>word</code> 是不是空</td></tr>
+    <tr><td><code>401 Unauthorized</code></td><td>没带 token、token 过期、token 是假的</td><td>请求头有没有 <code>Authorization: Bearer ...</code>；token 是不是过期（7 天）；密钥有没有变</td></tr>
+    <tr><td><code>404 Not Found</code></td><td>没有这个路径</td><td>路径和方法有没有拼错；类有没有被扫描到（包位置对不对）</td></tr>
+    <tr><td><code>405 Method Not Allowed</code></td><td>路径对，但方法不对</td><td>该用 POST 却发了 GET</td></tr>
+    <tr><td><code>500 Internal Server Error</code></td><td>后端代码出了异常</td><td>看控制台里的红色堆栈，找第一条 <code>com.goenkon...</code> 开头的行，就是出错位置</td></tr>
+    <tr><td><code>NullPointerException</code></td><td>对 <code>null</code> 调用了方法</td><td>堆栈指出的那一行里，哪个变量可能是 null</td></tr>
+    <tr><td>启动时 <code>Could not resolve placeholder 'xxx'</code></td><td><code>@Value</code> 找不到这个配置 key</td><td><code>application.properties</code> 里有没有拼错</td></tr>
+    <tr><td>启动时 <code>No property 'xxx' found for type</code></td><td>Repository 方法名里的字段，在实体类里不存在</td><td>方法名里的字段拼写，要和实体类字段一致</td></tr>
+    <tr><td>改了代码但行为没变</td><td>后端没有重新启动</td><td>先 Stop 再 Run；前端改了要刷新页面</td></tr>
+  </table></div></div>
+  <p class="note">看堆栈的诀窍：从上往下找第一条以你自己包名 <code>com.goenkon.ielts</code> 开头的行，那里就是你的代码出事的地方；框架内部的行先不管。</p>
+</section>
+
+<!-- ===== 名词表 ===== -->
+<section id="gloss">
+  <h2>名词表：遇到就来查</h2>
+  <div class="paper"><div class="scroll"><table>
+    <tr><th>名词</th><th>白话</th></tr>
+    <tr><td>后端 / 服务器</td><td>一直开着、收请求、回响应的程序</td></tr>
+    <tr><td>接口 / API / endpoint</td><td>后端对外开放的一个"方法 + 路径"，比如 <code>POST /favorites</code>（注意和 Java 的 <code>interface</code> 是两个概念）</td></tr>
+    <tr><td>请求 / 响应</td><td>前端发来的一段文字 / 后端回的一段文字</td></tr>
+    <tr><td>JSON</td><td>网络上传数据用的文字格式，和 JS 对象写法几乎一样</td></tr>
+    <tr><td>端口</td><td>一台机器上的"门牌号"，我们在 8080</td></tr>
+    <tr><td>进程 / 线程</td><td>运行中的程序 / 程序里同时跑的多条执行线</td></tr>
+    <tr><td>JDK / JVM</td><td>Java 开发工具包 / 运行字节码的虚拟机</td></tr>
+    <tr><td>Maven</td><td>管理依赖、编译、打包的工具；<code>pom.xml</code> 是它的说明书</td></tr>
+    <tr><td>jar</td><td>Java 的打包文件，可以是库，也可以是整个可运行的程序</td></tr>
+    <tr><td>依赖（dependency）</td><td>你的项目用到的外部库</td></tr>
+    <tr><td>classpath</td><td>JVM 找类和库的位置清单</td></tr>
+    <tr><td>Spring / Spring Boot</td><td>帮你创建对象、接线、处理请求的框架 / 把它预先配好的版本</td></tr>
+    <tr><td>Bean</td><td>被 Spring 创建并放进对象仓库管理的对象</td></tr>
+    <tr><td>IoC / 控制反转</td><td>不是你调用框架，而是框架创建对象并调用你</td></tr>
+    <tr><td>DI / 依赖注入</td><td>对象需要的东西，由 Spring 通过构造方法递给它</td></tr>
+    <tr><td>单例</td><td>某个类全程序只创建一个对象，所有请求共用</td></tr>
+    <tr><td>Controller / Service / Repository / Entity</td><td>接请求的层 / 业务规则层 / 访问数据库的层 / 和表对应的类</td></tr>
+    <tr><td>DTO</td><td>只用来传数据的"盒子"，比如 <code>NewFavoriteWord</code></td></tr>
+    <tr><td>ORM / JPA / Hibernate</td><td>用对象操作数据库的技术 / 它的规范 / 它的常用实现</td></tr>
+    <tr><td>SQL</td><td>查询和修改数据库的语言</td></tr>
+    <tr><td>主键 / 外键 / 索引</td><td>每行唯一编号 / 指向别的表的编号 / 加速查询的"目录"</td></tr>
+    <tr><td>事务</td><td>一组操作要么全成功要么全撤销</td></tr>
+    <tr><td>连接池</td><td>提前建好的几条数据库连接，请求来了借用</td></tr>
+    <tr><td>CORS / 跨域</td><td>浏览器规定：网页只能读"自己同一个来源"的响应，除非对方明确允许</td></tr>
+    <tr><td>预检（preflight）</td><td>浏览器正式请求前，先发一个 OPTIONS 问对方允不允许</td></tr>
+    <tr><td>拦截器</td><td>请求进入 Controller 之前的检查站（门卫）</td></tr>
+    <tr><td>JWT</td><td>带签名的字符串，里面写着用户 id 和过期时间，后端用密钥验证真伪</td></tr>
+    <tr><td>Bearer</td><td>"持票人"：请求头里 <code>Authorization: Bearer token</code> 的格式</td></tr>
+    <tr><td>OAuth / Google 登录</td><td>让 Google 帮你确认"这个人是谁"，我们不碰密码</td></tr>
+    <tr><td>IDOR</td><td>改个 id 就能操作别人的数据的漏洞；解法是永远带上 userId 一起查</td></tr>
+    <tr><td>环境变量</td><td>操作系统给进程的一组键值，用来放密钥等不想写进代码的东西</td></tr>
+    <tr><td>无状态</td><td>服务器不记得你，每个请求都要自己出示身份</td></tr>
+    <tr><td>堆栈（stack trace）</td><td>出错时打印的"调用路径"，找以你包名开头的第一行</td></tr>
+    <tr><td>GC（垃圾回收）</td><td>JVM 自动回收没人引用的对象的内存</td></tr>
+  </table></div></div>
+</section>
+
+<footer>Java 与 Spring 速查 · 笔记涂鸦风</footer>
+</div>
+</div>
+</template>
+
+<template id="tpl-bk-mindset">
+<div class="nb">
+<div class="nb-wrap">
+<header class="hero">
+  <div class="chips"><span class="chip">先想后写</span><span class="chip g">一个文件一个职责</span><span class="chip y">每一步都能单独验证</span></div>
+  <h1>后端写代码的思路</h1>
+  <p>先干嘛、后干嘛；一个 Java 文件到底代表什么；@ 标签和配置什么时候写；和前端思路差在哪；刚进公司第一周做什么。例子都用你的收藏功能。</p>
+</header>
+
+<nav aria-label="章节">
+  <a href="#diff">和前端的区别</a><a href="#file">一个文件是什么</a><a href="#order">新功能的顺序</a><a href="#at">@ 什么时候写</a><a href="#conf">配置什么时候写</a><a href="#demo">实战：加备注</a><a href="#job">刚进公司</a><a href="#pit">常见坑</a><a href="#one">一页纸总结</a>
+</nav>
+<div class="tools"><button id="openAll" type="button">全部展开</button><button id="closeAll" type="button">全部收起</button></div>
+
+<!-- ===== 和前端的区别 ===== -->
+<section id="diff">
+  <h2>先回答：后端和前端的思路差在哪</h2>
+  <div class="paper y note">前端是<b>从用户看到的东西开始想</b>：这个页面长什么样、有哪些组件、点了会怎样，所以按<b>页面和组件</b>来组织。后端没有页面，用户看不到它，所以是<b>从"数据和规则"开始想</b>：要存什么、谁能碰、碰之前要检查什么，按<b>功能（资源）和职责</b>来组织。</div>
+  <div class="paper"><div class="scroll"><table>
+    <tr><th></th><th>前端</th><th>后端</th></tr>
+    <tr><td>起点</td><td>设计稿、页面</td><td>要存的数据、接口约定</td></tr>
+    <tr><td>代码按什么分</td><td>页面 / 组件</td><td>功能（收藏、登录）+ 职责（接请求、查数据库、放配置）</td></tr>
+    <tr><td>一个文件</td><td>一个页面或组件，里面混着模板、样式、逻辑</td><td>一个类，只干<b>一件事</b></td></tr>
+    <tr><td>谁调用你的代码</td><td>浏览器（用户点击）</td><td>框架（收到请求）</td></tr>
+    <tr><td>最怕什么</td><td>界面错位、体验卡</td><td><b>数据错、权限漏、重复写、并发</b></td></tr>
+    <tr><td>怎么验证</td><td>打开页面看</td><td>用 curl、前端页面或断点发请求，看返回和数据库</td></tr>
+    <tr><td>出错的代价</td><td>用户看到难看的界面</td><td>数据被改错、别人的数据被看到，<b>更严重，也更难撤回</b></td></tr>
+  </table></div></div>
+  <p class="note">所以后端有一条贯穿始终的习惯：<b>写每一段代码前，先问"谁能调用它、它会改什么数据、出错了怎么办"</b>。</p>
+</section>
+
+<!-- ===== 一个文件是什么 ===== -->
+<section id="file">
+  <h2>每个 Java 文件是单独一个功能吗？</h2>
+  <div class="paper b note">不是"一个文件一个功能"，而是<b>一个文件一个类，一个类只负责一件事（一个职责）</b>。"收藏"这个功能，是由好几个文件<b>分工合作</b>完成的。</div>
+
+  <h3>Java 的两条规则</h3>
+  <div class="paper">
+    <ul style="margin:0;padding-left:1.3em">
+      <li>一个 <code>.java</code> 文件里，最多只能有一个 <code>public</code> 的类，而且<b>文件名必须和这个类同名</b>：<code>AuthController.java</code> 里放 <code>public class AuthController</code>。</li>
+      <li>所以"文件 = 类"。想知道一个文件干嘛，看它的类名和类上面的注解。</li>
+    </ul>
+  </div>
+
+  <h3>一个功能是怎么拆成几个文件的</h3>
+  <div class="paper">
+    <svg viewBox="0 0 760 420" role="img" aria-label="收藏功能被拆成五种职责的文件" fill="none" stroke="var(--ink)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:100%;height:auto;min-width:600px">
+      <defs>
+        <filter id="wob" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="3"/></filter>
+        <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L9 5L1 9" fill="none" stroke="var(--ink)" stroke-width="1.8"/></marker>
+      </defs>
+      <text x="24" y="30" font-size="18" font-weight="700" fill="var(--ink)" stroke="none">一个功能 = 几个分工明确的文件</text>
+      <g filter="url(#wob)">
+        <rect x="24" y="50" width="330" height="62" rx="10" fill="var(--p-blue)"/>
+        <rect x="24" y="142" width="330" height="62" rx="10" fill="var(--p-yellow)"/>
+        <rect x="24" y="234" width="330" height="62" rx="10" fill="var(--p-green)"/>
+        <rect x="24" y="326" width="330" height="62" rx="10" fill="var(--p-purple)"/>
+        <rect x="404" y="50" width="332" height="62" rx="10" fill="var(--p-pink)"/>
+        <rect x="404" y="142" width="332" height="62" rx="10" fill="var(--p-pink)"/>
+        <path d="M189 112V142M189 204V234M189 296V326" marker-end="url(#ar)"/>
+        <path d="M354 173H404M354 81H404" stroke-dasharray="6 6" marker-end="url(#ar)"/>
+      </g>
+      <g stroke="none" fill="var(--ink)" font-size="12.5">
+        <text x="40" y="74" font-size="14.5" font-weight="700">Controller 接请求</text><text x="40" y="92">FavoriteWordController</text><text x="40" y="106" font-size="11.5">看请求，决定回什么</text>
+        <text x="40" y="166" font-size="14.5" font-weight="700">（Service 业务规则）</text><text x="40" y="184">我们的项目规则少，写在 Controller 里</text><text x="40" y="198" font-size="11.5">规则变复杂后再拆出来</text>
+        <text x="40" y="258" font-size="14.5" font-weight="700">Repository 访问数据库</text><text x="40" y="276">FavoriteWordRepository</text><text x="40" y="290" font-size="11.5">只负责查、存、删</text>
+        <text x="40" y="350" font-size="14.5" font-weight="700">Entity 和表对应</text><text x="40" y="368">FavoriteWord → favorite_word 表</text><text x="40" y="382" font-size="11.5">一个对象 = 表里一行</text>
+        <text x="420" y="74" font-size="14.5" font-weight="700">DTO 请求/响应的形状</text><text x="420" y="92">NewFavoriteWord（进来的）</text><text x="420" y="106" font-size="11.5">只放前端该决定的字段</text>
+        <text x="420" y="166" font-size="14.5" font-weight="700">Config 配置类</text><text x="420" y="184">WebAuthConfig、CorsConfig</text><text x="420" y="198" font-size="11.5">规定全局规则：谁被保护、谁能跨域</text>
+      </g>
+      <text x="404" y="250" font-size="13" fill="var(--mute)" stroke="none">虚线：这些文件配合 Controller 工作，但不在</text>
+      <text x="404" y="268" font-size="13" fill="var(--mute)" stroke="none">"Controller → 数据库"这条主线上。</text>
+    </svg>
+    <p style="margin-bottom:0">主线是<b>Controller → (Service) → Repository → Entity → 数据库</b>。每一层只认识下一层，不越级：Controller 不直接写 SQL，Repository 不管 HTTP 状态码。这样出了问题能一层层往下查，改一处也不会牵动全部。</p>
+  </div>
+
+  <h3>判断"这个东西该放哪个文件"的问法</h3>
+  <div class="paper"><div class="scroll"><table>
+    <tr><th>如果它是……</th><th>就放</th><th>你项目里的例子</th></tr>
+    <tr><td>"收到一个请求该怎么回"</td><td>Controller</td><td><code>FavoriteWordController</code>、<code>AuthController</code></td></tr>
+    <tr><td>"数据库里的一张表长什么样"</td><td>Entity</td><td><code>AppUser</code>、<code>FavoriteWord</code></td></tr>
+    <tr><td>"怎么查这张表"</td><td>Repository</td><td><code>AppUserRepository</code></td></tr>
+    <tr><td>"前端发来的数据长什么样 / 我们回什么样"</td><td>DTO（record）</td><td><code>NewFavoriteWord</code>、<code>UserView</code></td></tr>
+    <tr><td>"一段可复用的业务能力，和 HTTP 无关"</td><td>Service / 工具类</td><td><code>JwtService</code>、<code>GoogleTokenVerifier</code></td></tr>
+    <tr><td>"全局的规则或设置"</td><td>Config</td><td><code>CorsConfig</code>、<code>WebAuthConfig</code></td></tr>
+    <tr><td>"进入 Controller 之前的统一检查"</td><td>Interceptor</td><td><code>AuthInterceptor</code></td></tr>
+  </table></div></div>
+  <p class="note">一个最实用的信号：<b>一个类要是同时在处理 HTTP、写 SQL、还算业务规则，就太杂了，该拆</b>。反过来，一个文件只有两行也不用担心，职责单一是好事。</p>
+</section>
+
+<!-- ===== 新功能的顺序 ===== -->
+<section id="order">
+  <h2>写一个新功能，先干嘛、后干嘛</h2>
+  <div class="paper y note">总原则：<b>先想清楚，再动手；先定"接口约定"，再从底往上一层层写；每写完一层，就验证一层</b>。别一口气写完五个文件再启动，出错了你都不知道是哪层的问题。下面以"收藏"为例。</div>
+
+  <details open>
+    <summary><span class="fn">第 0 步：用三句话写下需求</span><span class="one">还没写任何代码</span></summary>
+    <div class="body">
+      <ul>
+        <li><b>谁</b>可以做<b>什么</b>？——"登录的用户可以收藏、取消收藏、查看自己的单词和短语。"</li>
+        <li>要<b>存什么数据</b>？——"哪个用户收藏了什么文字，类型是单词还是短语，掌握状态。"</li>
+        <li>有什么<b>规则</b>？——"同一个人对同一段文字只能收藏一次；只能操作自己的收藏。"</li>
+      </ul>
+      <p>这三句话回答了：<b>接口有哪些、表有哪些列、要检查什么</b>。写不出这三句话就别写代码，先继续想。</p>
+    </div>
+  </details>
+
+  <details open>
+    <summary><span class="fn">第 1 步：定接口约定（契约）</span><span class="one">前后端先对好暗号</span></summary>
+    <div class="body">
+      <p>把每个接口的"输入、输出、谁能调、错了怎么回"写下来。这就是前后端之间的合同，前端也按这份合同写：</p>
+      <div class="scroll"><table>
+        <tr><th>接口</th><th>要登录</th><th>请求体</th><th>成功返回</th><th>出错返回</th></tr>
+        <tr><td><code>GET /favorites</code></td><td>是</td><td>无</td><td>我的收藏列表</td><td>401</td></tr>
+        <tr><td><code>POST /favorites</code></td><td>是</td><td><code>{kind, word, status?}</code></td><td>那条收藏（带 id）</td><td>400 参数不对 / 401</td></tr>
+        <tr><td><code>DELETE /favorites/{id}</code></td><td>是</td><td>无</td><td>200</td><td>401</td></tr>
+      </table></div>
+      <p>为什么先做这个：接口一旦被前端用上，再改就要两边同时改。<b>契约先定，后面才不返工</b>。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">第 2 步：设计数据（表）</span><span class="one">想清楚存什么，比想清楚怎么写更重要</span></summary>
+    <div class="body">
+      <ul>
+        <li>列出每一列：<code>id</code>、<code>user_id</code>、<code>kind</code>、<code>word</code>、<code>status</code>。</li>
+        <li>问自己：<b>每一列允许为空吗？要唯一吗？谁来填？</b>（<code>id</code> 数据库填，<code>user_id</code> 后端从 token 填，不让前端填）</li>
+        <li>数据是后端最难改的部分：代码改了重启就行，<b>表里已有的数据要迁移</b>。所以表设计要多想一会儿。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">第 3 步：写 Entity</span><span class="one">把表翻译成 Java 类</span></summary>
+    <div class="body">
+      <ul>
+        <li>新建 <code>FavoriteWord.java</code>，写字段、构造器、getter。<b>先贴 <code>@Entity</code>、<code>@Id</code>、<code>@GeneratedValue</code></b>（它们定义了"这是一张表、主键是谁"，是类的身份）。</li>
+        <li>启动一次，看控制台和 H2 控制台：表有没有建出来，列名对不对。<b>这是第一个验证点</b>。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">第 4 步：写 Repository</span><span class="one">先只写用得上的查询</span></summary>
+    <div class="body">
+      <ul>
+        <li>新建 <code>FavoriteWordRepository</code> 接口，继承 <code>JpaRepository&lt;FavoriteWord, Long&gt;</code>。</li>
+        <li>按第 1 步的契约，想一想需要哪些查询：列表要 <code>findByUserId</code>；删除要 <code>findByIdAndUserId</code>；去重要 <code>findByUserIdAndKindAndWord</code>。<b>用到才加，不预先加一堆</b>。</li>
+        <li>验证：启动不报错（方法名里的字段拼写错了会在这时报错）。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">第 5 步：写 DTO</span><span class="one">定好"进来"和"出去"的形状</span></summary>
+    <div class="body">
+      <ul>
+        <li>新建 <code>NewFavoriteWord(kind, word, status)</code>，只放前端<b>有权决定</b>的字段。</li>
+        <li>如果返回的内容要隐藏某些字段（比如 <code>userId</code>），在这里想好，别把 Entity 原样丢给前端。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">第 6 步：先写一个"最小能跑"的 Controller</span><span class="one">先通，再对</span></summary>
+    <div class="body">
+      <ul>
+        <li>只写 <code>GET /favorites</code>：贴 <code>@RestController</code>、<code>@RequestMapping("/favorites")</code>、<code>@GetMapping</code>，里面先调 Repository 返回列表，<b>先不加校验和权限</b>。</li>
+        <li>启动，用 curl 或浏览器访问，看到 <code>[]</code> 或一个 JSON，说明<b>整条链已经通了</b>：请求 → Controller → Repository → 数据库 → JSON。</li>
+        <li>通了再逐个加 POST、DELETE。先通再对，出错时范围小。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">第 7 步：加上规则：校验、权限、去重</span><span class="one">后端最重要的一步</span></summary>
+    <div class="body">
+      <p>对每个接口过一遍清单：</p>
+      <ol>
+        <li><b>身份</b>：这个接口需要登录吗？需要就让它被门卫保护（见"配置"一章），userId 从 token 取。</li>
+        <li><b>归属</b>：操作的是不是"我自己的"数据？查询要带上 <code>userId</code>。</li>
+        <li><b>校验</b>：前端传来的每个字段都不可信。<code>kind</code> 只能 w/p、<code>word</code> 不能空。</li>
+        <li><b>重复</b>：同样的数据能不能被存两次？</li>
+        <li><b>找不到</b>：查不到时回什么？</li>
+        <li><b>失败</b>：数据库写入失败了怎么办？</li>
+      </ol>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">第 8 步：配置</span><span class="one">让它真正被保护、被前端访问</span></summary>
+    <div class="body">
+      <ul>
+        <li>把新路径加进 <code>WebAuthConfig</code> 的保护范围（<code>/favorites</code>、<code>/favorites/**</code>）。<b>漏了这一步，接口就是裸奔的</b>。</li>
+        <li>前端来自新域名时，加进 <code>CorsConfig</code> 的白名单。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">第 9 步：自己先测，再让前端接</span><span class="one">用 curl 测"好的"和"坏的"两种情况</span></summary>
+    <div class="body">
+      <ul>
+        <li><b>好的</b>：带正确 token，新增、查看、删除都应该成功。</li>
+        <li><b>坏的</b>：不带 token（要 401）；kind 传 <code>x</code>（要 400）；删别人的 id（要查不到）；同一条存两次（只有一条）。</li>
+        <li>看控制台里的 SQL，核对每个请求生成的查询是不是你想的那样。</li>
+        <li>都过了，再让前端对接。前端出问题时，你已经知道后端是可靠的，排查范围小一半。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">第 10 步：整理、提交</span><span class="one">收尾</span></summary>
+    <div class="body">
+      <ul>
+        <li>删掉调试用的打印、没用的代码、临时测试数据。</li>
+        <li>检查有没有把密钥、数据库文件写进要提交的东西里。</li>
+        <li>一次提交只做一件事，提交说明写清楚做了什么。</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+<!-- ===== @ 什么时候写 ===== -->
+<section id="at">
+  <h2>@ 标签：一开始就写，还是逻辑写完再加？</h2>
+  <div class="paper g note">答案：<b>创建文件的时候就写，不是事后补</b>。因为注解定义了"这个东西是什么"，不是装饰品。没有它，Spring 根本不知道这个类、这个方法存在。</div>
+
+  <div class="paper"><div class="scroll"><table>
+    <tr><th>什么时候写</th><th>哪些注解</th><th>原因</th></tr>
+    <tr><td><b>新建文件、写类名的同时</b></td><td><code>@Entity</code>、<code>@RestController</code>、<code>@Component</code>、<code>@Service</code>、<code>@Configuration</code></td><td>它们决定这个类的<b>身份</b>。先想"这个类是什么"，再写里面的东西</td></tr>
+    <tr><td><b>写字段时</b></td><td><code>@Id</code>、<code>@GeneratedValue</code>、<code>@Column</code></td><td>设计数据时就已经想好"主键是谁、能不能为空"，顺手写上</td></tr>
+    <tr><td><b>写方法签名时</b></td><td><code>@GetMapping</code>、<code>@PostMapping</code>、<code>@DeleteMapping</code></td><td>这是第 1 步接口契约的直接翻译：方法 + 路径</td></tr>
+    <tr><td><b>写参数时</b></td><td><code>@RequestBody</code>、<code>@PathVariable</code>、<code>@RequestAttribute</code>、<code>@Value</code></td><td>参数怎么来的，和这个参数的类型是同一个决定</td></tr>
+    <tr><td><b>重写接口方法时</b></td><td><code>@Override</code></td><td>写上，写错名字编译器会立刻提醒</td></tr>
+  </table></div></div>
+
+  <details open>
+    <summary><span class="fn">新建一个类的"固定动作"</span><span class="one">每次都按这个顺序，不容易漏</span></summary>
+    <div class="body">
+      <ol>
+        <li><b>想</b>：这个类是什么角色？（接请求 / 表 / 查询 / 工具 / 配置）</li>
+        <li><b>放对位置</b>：文件在 <code>com.goenkon.ielts</code> 包里，文件名 = 类名。</li>
+        <li><b>先贴身份注解</b>：比如这是接口类，先写 <code>@RestController</code>。</li>
+        <li><b>写需要的依赖</b>：想想它要用别的什么对象？写成 <code>private final</code> 字段 + 构造方法参数。</li>
+        <li><b>写方法</b>：每个方法先写签名和路径注解，再写里面的逻辑。</li>
+        <li><b>启动一次</b>：看有没有 Bean 找不到、路径冲突之类的启动错误。</li>
+      </ol>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">忘了写会怎样</span><span class="one">对症下药</span></summary>
+    <div class="body">
+      <div class="scroll"><table>
+        <tr><th>忘了</th><th>症状</th></tr>
+        <tr><td><code>@RestController</code></td><td>访问路径返回 404，Spring 不知道有这个接口类</td></tr>
+        <tr><td><code>@Component</code> / <code>@Service</code></td><td>别的类要用它时，启动报"找不到这个类型的 Bean"</td></tr>
+        <tr><td><code>@Entity</code></td><td>表没建出来，Repository 启动报"不是被管理的实体"</td></tr>
+        <tr><td><code>@RequestBody</code></td><td>请求体没被读进来，参数的字段全是 <code>null</code></td></tr>
+        <tr><td>在 <code>WebAuthConfig</code> 里登记路径</td><td>接口不报错，但<b>没有任何保护</b>，最危险，因为没有错误提示</td></tr>
+        <tr><td>方法上的路径注解</td><td>访问该路径 404 或 405</td></tr>
+      </table></div>
+      <p class="takeaway">没有报错的"漏"最危险，所以权限类的配置一定要靠测试去验证</p>
+    </div>
+  </details>
+</section>
+
+<!-- ===== 配置什么时候写 ===== -->
+<section id="conf">
+  <h2>配置什么时候写</h2>
+  <div class="paper b note">原则：<b>配置跟着功能走，用到才加</b>。不要一开始就配一大堆"以后可能用得上"的东西，那样你自己都不知道每一行是干什么的。</div>
+
+  <h3>三类配置，三个时机</h3>
+  <div class="paper"><div class="scroll"><table>
+    <tr><th>什么时候</th><th>配什么</th><th>你项目里的例子</th></tr>
+    <tr><td><b>创建项目时</b></td><td>基础：项目名、依赖清单。用 Spring Initializr（或 IntelliJ 的新建 Spring 项目）选好依赖，会自动生成 <code>pom.xml</code> 和空的 <code>application.properties</code></td><td><code>spring.application.name</code>、<code>pom.xml</code> 里的 starter</td></tr>
+    <tr><td><b>第一次用到某个能力时</b></td><td>那个能力需要的配置，<b>当场加</b></td><td>用数据库 → <code>datasource</code>、<code>ddl-auto</code>；用 Google 登录 → <code>google.client-id</code>；签 token → <code>app.jwt-secret</code>；前端来访问 → <code>CorsConfig</code>；要保护接口 → <code>WebAuthConfig</code></td></tr>
+    <tr><td><b>准备上线时</b></td><td>生产环境的差异：关调试项、换真密钥、换数据库</td><td>关 <code>h2-console</code>、<code>APP_JWT_SECRET</code> 环境变量、PostgreSQL、改 CORS 白名单</td></tr>
+  </table></div></div>
+
+  <details open>
+    <summary><span class="fn">配置放哪：三个地方</span><span class="one">按"会不会变、能不能公开"选</span></summary>
+    <div class="body">
+      <div class="scroll"><table>
+        <tr><th>放哪</th><th>适合</th><th>例子</th></tr>
+        <tr><td><b>写死在代码里</b></td><td>永远不会变、不同环境一样的东西</td><td><code>EXPIRE_DAYS = 7</code>（要改就改代码）</td></tr>
+        <tr><td><b><code>application.properties</code></b></td><td>可能变、但可以公开的设置，且各环境基本一致</td><td>数据库类型、<code>google.client-id</code>（公开信息）</td></tr>
+        <tr><td><b>环境变量</b></td><td><b>密钥、密码</b>，以及每个环境不同的值（开发和上线不一样）</td><td><code>APP_JWT_SECRET</code>、上线后的数据库账号密码</td></tr>
+      </table></div>
+      <p>判断口诀：<b>泄露了会出事 → 环境变量；各环境不同 → 环境变量或配置文件；永远不变 → 代码常量</b>。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">配置错了的症状</span><span class="one">看到这些，先查配置</span></summary>
+    <div class="body">
+      <ul>
+        <li>启动时报 <code>Could not resolve placeholder 'xxx'</code>：<code>@Value</code> 里写的 key，配置文件里没有。</li>
+        <li>浏览器报跨域错误：<code>CorsConfig</code> 白名单里没有当前页面的来源（协议、域名、端口要完全一致）。</li>
+        <li>改了配置没效果：配置只在<b>启动时读一次</b>，必须重启后端。</li>
+        <li>连不上数据库：<code>datasource.url</code>、账号密码拼错，或数据库服务没开。</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+<!-- ===== 实战：加备注 ===== -->
+<section id="demo">
+  <h2>实战演练：给收藏加一个"备注"字段</h2>
+  <div class="paper y note">需求：用户可以给每条收藏写一句备注。看看按上面的思路，要改哪些地方、什么顺序。这是进公司后<b>最常见的活儿</b>：在现有代码上加东西，而不是从零写。</div>
+  <div class="paper"><div class="scroll"><table>
+    <tr><th>顺序</th><th>改哪里</th><th>改什么</th><th>为什么</th></tr>
+    <tr><td>0</td><td>想</td><td>备注可以为空吗？有长度限制吗？可以改吗？</td><td>先想规则</td></tr>
+    <tr><td>1</td><td>契约</td><td><code>POST</code> 请求体加 <code>note</code>（可选）；<code>PUT</code> 允许修改 <code>note</code>；响应里带 <code>note</code></td><td>前后端先对好</td></tr>
+    <tr><td>2</td><td><code>FavoriteWord</code>（Entity）</td><td>加字段 <code>note</code>；构造器和 getter/setter 补上</td><td>表多一列，<code>ddl-auto=update</code> 启动时自动加</td></tr>
+    <tr><td>3</td><td><code>NewFavoriteWord</code>（DTO）</td><td>record 里加 <code>String note</code></td><td>允许前端传这个字段</td></tr>
+    <tr><td>4</td><td><code>FavoriteWordController</code></td><td>POST 里把 <code>note</code> 存进去（可限制长度，去首尾空格）；PUT 里允许更新</td><td>规则落在这里</td></tr>
+    <tr><td>5</td><td>配置</td><td>不用改：路径没变</td><td>"配置不用动"也是一个结论</td></tr>
+    <tr><td>6</td><td>自己测</td><td>带备注新增、不带备注新增、修改备注、备注过长（应拒绝）</td><td>好的和坏的各测一遍</td></tr>
+    <tr><td>7</td><td>前端</td><td>输入框、发送、展示</td><td>后端稳了再接</td></tr>
+    <tr><td>8</td><td>老数据</td><td>已有的行 <code>note</code> 是 <code>null</code>，前端要能处理空值</td><td><b>改表一定要想到已有数据</b></td></tr>
+    <tr><td>9</td><td>上线</td><td>换成 PostgreSQL 且表已存在时，要用迁移脚本加这一列，不能靠自动更新</td><td>生产库不能随便让框架改</td></tr>
+  </table></div></div>
+  <p class="note">这张表就是"一个完整的小需求"的节奏：<b>想规则 → 定契约 → 改数据层 → 改接口层 → 配置 → 测试 → 前端 → 老数据 → 上线</b>。每个新功能都是这个形状。</p>
+</section>
+
+<!-- ===== 刚进公司 ===== -->
+<section id="job">
+  <h2>刚进公司，第一周做什么</h2>
+  <div class="paper p note">先说一个现实：公司里的后端，<b>绝大多数时候不是从零写，而是读别人写的代码、改它</b>。所以"怎么读一个陌生项目"比"怎么从零写"更重要。下面是一般的流程，具体公司会有差异。</div>
+
+  <details open>
+    <summary><span class="fn">第 1 天：把项目跑起来</span><span class="one">跑得起来，才算入门</span></summary>
+    <div class="body">
+      <ol>
+        <li>拉代码、读 README：怎么装环境、怎么启动、有哪些环境（开发、测试、正式）。</li>
+        <li>装好 JDK、IDE，点 Run 启动。<b>启动失败是最常见的第一道坎</b>：缺环境变量、数据库连不上。别慌，问同事，同时把"我是怎么解决的"记下来。</li>
+        <li>找到配置文件，弄清：连的是哪个数据库？端口多少？有哪些外部服务？</li>
+        <li>访问一个现有接口，看到返回。</li>
+      </ol>
+    </div>
+  </details>
+
+  <details open>
+    <summary><span class="fn">第 2–3 天：顺藤摸瓜读一个接口</span><span class="one">读懂陌生项目的核心技巧</span></summary>
+    <div class="body">
+      <p>选一个简单的接口，按这条线追下去，每一步都在 IDE 里按住 Ctrl/Cmd 点击跳转：</p>
+      <ol>
+        <li>从<b>路径</b>开始，全局搜索 <code>"/favorites"</code>，找到 <code>@RequestMapping</code> 或 <code>@GetMapping</code> → 找到 <b>Controller</b> 方法。</li>
+        <li>看方法的<b>参数</b>（请求怎么进来）和<b>返回值</b>（回什么）。</li>
+        <li>看方法里调用了哪个 <b>Service / Repository</b>，点进去。</li>
+        <li>Repository 返回的是哪个 <b>Entity</b>，点进去，看对应哪张表。</li>
+        <li>在数据库里（H2 或开发库）找到这张表，看看真实数据。</li>
+        <li>回头看有没有<b>拦截器、权限检查</b>在这条线上。</li>
+      </ol>
+      <p class="takeaway">练习：现在就对 DELETE /favorites/3 做一遍，从路径追到表</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">第 1 周：理解项目的"地图"</span><span class="one">有了地图，才不会迷路</span></summary>
+    <div class="body">
+      <ul>
+        <li>画一张简单的图：有哪几个功能模块？每个模块有哪些 Controller、Entity？</li>
+        <li>弄清项目有哪几层、命名习惯（比如 Service 实现类叫 <code>XxxServiceImpl</code> 还是别的）。</li>
+        <li>知道<b>日志在哪看</b>。出了问题，日志是第一线索。</li>
+        <li>知道<b>代码怎么提交、怎么审查</b>：分支规范、Pull Request、有没有测试要跑。</li>
+        <li>记下不懂的名词，攒着一次性问，比一个个问更受欢迎。</li>
+      </ul>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">第一个任务通常是什么</span><span class="one">小、安全、能看到成果</span></summary>
+    <div class="body">
+      <ul>
+        <li>改一个小 bug：返回的字段拼错、一个校验漏了。</li>
+        <li>加一个字段（正是上面"加备注"那种）。</li>
+        <li>新增一个很简单的查询接口。</li>
+        <li>补一个测试。</li>
+      </ul>
+      <p>做法：<b>先复现问题 → 定位到哪一层 → 最小的改动 → 本地验证 → 提交审查</b>。不要一上来就大改别人的代码结构。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="fn">遇到不会的怎么问</span><span class="one">好的提问让对方愿意回答</span></summary>
+    <div class="body">
+      <ol>
+        <li>说<b>你想做什么</b>。</li>
+        <li>说<b>你已经试过什么</b>、看到了什么现象或哪段日志。</li>
+        <li>说<b>你的猜测</b>："我怀疑是这里……，对吗？"</li>
+      </ol>
+      <p>在日本职场，及时<b>报联相</b>（报告、联络、相谈）：做之前简单说一声，卡住了半小时内就说，比一个人闷头硬撑一整天好得多。</p>
+    </div>
+  </details>
+</section>
+
+<!-- ===== 常见坑 ===== -->
+<section id="pit">
+  <h2>新手最常踩的坑</h2>
+  <div class="paper"><div class="scroll"><table>
+    <tr><th>坑</th><th>怎么避免</th></tr>
+    <tr><td>一口气写完五个文件再启动</td><td>每层写完就启动验证一次，出错范围小</td></tr>
+    <tr><td>先写 Controller，数据层没想清楚</td><td>先想数据（表）和契约，再写代码</td></tr>
+    <tr><td>所有逻辑塞进 Controller</td><td>规则复杂时抽到 Service，Controller 只管 HTTP</td></tr>
+    <tr><td>相信前端传来的一切</td><td>每个字段都校验，身份只信 token</td></tr>
+    <tr><td>忘了给新接口加保护</td><td>新接口的清单里固定有一项："要不要登录？登记了吗？"</td></tr>
+    <tr><td>只测"好的"情况</td><td>每个接口至少测一个"坏的"：没 token、参数错、别人的数据</td></tr>
+    <tr><td>改了代码不重启 / 前端不刷新</td><td>先 Stop 再 Run；前端 F5</td></tr>
+    <tr><td>类放到包外面</td><td>所有类放在启动类所在的包或其子包里</td></tr>
+    <tr><td>密钥写进代码推到 GitHub</td><td>密钥一开始就走环境变量</td></tr>
+    <tr><td>改表忘了老数据</td><td>加列时想：已有行的这一列是什么值？</td></tr>
+  </table></div></div>
+</section>
+
+<!-- ===== 一页纸总结 ===== -->
+<section id="one">
+  <h2>一页纸总结</h2>
+  <div class="k">
+    <div class="paper y"><b>思路</b><br>后端从"数据和规则"想起，不是从页面想起。写每段代码先问：谁能调、改什么、出错怎么办。</div>
+    <div class="paper b"><b>一个文件</b><br>= 一个类 = 一个职责。一个功能由 Controller、Repository、Entity、DTO、Config 几个文件配合完成。</div>
+    <div class="paper g"><b>顺序</b><br>想三句话 → 定接口契约 → 设计表 → Entity → Repository → DTO → 最小 Controller → 加规则 → 配置 → 测好坏两种 → 前端。</div>
+    <div class="paper p"><b>@ 标签</b><br>新建类、字段、方法、参数时<b>当场写</b>，它们定义"这是什么"，不是事后装饰。</div>
+    <div class="paper y"><b>配置</b><br>跟着功能走，用到才加；密钥和各环境不同的值用环境变量；上线前再统一过一遍。</div>
+    <div class="paper b"><b>进公司</b><br>多数时候是读和改。从路径找到 Controller，一路点到表。先跑起来，再读一个接口，再做小任务。</div>
+  </div>
+</section>
+
+<footer>后端写代码的思路 · 笔记涂鸦风</footer>
+</div>
+</div>
+</template>
+
 <!-- 真正挂载 Vue 的地方：router-view 是个"占位框"，当前网址对应哪个页面，就把哪个页面放进来 -->
 <div id="app"><router-view></router-view></div>
 
@@ -947,7 +2972,7 @@ const MODULES = [
     icon: '<circle cx="29" cy="29" r="18" fill="var(--pink)"/><circle cx="29" cy="29" r="7" fill="var(--red)" stroke="none"/>' },
   { id: "goals", title: "今日小目标", short: "Today", tagline: "今日小目标", desc: "每天几件事，做完打个勾", url: "", color: "mint",
     icon: '<rect x="12" y="10" width="34" height="40" rx="4" fill="var(--mint)"/><path d="M18 22 l3 3 6-6 M18 34 l3 3 6-6 M32 22 h8 M32 34 h8"/>' },
-  { id: "backend", title: "后端学习笔记", short: "Backend", tagline: "后端笔记", desc: "Java · Spring · 数据库 图解", url: "", to: "/backend", color: "lilac",
+  { id: "backend", title: "后端学习笔记", short: "Backend", tagline: "后端笔记", desc: "图解 · 代码地图 · 速查 · 思路", url: "", to: "/backend", color: "lilac",
     icon: '<rect x="10" y="14" width="38" height="12" rx="3" fill="var(--lilac)"/><rect x="10" y="32" width="38" height="12" rx="3" fill="var(--lilac)"/><path d="M16 20 h.1 M16 38 h.1 M36 20 h6 M36 38 h6" stroke-width="3"/>' },
 ];
 
@@ -1055,22 +3080,59 @@ const Home = {
   },
 };
 
-// ===================== 页面组件 2：后端图解 =====================
-const Backend = {
-  template: "#tpl-backend",
+// ===================== 页面组件 2：后端笔记外壳（分类栏）=====================
+const BackendLayout = {
+  template: "#tpl-bk-layout",
+  setup() {
+    const root = ref(null);
+    const tabs = [
+      { to: "/backend/diagram", label: "图解" },
+      { to: "/backend/map", label: "代码地图" },
+      { to: "/backend/java", label: "Java 速查" },
+      { to: "/backend/mindset", label: "思路" },
+    ];
+    // 笔记里原来有自己的小脚本（章节跳转、全部展开/收起），嵌进来以后统一在这里处理：
+    // 用"事件委托"——只在最外层监听一次点击，再看点到的是什么
+    function onClick(e) {
+      // ① 章节导航 <a href="#flow">：不能让它改网址（会被路由当成新页面），改成直接滚动过去
+      const a = e.target.closest('.nb a[href^="#"], .bk a[href^="#"]');
+      if (a && !a.getAttribute("href").startsWith("#/")) {
+        e.preventDefault();
+        const el = root.value.querySelector(a.getAttribute("href"));
+        if (el) {
+          const first = el.querySelector("details");
+          if (first) first.open = true;
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+        return;
+      }
+      // ② "全部展开 / 全部收起" 按钮
+      const btn = e.target.closest("button");
+      if (btn && (btn.id === "openAll" || btn.id === "closeAll")) {
+        root.value.querySelectorAll("details").forEach((d) => (d.open = btn.id === "openAll"));
+      }
+    }
+    return { root, tabs, onClick };
+  },
+};
+
+// ===================== 后端笔记里的四篇（都只是一段静态模板）=====================
+const BkDiagram = {
+  template: "#tpl-bk-diagram",
   setup() {
     onMounted(() => {
-      document.title = "后端图解 · Goen";
       // 系统设置了"减少动效"时，把 SVG 里的 SMIL 动画（<animateMotion>）也停掉
       try {
         if (matchMedia("(prefers-reduced-motion: reduce)").matches)
           document.querySelectorAll(".bk svg").forEach((el) => el.pauseAnimations && el.pauseAnimations());
       } catch (e) {}
     });
-    onUnmounted(() => { document.title = "Goen 秘密基地"; });
     return {};
   },
 };
+const BkMap = { template: "#tpl-bk-map" };
+const BkJava = { template: "#tpl-bk-java" };
+const BkMindset = { template: "#tpl-bk-mindset" };
 
 // ===================== 路由：网址 → 页面 的对照表 =====================
 // 用 hash 模式：网址长这样 index.html#/backend
@@ -1092,11 +3154,27 @@ const router = createRouter({
   history: pickHistory(),
   routes: [
     { path: "/", component: Home },
-    { path: "/backend", component: Backend },
+    // 嵌套路由：/backend 是外壳，children 是它里面的四个分类；进 /backend 默认打开第一篇
+    {
+      path: "/backend",
+      component: BackendLayout,
+      children: [
+        { path: "", redirect: "/backend/diagram" },
+        { path: "diagram", component: BkDiagram, meta: { title: "后端图解" } },
+        { path: "map", component: BkMap, meta: { title: "后端代码地图" } },
+        { path: "java", component: BkJava, meta: { title: "Java 与 Spring 速查" } },
+        { path: "mindset", component: BkMindset, meta: { title: "后端写代码的思路" } },
+      ],
+    },
     { path: "/:any(.*)", redirect: "/" },   // 乱输的网址一律回首页
   ],
   // 每次切换页面，都滚回顶部
   scrollBehavior: () => ({ top: 0 }),
+});
+
+// 每次切换页面后，按路由里写的 meta.title 改浏览器标签页标题
+router.afterEach((to) => {
+  document.title = to.meta.title ? `${to.meta.title} · Goen` : "Goen 秘密基地";
 });
 
 // 创建应用 → 装上路由 → 挂到 #app 上
