@@ -920,7 +920,7 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
 <script>
 // 从全局 Vue 对象里拿出要用的函数（CDN 版没有 import，所以这样解构）
 const { createApp, ref, computed, watch, onMounted, onUnmounted } = Vue;
-const { createRouter, createWebHashHistory } = VueRouter;
+const { createRouter, createWebHashHistory, createMemoryHistory } = VueRouter;
 
 // 激励语录：按"今年第几天"轮换，每天一句（都是自己写的短句）
 const QUOTES = [
@@ -1073,8 +1073,21 @@ const Backend = {
 // ===================== 路由：网址 → 页面 的对照表 =====================
 // 用 hash 模式：网址长这样 index.html#/backend
 // 好处：# 后面的部分浏览器不会发给服务器，所以纯静态托管（Vercel、Artifact）也不会 404
+// 选路由模式：先"试一下"浏览器允不允许改网址
+// - 本地打开、部署到 Vercel：允许 → 用 hash 模式，网址会跟着变，可以存书签
+// - Claude 的预览沙箱：不允许改网址，会抛 SecurityError → 换成 memory 模式（路由只记在内存里，网址不动）
+function pickHistory() {
+  try {
+    history.replaceState(history.state, "", location.href);   // 原样写回当前网址，什么都不改，只是测试权限
+    if (location.protocol === "about:") throw new Error("srcdoc");  // 预览有时是 about:srcdoc，hash 模式也用不了
+    return createWebHashHistory();
+  } catch (e) {
+    return createMemoryHistory();
+  }
+}
+
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: pickHistory(),
   routes: [
     { path: "/", component: Home },
     { path: "/backend", component: Backend },
