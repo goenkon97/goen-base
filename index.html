@@ -103,7 +103,8 @@ a.sticker:focus-visible{outline:2px dashed var(--ink);outline-offset:3px}
   to{transform:perspective(600px) rotateX(0) rotate(-2.5deg);transform-origin:top}}
 
 .scene{grid-area:scene;width:100%;max-width:560px;height:auto;display:block}
-.txt{display:flex;flex-direction:column;gap:8px;min-width:0;max-width:640px;width:100%;justify-self:center;text-align:center}
+.txt{display:flex;flex-direction:column;gap:8px;min-width:0;max-width:640px;width:100%;margin-inline:auto;text-align:center}
+/* 外层 .stage 是 flex 竖排，justify-self 在 flex 里不生效；设了 max-width 的块要靠左右 margin:auto 才能居中 */
 .quote{font-family:var(--hand);font-size:30px;line-height:1.2;text-wrap:balance}
 .quote-sub{font-size:14px;color:var(--ink-soft)}
 @media (max-width:620px){.quote{font-size:24px}}
