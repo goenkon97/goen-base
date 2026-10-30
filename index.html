@@ -38,6 +38,9 @@
 
 /* 用 height:100% 而不是 100vh，让整页刚好填满一屏 */
 html,body{height:100%}
+/* iPad / iPhone 的 Safari 只在 body 上写 overflow-x:hidden 时，藏在屏幕右边外面的抽屉仍然会把页面撑宽，
+   横屏时右边就多出一条空白。html 和 body 两层都裁掉横向溢出（clip 不会产生滚动容器，旧浏览器退回 hidden） */
+html,body{overflow-x:hidden;overflow-x:clip}
 body{
   background-color:var(--paper);
   background-image:radial-gradient(var(--dot) 1.2px,transparent 1.3px);
@@ -134,6 +137,8 @@ a.sticker:focus-visible{outline:2px dashed var(--ink);outline-offset:3px}
   display:flex;flex-direction:column;gap:16px;overflow-y:auto;
   transition:transform .32s cubic-bezier(.2,.8,.2,1)}
 .drawer.dragging{transition:none}  /* 手指拖动时不要过渡动画，要跟手 */
+/* 抽屉关着时：滑出去的动画播完（0.32 秒）再彻底隐藏，不占位置、也不会被 Tab 键或读屏选中 */
+.drawer.closed{visibility:hidden;transition:transform .32s cubic-bezier(.2,.8,.2,1),visibility 0s linear .32s}
 .close{align-self:flex-end;width:36px;height:36px;display:grid;place-items:center;background:var(--card);
   border:2px solid var(--ink);border-radius:50%;cursor:pointer;color:var(--ink)}
 .close svg{width:16px;height:16px}
@@ -648,7 +653,7 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
   </transition>
 
   <!-- 抽屉本体：位置由 drawerStyle 算出来（关着 = 推到屏幕外；拖动中 = 跟着手指） -->
-  <aside class="drawer" :class="{ dragging: dragX !== null }" :style="drawerStyle" ref="drawerEl"
+  <aside class="drawer" :class="{ dragging: dragX !== null, closed: !open && dragX === null }" :style="drawerStyle" ref="drawerEl"
     :aria-hidden="!open" :inert="!open || undefined">
     <button class="close" type="button" aria-label="关闭" @click="open = false">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M3 3 L13 13 M13 3 L3 13"/></svg>
