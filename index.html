@@ -1,6 +1,30 @@
+<!doctype html>
+<!-- 标准模式：没有 doctype 时浏览器会进"怪异模式"，不同设备上布局表现不一致 -->
 <!-- 告诉浏览器：这个文件是 UTF-8 编码。没有这一行，本地直接打开时浏览器可能按别的编码去猜，中文就会变成乱码 -->
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" id="vp" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<script>
+/* iPad 横屏修复（和雅思站同一套）：iPad 上的 Chrome 横屏时，页面拿到的"布局宽度"只有约 900px，比屏幕窄，
+   于是内容挤在左边、右边空一大截。这里检测到"触屏 + 横屏 + 平板尺寸 + 布局宽度明显小于屏幕"时，
+   把 viewport 的宽度直接设成屏幕的长边；竖屏时改回 device-width。手机不受影响（屏幕短边要 >= 700）。 */
+(function () {
+  var meta = document.getElementById("vp");
+  var BASE = "width=device-width,initial-scale=1,viewport-fit=cover";
+  function fix() {
+    try {
+      var long = Math.max(screen.width, screen.height), short = Math.min(screen.width, screen.height);
+      var landscape = window.matchMedia("(orientation: landscape)").matches;
+      if (navigator.maxTouchPoints > 1 && landscape && short >= 700) {
+        if (window.innerWidth < long * 0.9) meta.setAttribute("content", "width=" + long + ",initial-scale=1,viewport-fit=cover");
+      } else if (meta.getAttribute("content") !== BASE) {
+        meta.setAttribute("content", BASE);
+      }
+    } catch (e) {}
+  }
+  fix();
+  ["DOMContentLoaded", "load", "orientationchange", "resize"].forEach(function (ev) { window.addEventListener(ev, fix); });
+})();
+</script>
 <title>Goen 秘密基地</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <!-- 浏览器标签页图标：蓝色 GK，用的是左上角同款字体 JetBrains Mono ExtraBold 的字形轮廓（转成了路径，不依赖字体加载）；深色模式自动变浅蓝 -->
@@ -37,6 +61,13 @@
   --scrim:rgba(0,0,0,.5);--gk:#6F93FF;color-scheme:dark}
 
 /* 用 height:100% 而不是 100vh，让整页刚好填满一屏 */
+/* 基础重置：部署后的页面没有预览时那层外壳，浏览器默认给 body 留 8px 外边距，
+   全记录这类背景色不同的页面就会在四周（尤其右上角）露出一圈空隙 */
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+img{max-width:100%}
+[hidden]{display:none!important}
 html,body{height:100%}
 /* iPad / iPhone 的 Safari 只在 body 上写 overflow-x:hidden 时，藏在屏幕右边外面的抽屉仍然会把页面撑宽，
    横屏时右边就多出一条空白。html 和 body 两层都裁掉横向溢出（clip 不会产生滚动容器，旧浏览器退回 hidden） */
@@ -124,7 +155,10 @@ a.sticker:focus-visible{outline:2px dashed var(--ink);outline-offset:3px}
   display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px 12px 8px;
   background:var(--card);border:2px solid var(--ink);border-right:none;border-radius:12px 0 0 12px;
   box-shadow:-3px 3px 0 var(--yellow);cursor:pointer;color:var(--ink);font:inherit}
-.handle span{font-family:var(--hand);font-size:15px;writing-mode:vertical-rl;letter-spacing:2px}
+.handle span{font-family:var(--hand);font-size:15px;
+  /* 竖着排"入口"两个字：不用 writing-mode（不同设备上竖排的高度算法不一样，会挤成一团），
+     而是把盒子宽度限制成一个字宽，让两个字自然换行，一上一下 */
+  display:block;flex:none;width:1em;line-height:1.2;text-align:center;word-break:break-all}
 .handle svg{width:16px;height:16px;animation:nudge 2.4s ease-in-out infinite}
 .handle:focus-visible{outline:2px dashed var(--ink);outline-offset:3px}
 @keyframes nudge{0%,70%,100%{transform:translateX(0)}80%{transform:translateX(-4px)}}
