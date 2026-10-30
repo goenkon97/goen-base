@@ -79,6 +79,14 @@ body{
   color:var(--ink);font-family:var(--sans);line-height:1.6;
   overflow-x:hidden;
 }
+/* 屏幕边上页面画不到的地方（刘海两侧、顶部安全区、iPad 多出来的边）浏览器用 html 的背景色去填。
+   html 和页面用同一个纸色，空出来的地方就和页面融成一片，看不出缝 */
+html{background-color:var(--paper)}
+/* iPhone 横屏（矮屏 + 触屏）：两侧那条画不到的区域只能是纯色，这时去掉点点纹理，
+   否则中间有点点、两边没有，看起来就像一道缝（和雅思站同一个修法） */
+@media (orientation:landscape) and (max-height:520px) and (hover:none){
+  body,.bl,.bl-bar,.bk,.nb,.rec{background-image:none!important}
+}
 /* #app 撑满整屏，里面当前显示的页面（首页或后端图解）再撑满 #app */
 #app{min-height:100%;display:flex;flex-direction:column}
 #app>*{flex:1 0 auto}
@@ -262,7 +270,7 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
 
 
 /* ===================== 后端笔记：顶部分类栏 ===================== */
-.bl{--bar-h:56px;min-height:100%;display:flex;flex-direction:column;background:var(--paper)}
+.bl{--bar-h:56px;min-height:100%;display:flex;flex-direction:column;background:transparent}
 .bl>*:last-child{flex:1 0 auto}
 .bl-bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;height:var(--bar-h);box-sizing:border-box;
   display:flex;align-items:center;gap:10px;background:var(--paper);border-bottom:2px dashed var(--dot);
@@ -376,7 +384,7 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
 .nb .two>*{min-width:0}
 
 /* 嵌进来之后：顶上多了一条分类栏，所以笔记自己的章节导航要贴在分类栏下面，跳转时也要多留出空间 */
-.nb{min-height:100%;box-sizing:border-box}
+.nb{min-height:100%;box-sizing:border-box;background:transparent!important}
 .nb nav{top:calc(env(safe-area-inset-top,0px) + var(--bar-h))}
 .nb section{scroll-margin-top:calc(var(--bar-h) + 70px)}
 
@@ -482,7 +490,7 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
 .rec .legend .r{background:var(--f-red)}
 .rec .legend .k{background:var(--f-gry)}
 
-.rec{min-height:100%;box-sizing:border-box}
+.rec{min-height:100%;box-sizing:border-box;background:transparent!important}
 
 /* ===================== 后端图解页（.bk 里的样式只作用于这个页面）===================== */
 
@@ -578,7 +586,7 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
 .bk .tb td:first-child{white-space:nowrap;color:var(--sub)}
 .bk .tb code{word-break:break-all}
 
-.bk{min-height:100%;box-sizing:border-box}
+.bk{min-height:100%;box-sizing:border-box;background:transparent!important}
 /* 返回按钮：涂鸦风小纸条，固定在左上 */
 .bk-back{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:inline-flex;align-items:center;gap:6px;margin:0 0 18px;
   padding:4px 12px 4px 8px;background:var(--card);border:2px solid var(--ink);border-radius:10px;box-shadow:3px 3px 0 var(--f-pur);
@@ -3450,6 +3458,29 @@ const router = createRouter({
 router.afterEach((to) => {
   document.title = to.meta.title ? `${to.meta.title} · Goen` : "Goen 秘密基地";
 });
+
+// ===================== 调试用：网址后面加 ?dbg 就在右下角显示尺寸信息 =====================
+// 用来排查 iPad / iPhone 上的空白：看页面拿到的宽度（innerWidth）和屏幕真实宽度（screen）差多少
+const VERSION = "2026-10-30c";
+if (location.search.includes("dbg")) {
+  const box = document.createElement("pre");
+  box.style.cssText = "position:fixed;right:8px;bottom:8px;z-index:9999;margin:0;padding:8px 10px;font:11px/1.4 ui-monospace,monospace;background:rgba(0,0,0,.78);color:#fff;border-radius:8px;max-width:90vw;white-space:pre-wrap;pointer-events:none";
+  const show = () => {
+    const vv = window.visualViewport;
+    box.textContent = [
+      "版本 " + VERSION,
+      "innerWidth×innerHeight: " + innerWidth + "×" + innerHeight,
+      "documentElement.clientWidth: " + document.documentElement.clientWidth,
+      "scrollWidth: " + document.documentElement.scrollWidth,
+      "visualViewport: " + (vv ? Math.round(vv.width) + "×" + Math.round(vv.height) + " scale " + vv.scale.toFixed(2) : "无"),
+      "screen: " + screen.width + "×" + screen.height + "  dpr " + devicePixelRatio,
+      "viewport meta: " + document.getElementById("vp").content,
+      navigator.userAgent,
+    ].join("\n");
+  };
+  document.body.appendChild(box); show();
+  ["resize", "orientationchange", "scroll"].forEach((ev) => window.addEventListener(ev, show));
+}
 
 // 创建应用 → 装上路由 → 挂到 #app 上
 createApp({}).use(router).mount("#app");
