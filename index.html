@@ -295,6 +295,34 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
 .bl-group{flex:none;align-self:center;font-family:var(--hand);font-size:14px;line-height:1.4;padding:0 8px;color:var(--ink-soft);
   border:1.5px dashed var(--ink);border-radius:8px;background:color-mix(in srgb,var(--c) 45%,transparent)}
 
+/* ===================== 优先级徽章 & 重点星标 ===================== */
+.lv{display:inline-block;vertical-align:2px;font-family:var(--sans);font-size:11px;font-weight:700;line-height:1;padding:3px 6px;
+  border:1.5px solid var(--ink);border-radius:6px;letter-spacing:.04em;white-space:nowrap}
+.lv-must{background:var(--red);color:#fff}
+.lv-key{background:var(--yellow);color:var(--ink)}
+.lv-ref{background:transparent;color:var(--ink-soft);border-style:dashed}
+.bi-legend{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:12.5px;color:var(--ink-soft)}
+.bi-legend .lv{margin-left:6px}.bi-legend .lv:first-child{margin-left:0}
+.bi-star{margin-left:6px;color:#E0A100;font-size:15px}
+.bi-path{margin:2px 0 0;font-size:13px;color:var(--ink-soft);padding:8px 12px;border:1.5px dashed var(--dot);border-radius:10px;background:var(--card)}
+.bi-path b{color:var(--ink)}
+.bi-why{margin-top:3px;color:var(--ink)!important;opacity:.8}
+.bi-why::before{content:"→ ";color:var(--ink-soft)}
+/* 篇内重点：导航链接/分类按钮右上角一颗星；章节标题前一个"★ 重点"标签 */
+.is-key{position:relative}
+.is-key::after{content:"★";position:absolute;top:-8px;right:-5px;font-size:14px;line-height:1;color:#E0A100;
+  text-shadow:0 0 2px var(--paper),0 0 2px var(--paper)}
+.key-badge{flex:none;display:inline-block;margin-right:8px;padding:2px 7px;font-size:11px;letter-spacing:.05em;font-weight:700;
+  color:var(--ink);background:#FFD24A;border:1.5px solid var(--ink);border-radius:6px;transform:rotate(-2deg)}
+/* 让带星的按钮/链接有地方放星：横向滚动条容器上方留一点空间 */
+.nb nav,.fs .nav .row{padding-top:10px!important}
+
+/* ===================== 隐藏滚动条 =====================
+   分类横条、表格、代码块这些地方本来就能左右滑，但有的电脑会把滚动条画出来，很难看。
+   这里只是"不画出来"，手指滑、触控板滑、Shift+滚轮照样能滚 */
+body *{scrollbar-width:none;-ms-overflow-style:none}
+body *::-webkit-scrollbar{display:none;width:0;height:0}
+
 /* ===================== 后端笔记目录页 ===================== */
 .bi{padding-block:24px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .bi-wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
@@ -1403,6 +1431,14 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
   <div class="bi-wrap">
     <h1 class="bi-h1">后端笔记</h1>
     <p class="bi-lead">先读"基础概念"把后端是什么弄懂，再看"项目实战"里我自己的收藏后端是怎么一步步做出来的。</p>
+    <!-- 优先级说明：按"前端转全栈"排的，不是按难度 -->
+    <div class="bi-legend">
+      <span class="lv lv-must">必读</span>现在就看
+      <span class="lv lv-key">重要</span>看完必读再看
+      <span class="lv lv-ref">查阅</span>不用通读，用到再查
+      <span class="bi-star">★</span>篇内重点章节
+    </div>
+    <p class="bi-path"><b>推荐顺序：</b>全栈基础（★ 那几类）→ 图解 → 思路 → Node 全记录 → Java 全记录 → 日语站接入；Java 速查和代码地图放手边随时查。</p>
     <section v-for="g in groups" :key="g.id" class="bi-group">
       <h2 class="bi-h2" :style="{ '--c': `var(--${g.color})` }">{{ g.name }}</h2>
       <p class="bi-desc">{{ g.desc }}</p>
@@ -1410,8 +1446,9 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
         <router-link v-for="(n, i) in g.notes" :key="n.to" :to="n.to" class="bi-card" :style="{ '--c': `var(--${g.color})` }">
           <span class="bi-num">{{ i + 1 }}</span>
           <span class="bi-text">
-            <b>{{ n.title }}</b>
+            <b>{{ n.title }} <span class="lv" :class="'lv-' + n.level">{{ LV[n.level] }}</span></b>
             <small>{{ n.desc }}</small>
+            <small class="bi-why">{{ n.why }}</small>
           </span>
           <svg class="bi-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3 L11 8 L6 13"/></svg>
         </router-link>
@@ -3600,13 +3637,13 @@ serverless 每个实例都开连接会爆，
 
 <script>
 // 从全局 Vue 对象里拿出要用的函数（CDN 版没有 import，所以这样解构）
-const { createApp, ref, computed, watch, onMounted, onUnmounted } = Vue;
+const { createApp, ref, computed, watch, onMounted, onUnmounted, nextTick } = Vue;
 
 // ===================== 版本号 =====================
 // 每次改完准备发布，就改这两行：VERSION 往上加一，UPDATED 写当时的时间。
 // 首页左上角 GK 旁边会显示它们，这样打开网站一眼就知道是不是最新版
-const VERSION = "v1.2";
-const UPDATED = "2026-10-30 20:58";
+const VERSION = "v1.3";
+const UPDATED = "2026-10-30 21:10";
 const { createRouter, createWebHashHistory, createMemoryHistory } = VueRouter;
 
 // 激励语录：按"今年第几天"轮换，每天一句（都是自己写的短句）
@@ -3744,25 +3781,36 @@ const Home = {
 // ===================== 后端笔记的分类数据 =====================
 // 两大类：基础概念（不看自己的代码，先弄懂后端）/ 项目实战（我自己的收藏后端，按做的先后排）
 // 以后加新笔记：在对应组的 notes 里加一行，再写模板、加路由
+// level：对我（前端转全栈）的优先级 —— must 必读 / key 重要 / ref 查阅（不用通读，用到再查）
+// why：为什么这篇对我重要（显示在目录卡片上）
+// keys：这篇里面的重点章节 id（会在章节导航和标题上标 ★）
 const BK_GROUPS = [
   {
     id: "basics", name: "基础概念", short: "基础", color: "blue",
     desc: "不管具体项目，先把全栈的地基、后端是什么、Java 和 Spring 怎么读、代码该怎么想弄明白。",
     notes: [
-      { to: "/backend/fullstack", label: "全栈基础", title: "全栈基础笔记", desc: "终端、计算机原理、网络、HTTP、安全、数据库、Git、部署，13 类 74 张图" },
-      { to: "/backend/diagram", label: "图解", title: "后端图解全集", desc: "Java · Spring · 数据库 · 网络，一张小图讲一件事" },
-      { to: "/backend/java", label: "Java 速查", title: "Java 与 Spring 速查", desc: "从分号、修饰符到 @ 标签和 JVM，看到陌生写法就来查" },
-      { to: "/backend/mindset", label: "思路", title: "后端写代码的思路", desc: "先干嘛后干嘛、一个文件是什么、刚进公司第一周做什么" },
+      { to: "/backend/fullstack", label: "全栈基础", title: "全栈基础笔记", desc: "终端、计算机原理、网络、HTTP、安全、数据库、Git、部署，13 类 74 张图",
+        level: "must", why: "前端只碰过页面这一层；网络、HTTP、安全、数据库是全栈面试和日常排错最常用的地基", keys: ["computer","network","http","security","backend","db"] },
+      { to: "/backend/diagram", label: "图解", title: "后端图解全集", desc: "Java · Spring · 数据库 · 网络，一张小图讲一件事",
+        level: "must", why: "20 分钟看完后端全貌，先有地图再看细节", keys: [] },
+      { to: "/backend/java", label: "Java 速查", title: "Java 与 Spring 速查", desc: "从分号、修饰符到 @ 标签和 JVM，看到陌生写法就来查",
+        level: "ref", why: "不用通读，读代码遇到看不懂的写法时来查；标星的几章值得认真看一遍", keys: ["what","jvm","spring","walk","db"] },
+      { to: "/backend/mindset", label: "思路", title: "后端写代码的思路", desc: "先干嘛后干嘛、一个文件是什么、刚进公司第一周做什么",
+        level: "must", why: "从「会写页面」到「会设计功能」的关键：先想数据和规则，再写代码；进公司也用得上", keys: ["diff","file","order","job"] },
     ],
   },
   {
     id: "project", name: "项目实战：收藏后端", short: "实战", color: "pink",
     desc: "我自己的项目：先用 Java 做出来，再用 Node 重写上线，最后接上日语站。",
     notes: [
-      { to: "/backend/java-log", label: "Java 全记录", title: "Java 后端全记录", desc: "从第一个接口到 Google 登录，每一步解决一个问题" },
-      { to: "/backend/map", label: "代码地图", title: "后端代码地图", desc: "Java 版每个文件、每个 @ 标签、每行配置在做什么" },
-      { to: "/backend/node-log", label: "Node 全记录", title: "Node 后端全记录", desc: "同样的功能换 Express + Neon 重写，并部署到 Vercel" },
-      { to: "/backend/jlpt", label: "日语站接入", title: "日语站接入后端", desc: "后端只改一行：同一个后端服务英语站和日语站" },
+      { to: "/backend/java-log", label: "Java 全记录", title: "Java 后端全记录", desc: "从第一个接口到 Google 登录，每一步解决一个问题",
+        level: "key", why: "日本很多公司用 Java，面试讲项目时能说清这条演进线", keys: [] },
+      { to: "/backend/map", label: "代码地图", title: "后端代码地图", desc: "Java 版每个文件、每个 @ 标签、每行配置在做什么",
+        level: "ref", why: "对着 Java 代码逐个文件看的说明书，改代码时查", keys: ["flow","guard","params"] },
+      { to: "/backend/node-log", label: "Node 全记录", title: "Node 后端全记录", desc: "同样的功能换 Express + Neon 重写，并部署到 Vercel",
+        level: "must", why: "现在线上真正跑的版本，和前端同一种语言，最适合拿来讲全栈项目", keys: [] },
+      { to: "/backend/jlpt", label: "日语站接入", title: "日语站接入后端", desc: "后端只改一行：同一个后端服务英语站和日语站",
+        level: "key", why: "一个很好的表设计案例：设计对了，加功能只改一行", keys: [] },
     ],
   },
 ];
@@ -3796,12 +3844,36 @@ const BackendLayout = {
         root.value.querySelectorAll("details").forEach((d) => (d.open = btn.id === "openAll"));
       }
     }
+    // 当前这篇笔记的数据（找不到就是 null，比如在目录页）
+    const note = computed(() => (group.value ? group.value.notes.find((n) => n.to === route.path) : null));
+    // 给重点章节打星：笔记内容是静态 HTML，所以等它画到页面上之后，直接找到对应的元素加 class
+    //  - 章节导航里的链接 <a href="#id">、全栈基础里的分类按钮 #t-id → 加 is-key，CSS 在后面画 ★
+    //  - 章节标题（section#id 或面板 #p-id 里的 h2）→ 前面插一个"重点"小标签
+    function markKeys() {
+      const n = note.value;
+      if (!n || !n.keys || !n.keys.length || !root.value) return;
+      n.keys.forEach((id) => {
+        root.value.querySelectorAll(`a[href="#${id}"], #t-${id}`).forEach((el) => el.classList.add("is-key"));
+        const sec = root.value.querySelector(`#${id}, #p-${id}`);
+        const h2 = sec && sec.querySelector("h2");
+        if (h2 && !h2.querySelector(".key-badge")) {
+          const tag = document.createElement("span");
+          tag.className = "key-badge";
+          tag.textContent = "★ 重点";
+          h2.prepend(tag);
+        }
+      });
+    }
+    // 网址一变（换了一篇），等新内容渲染完再打星；immediate 让第一次进来也执行
+    watch(() => route.path, () => nextTick(markKeys), { immediate: true });
+    onMounted(() => nextTick(markKeys));
     return { root, group, onClick };
   },
 };
 
 // ===================== 后端笔记目录页 =====================
-const BkIndex = { template: "#tpl-bk-index", setup() { return { groups: BK_GROUPS }; } };
+const LV = { must: "必读", key: "重要", ref: "查阅" };   // 徽章上显示的中文
+const BkIndex = { template: "#tpl-bk-index", setup() { return { groups: BK_GROUPS, LV }; } };
 
 // ===================== 后端笔记里的四篇（都只是一段静态模板）=====================
 const BkDiagram = {
