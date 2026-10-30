@@ -85,7 +85,7 @@ html{background-color:var(--paper)}
 /* iPhone 横屏（矮屏 + 触屏）：两侧那条画不到的区域只能是纯色，这时去掉点点纹理，
    否则中间有点点、两边没有，看起来就像一道缝（和雅思站同一个修法） */
 @media (orientation:landscape) and (max-height:520px) and (hover:none){
-  body,.bl,.bl-bar,.bk,.nb,.rec{background-image:none!important}
+  body,.bl,.bl-bar,.bk,.nb,.rec,.bi{background-image:none!important}
 }
 /* #app 撑满整屏，里面当前显示的页面（首页或后端图解）再撑满 #app */
 #app{min-height:100%;display:flex;flex-direction:column}
@@ -283,7 +283,33 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
 .bl-tab{flex:none;white-space:nowrap;font-family:var(--hand);font-size:17px;line-height:1.5;padding:1px 14px;color:var(--ink);text-decoration:none;
   border:2px solid var(--ink);border-radius:16px 6px 16px 6px;background:var(--card);transition:transform .12s,box-shadow .12s}
 .bl-tab:hover{transform:translateY(-1px)}
-.bl-tab.router-link-active{background:var(--yellow);box-shadow:3px 3px 0 var(--ink)}
+.bl-tab.is-on{background:var(--yellow);box-shadow:3px 3px 0 var(--ink)}
+/* 分类栏里：目录页的标题、笔记页最前面那个"这一组叫什么"的小标签 */
+.bl-title{font-family:var(--hand);font-size:22px}
+.bl-group{flex:none;align-self:center;font-family:var(--hand);font-size:14px;line-height:1.4;padding:0 8px;color:var(--ink-soft);
+  border:1.5px dashed var(--ink);border-radius:8px;background:color-mix(in srgb,var(--c) 45%,transparent)}
+
+/* ===================== 后端笔记目录页 ===================== */
+.bi{padding-block:24px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.bi-wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+.bi-h1{margin:0;font-family:var(--hand);font-weight:400;font-size:clamp(34px,6vw,46px);line-height:1.15}
+.bi-lead{margin:0 0 8px;color:var(--ink-soft);max-width:60ch}
+.bi-group{display:flex;flex-direction:column;gap:8px;margin-top:18px}
+.bi-h2{align-self:flex-start;margin:0;font-family:var(--hand);font-weight:400;font-size:26px;padding:0 14px;border:2px solid var(--ink);
+  border-radius:255px 18px 225px 18px/18px 225px 18px 255px;background:var(--c);transform:rotate(-1deg)}
+.bi-desc{margin:0 0 4px;color:var(--ink-soft);font-size:14px}
+.bi-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:620px){.bi-grid{grid-template-columns:minmax(0,1fr)}}
+.bi-card{display:flex;align-items:center;gap:12px;padding:12px 14px;min-width:0;color:var(--ink);text-decoration:none;background:var(--card);
+  border:2px solid var(--ink);border-radius:14px 18px 12px 16px/16px 12px 18px 14px;box-shadow:4px 4px 0 var(--c);transition:transform .15s,box-shadow .15s}
+.bi-card:hover,.bi-card:focus-visible{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--c)}
+.bi-card:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
+.bi-num{flex:none;width:30px;height:30px;display:grid;place-items:center;font-family:var(--hand);font-size:18px;
+  border:2px solid var(--ink);border-radius:50% 45% 55% 45%;background:var(--c)}
+.bi-text{flex:1;min-width:0;display:flex;flex-direction:column}
+.bi-text b{font-family:var(--hand);font-weight:400;font-size:20px;line-height:1.25}
+.bi-text small{font-size:12.5px;color:var(--ink-soft);line-height:1.45}
+.bi-arrow{flex:none;width:16px;height:16px;opacity:.6}
 @media (max-width:420px){.bl-bar{gap:8px}.bl-tabs{gap:6px}.bl-tab{padding:1px 10px;font-size:16px}.bl-back{padding:2px 8px 2px 4px}}
 .bl-back:focus-visible,.bl-tab:focus-visible{outline:2px dashed var(--ink);outline-offset:3px}
 
@@ -611,9 +637,11 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
     <!-- 插画区：日历 + 插画 + 小贴纸，用 grid-template-areas 拼在一起 -->
     <div class="art">
       <!-- 小贴纸：用下标 i 给每张一个 s0~s3 的位置 class -->
+      <!-- 站内入口（如后端笔记）只传 to；外部网站才传 href/target/rel。
+           以前两种都传，router-link 收到 href=undefined 会把它自己算好的地址盖掉，链接就没有 href 了 -->
       <component v-for="(m, i) in modules" :key="m.id"
-        :is="m.to ? 'router-link' : (m.url ? 'a' : 'div')" :to="m.to"
-        :href="m.url || undefined" :target="m.url ? '_blank' : undefined" :rel="m.url ? 'noopener' : undefined"
+        :is="m.to ? 'router-link' : (m.url ? 'a' : 'div')"
+        v-bind="m.to ? { to: m.to } : (m.url ? { href: m.url, target: '_blank', rel: 'noopener' } : {})"
         class="sticker doodle" :class="['s' + i, { soon: !m.url && !m.to }]" :style="{ '--shadow': `var(--${m.color})` }">
         <svg viewBox="0 0 58 58" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" v-html="m.icon"></svg>
         <b>{{ m.short }}</b>
@@ -702,8 +730,8 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
     </button>
     <div class="tiles">
     <component v-for="m in modules" :key="m.id"
-      :is="m.to ? 'router-link' : (m.url ? 'a' : 'div')" :to="m.to"
-      :href="m.url || undefined" :target="m.url ? '_blank' : undefined" :rel="m.url ? 'noopener' : undefined"
+      :is="m.to ? 'router-link' : (m.url ? 'a' : 'div')"
+      v-bind="m.to ? { to: m.to } : (m.url ? { href: m.url, target: '_blank', rel: 'noopener' } : {})"
       class="tile doodle" :class="{ soon: !m.url && !m.to }" :style="{ '--shadow': `var(--${m.color})` }">
       <svg viewBox="0 0 58 58" fill="none" stroke="var(--ink)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" v-html="m.icon"></svg>
       <div class="tile-body">
@@ -1190,14 +1218,46 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
 <template id="tpl-bk-layout">
 <div class="bl" ref="root" @click="onClick">
   <header class="bl-bar">
-    <router-link to="/" class="bl-back" aria-label="回秘密基地">
+    <!-- 在目录页：返回秘密基地首页；在某篇笔记里：返回笔记目录 -->
+    <router-link v-if="!group" to="/" class="bl-back" aria-label="回秘密基地">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 L5 8 L10 13"/></svg>基地
     </router-link>
-    <nav class="bl-tabs" aria-label="后端笔记分类">
-      <router-link v-for="t in tabs" :key="t.to" :to="t.to" class="bl-tab">{{ t.label }}</router-link>
+    <router-link v-else to="/backend" class="bl-back" aria-label="回笔记目录">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 L5 8 L10 13"/></svg>目录
+    </router-link>
+    <!-- 目录页：显示标题 -->
+    <span v-if="!group" class="bl-title">后端笔记</span>
+    <!-- 笔记页：只显示"这一组"里的几篇，不再把所有笔记挤在一行 -->
+    <nav v-else class="bl-tabs" :aria-label="group.name">
+      <span class="bl-group" :style="{ '--c': `var(--${group.color})` }">{{ group.short }}</span>
+      <router-link v-for="n in group.notes" :key="n.to" :to="n.to" class="bl-tab" exact-active-class="is-on">{{ n.label }}</router-link>
     </nav>
   </header>
   <router-view></router-view>
+</div>
+</template>
+
+<!-- ===== 后端笔记目录页（/backend）：按两大类列出所有笔记，点卡片进入那一篇 ===== -->
+<template id="tpl-bk-index">
+<div class="bi">
+  <div class="bi-wrap">
+    <h1 class="bi-h1">后端笔记</h1>
+    <p class="bi-lead">先读"基础概念"把后端是什么弄懂，再看"项目实战"里我自己的收藏后端是怎么一步步做出来的。</p>
+    <section v-for="g in groups" :key="g.id" class="bi-group">
+      <h2 class="bi-h2" :style="{ '--c': `var(--${g.color})` }">{{ g.name }}</h2>
+      <p class="bi-desc">{{ g.desc }}</p>
+      <div class="bi-grid">
+        <router-link v-for="(n, i) in g.notes" :key="n.to" :to="n.to" class="bi-card" :style="{ '--c': `var(--${g.color})` }">
+          <span class="bi-num">{{ i + 1 }}</span>
+          <span class="bi-text">
+            <b>{{ n.title }}</b>
+            <small>{{ n.desc }}</small>
+          </span>
+          <svg class="bi-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3 L11 8 L6 13"/></svg>
+        </router-link>
+      </div>
+    </section>
+  </div>
 </div>
 </template>
 
@@ -3210,6 +3270,46 @@ GROUP BY user_id, kind, word HAVING COUNT(*) &gt; 1;</code></pre>
 </div>
 </template>
 
+<template id="tpl-bk-jlpt-log">
+<div class="rec">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <filter id="rwob" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/></filter>
+  <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L9 5L1 9" fill="none" stroke="context-stroke" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>
+</defs></svg>
+<div class="rec-wrap">
+<div class="tags"><span class="tag ">Vue 3</span><span class="tag y">Express</span><span class="tag g">Neon</span><span class="tag p">Google 登录</span></div>
+<h1>日语站：登录 + 收藏，是怎么接上后端的</h1>
+<p class="lead">这次我们给日语学习站加了 Google 登录和收藏（单词、语法）。重点是：后端几乎没改，因为表当初就设计成能放多个站、多种类型。每张卡片说清一件事。</p>
+<h2>一 · 先看全貌：日语站接上了同一个后端</h2>
+<div class="grid">
+<section class="card full"><h3>现在两个站是这样连的</h3><svg viewBox="0 0 640 136" role="img" aria-label="英语站 → 日语站 → 同一个后端 → 同一个数据库"><g class="wob"><rect class="s fb" x="10.0" y="20" width="135.5" height="70" rx="9"/><path class="s" d="M147.5 55 h20" marker-end="url(#ah)"/><rect class="s fy" x="171.5" y="20" width="135.5" height="70" rx="9"/><path class="s" d="M309.0 55 h20" marker-end="url(#ah)"/><rect class="s fg" x="333.0" y="20" width="135.5" height="70" rx="9"/><path class="s" d="M470.5 55 h20" marker-end="url(#ah)"/><rect class="s fp" x="494.5" y="20" width="135.5" height="70" rx="9"/></g><g><text x="77.8" y="46" text-anchor="middle" class="zh" style="font-size:14.0px">英语站</text><text x="77.8" y="64" text-anchor="middle" class="zh" style="font-size:11.0px" fill-opacity=".85">ielts.goenkon.com</text><text x="77.8" y="79" text-anchor="middle" class="zh" style="font-size:11.0px" fill-opacity=".85">网站</text></g><g><text x="239.2" y="46" text-anchor="middle" class="zh" style="font-size:14.0px">日语站</text><text x="239.2" y="64" text-anchor="middle" class="zh" style="font-size:11.0px" fill-opacity=".85">jlpt.goenkon.com</text><text x="239.2" y="79" text-anchor="middle" class="zh" style="font-size:11.0px" fill-opacity=".85">这次接上</text></g><g><text x="400.8" y="46" text-anchor="middle" class="zh" style="font-size:14.0px">同一个后端</text><text x="400.8" y="64" text-anchor="middle" class="zh" style="font-size:11.0px" fill-opacity=".85">Vercel · Express</text></g><g><text x="562.2" y="46" text-anchor="middle" class="zh" style="font-size:14.0px">同一个数据库</text><text x="562.2" y="64" text-anchor="middle" class="zh" style="font-size:11.0px" fill-opacity=".85">Neon</text></g><circle r="5" class="fr" stroke="var(--ink)" stroke-width="2"><animateMotion dur="4.5s" repeatCount="indefinite" path="M18,108 L622,108"/></circle><text x="10" y="128" class="cap">一个后端、一个数据库、一个 Google 账号，服务两个网站</text></svg><ul><li>同一个账号登录两个站都行；但收藏<b>各看各的</b>：数据库里每条收藏记着它属于哪个站（<code>site</code> 列）。</li><li>这次我们<b>没有新建后端项目、没有新建表</b>，只在后端改了一行，其余全是日语站前端的工作。</li></ul><p class="one">后端不用重建，因为当初表就是按“多个站、多种类型”设计的。</p></section>
+</div>
+<h2>二 · 为什么后端只改了一行</h2>
+<p class="sec">答案在表的设计里。所有人、所有站、所有类型的收藏，都放在同一张 favorite_word 表，靠三列区分。</p>
+<div class="grid">
+<section class="card full"><h3>favorite_word 表里长这样</h3><div class="scroll"><table class="tb"><tr><th>user_id</th><th>site</th><th>kind</th><th>word</th></tr><tr><td>1</td><td>ielts</td><td>w（单词）</td><td>accommodation</td></tr><tr><td>1</td><td>ielts</td><td>p（短语）</td><td>on the other hand</td></tr><tr><td>1</td><td>jlpt</td><td>w（单词）</td><td>確認する</td></tr><tr><td>1</td><td>jlpt</td><td>g（语法）</td><td>〜に違いない</td></tr><tr><td>2</td><td>jlpt</td><td>w（单词）</td><td>慰める</td></tr></table></div><ul><li><b>user_id</b> 说明这条是谁的；<b>site</b> 说明是哪个站的；<b>kind</b> 说明是什么类型；<b>word</b> 就是一段文字。</li><li>语法的文型也是一段文字，所以放得进 <code>word</code> 这一列，<b>表结构一点都不用改</b>。</li><li>联合唯一约束是 (user_id, site, kind, word)：同一个人在同一个站，同样的东西只能收藏一次。</li></ul><p class="one">表设计对了，后面加功能就像加一个字母。</p></section>
+</div>
+<h2>三 · 这次我们一步步做了什么</h2>
+<div class="grid">
+<section class="card"><h3><span class="n">1</span>后端：放行“语法”这个类型</h3><svg viewBox="0 0 320 136" role="img" aria-label="前端发来 → 后端校验 → 数据库"><g class="wob"><rect class="s fb" x="10.0" y="20" width="86.7" height="70" rx="9"/><path class="s" d="M98.7 55 h14" marker-end="url(#ah)"/><rect class="s fy" x="116.7" y="20" width="86.7" height="70" rx="9"/><path class="s" d="M205.3 55 h14" marker-end="url(#ah)"/><rect class="s fg" x="223.3" y="20" width="86.7" height="70" rx="9"/></g><g><text x="53.3" y="46" text-anchor="middle" class="zh" style="font-size:12.5px">前端发来</text><text x="53.3" y="64" text-anchor="middle" class="zh" style="font-size:10.0px" fill-opacity=".85">kind: "g"</text></g><g><text x="160.0" y="46" text-anchor="middle" class="zh" style="font-size:12.5px">后端校验</text><text x="160.0" y="64" text-anchor="middle" class="zh" style="font-size:10.0px" fill-opacity=".85">isKind 白名单</text></g><g><text x="266.7" y="46" text-anchor="middle" class="zh" style="font-size:12.5px">数据库</text><text x="266.7" y="64" text-anchor="middle" class="zh" style="font-size:10.0px" fill-opacity=".85">照存不误</text></g><circle r="5" class="fr" stroke="var(--ink)" stroke-width="2"><animateMotion dur="4.5s" repeatCount="indefinite" path="M18,108 L302,108"/></circle><text x="10" y="128" class="cap">KINDS = ["w", "p", "g"]</text></svg><p class="why"><b>要做的事：</b>日语站要收藏语法，后端得认识这个类型。</p><ul><li>后端有一份“允许的类型”清单。以前是 w 单词、p 短语，现在加上 <b>g 语法</b>，校验就放行了。</li><li>为什么要有清单：不能让前端随便塞一个乱七八糟的类型进数据库。<b>白名单</b>是最常用的防乱写办法。</li><li>顺手加了 1 个自动化测试，现在一共 23 个，全部通过。</li></ul><p class="one">改的是“规则清单”，不是表。</p></section>
+<section class="card"><h3><span class="n">2</span>前端：登录，照着英语站搬</h3><svg viewBox="0 0 320 136" role="img" aria-label="Google 按钮 → 后端核对 → 拿到 token"><g class="wob"><rect class="s fb" x="10.0" y="20" width="86.7" height="70" rx="9"/><path class="s" d="M98.7 55 h14" marker-end="url(#ah)"/><rect class="s fy" x="116.7" y="20" width="86.7" height="70" rx="9"/><path class="s" d="M205.3 55 h14" marker-end="url(#ah)"/><rect class="s fg" x="223.3" y="20" width="86.7" height="70" rx="9"/></g><g><text x="53.3" y="46" text-anchor="middle" class="zh" style="font-size:12.5px">Google 按钮</text><text x="53.3" y="64" text-anchor="middle" class="zh" style="font-size:10.0px" fill-opacity=".85">点一下</text></g><g><text x="160.0" y="46" text-anchor="middle" class="zh" style="font-size:12.5px">后端核对</text><text x="160.0" y="64" text-anchor="middle" class="zh" style="font-size:10.0px" fill-opacity=".85">/auth/google</text></g><g><text x="266.7" y="46" text-anchor="middle" class="zh" style="font-size:12.5px">拿到 token</text><text x="266.7" y="64" text-anchor="middle" class="zh" style="font-size:10.0px" fill-opacity=".85">存 jlpt_token</text></g><circle r="5" class="fr" stroke="var(--ink)" stroke-width="2"><animateMotion dur="4.5s" repeatCount="indefinite" path="M18,108 L302,108"/></circle><text x="10" y="128" class="cap">流程和英语站一模一样</text></svg><p class="why"><b>要做的事：</b>让日语站也有账号。</p><ul><li>Google 的证明书发给后端核对，后端返回<b>我们自己的 token</b>，前端存进浏览器。刷新页面时，带着 token 问后端“我是谁”，就恢复登录。</li><li>token 在浏览器里的名字改成 <code>jlpt_token</code>，和英语站的分开存，互不干扰。</li><li>Google 控制台要加上日语站的域名（你已经加好了），否则按钮会报错。</li></ul><p class="one">同一套流程，复制过来改几个名字。</p></section>
+<section class="card"><h3><span class="n">3</span>前端：点书签，页面先变，后台再确认</h3><svg viewBox="0 0 320 136" role="img" aria-label="点书签 → 发请求 → 成功就保留"><g class="wob"><rect class="s fb" x="10.0" y="20" width="86.7" height="70" rx="9"/><path class="s" d="M98.7 55 h14" marker-end="url(#ah)"/><rect class="s fy" x="116.7" y="20" width="86.7" height="70" rx="9"/><path class="s" d="M205.3 55 h14" marker-end="url(#ah)"/><rect class="s fg" x="223.3" y="20" width="86.7" height="70" rx="9"/></g><g><text x="53.3" y="46" text-anchor="middle" class="zh" style="font-size:12.5px">点书签</text><text x="53.3" y="64" text-anchor="middle" class="zh" style="font-size:10.0px" fill-opacity=".85">图标立刻变红</text></g><g><text x="160.0" y="46" text-anchor="middle" class="zh" style="font-size:12.5px">发请求</text><text x="160.0" y="64" text-anchor="middle" class="zh" style="font-size:10.0px" fill-opacity=".85">带 token</text></g><g><text x="266.7" y="46" text-anchor="middle" class="zh" style="font-size:12.5px">成功就保留</text><text x="266.7" y="64" text-anchor="middle" class="zh" style="font-size:10.0px" fill-opacity=".85">失败就改回来</text></g><circle r="5" class="fr" stroke="var(--ink)" stroke-width="2"><animateMotion dur="4.5s" repeatCount="indefinite" path="M18,108 L302,108"/></circle><text x="10" y="128" class="cap">这叫“先显示，再确认”</text></svg><p class="why"><b>要做的事：</b>每一项都能收藏、取消收藏。</p><ul><li>如果等后端回复再变，用户会觉得卡一下。所以<b>先在页面上变</b>，同时发请求；请求失败再改回去并提示。</li><li>为了防止连点两下发出两个请求，用一个小记号记着“这一条正在处理”。</li><li>同义词里每一组有三个单词，<b>每个单词右边各有自己的书签</b>；语法和 N2 词汇每一项也各有一个。</li></ul><p class="one">让人感觉快，同时不骗人。</p></section>
+<section class="card"><h3><span class="n">4</span>前端：收藏本里怎么显示完整内容</h3><svg viewBox="0 0 320 136" role="img" aria-label="后端只存 → 按文字查词库 → 画成完整卡片"><g class="wob"><rect class="s fb" x="10.0" y="20" width="86.7" height="70" rx="9"/><path class="s" d="M98.7 55 h14" marker-end="url(#ah)"/><rect class="s fy" x="116.7" y="20" width="86.7" height="70" rx="9"/><path class="s" d="M205.3 55 h14" marker-end="url(#ah)"/><rect class="s fg" x="223.3" y="20" width="86.7" height="70" rx="9"/></g><g><text x="53.3" y="46" text-anchor="middle" class="zh" style="font-size:12.5px">后端只存</text><text x="53.3" y="64" text-anchor="middle" class="zh" style="font-size:10.0px" fill-opacity=".85">那一段文字</text></g><g><text x="160.0" y="46" text-anchor="middle" class="zh" style="font-size:12.5px">按文字查词库</text><text x="160.0" y="64" text-anchor="middle" class="zh" style="font-size:10.0px" fill-opacity=".85">页面本地</text></g><g><text x="266.7" y="46" text-anchor="middle" class="zh" style="font-size:12.5px">画成完整卡片</text><text x="266.7" y="64" text-anchor="middle" class="zh" style="font-size:10.0px" fill-opacity=".85">例句 · 解析</text></g><circle r="5" class="fr" stroke="var(--ink)" stroke-width="2"><animateMotion dur="4.5s" repeatCount="indefinite" path="M18,108 L302,108"/></circle><text x="10" y="128" class="cap">数据库存得少，页面显示得多</text></svg><p class="why"><b>要做的事：</b>收藏本像英语站一样横着排下去，并带例句和解析。</p><ul><li>后端只记“谁收藏了哪段文字”，释义、例句、解析都在网页自己带的词库里。收藏本用这段文字去词库里<b>找回完整内容</b>。</li><li>好处：数据库很小；以后词库更新，收藏本里的内容也自动更新。</li><li>不分类了，改成一条条竖着排，每页 10 条，加分页器。</li></ul><p class="one">后端只管“谁收藏了什么”，内容留在前端。</p></section>
+<section class="card"><h3><span class="n">5</span>没真的登录，怎么提前测</h3><svg viewBox="0 0 320 136" role="img" aria-label="假后端 → 真页面 → 点一遍"><g class="wob"><rect class="s fb" x="10.0" y="20" width="86.7" height="70" rx="9"/><path class="s" d="M98.7 55 h14" marker-end="url(#ah)"/><rect class="s fy" x="116.7" y="20" width="86.7" height="70" rx="9"/><path class="s" d="M205.3 55 h14" marker-end="url(#ah)"/><rect class="s fg" x="223.3" y="20" width="86.7" height="70" rx="9"/></g><g><text x="53.3" y="46" text-anchor="middle" class="zh" style="font-size:12.5px">假后端</text><text x="53.3" y="64" text-anchor="middle" class="zh" style="font-size:10.0px" fill-opacity=".85">测试里造一个</text></g><g><text x="160.0" y="46" text-anchor="middle" class="zh" style="font-size:12.5px">真页面</text><text x="160.0" y="64" text-anchor="middle" class="zh" style="font-size:10.0px" fill-opacity=".85">手机宽度打开</text></g><g><text x="266.7" y="46" text-anchor="middle" class="zh" style="font-size:12.5px">点一遍</text><text x="266.7" y="64" text-anchor="middle" class="zh" style="font-size:8.2px" fill-opacity=".85">收藏 · 取消 · 翻页</text></g><circle r="5" class="fr" stroke="var(--ink)" stroke-width="2"><animateMotion dur="4.5s" repeatCount="indefinite" path="M18,108 L302,108"/></circle><text x="10" y="128" class="cap">用电脑模拟，先排除明显的错</text></svg><p class="why"><b>遇到的问题：</b>我没法替你真的点 Google 登录。</p><ul><li>我在电脑上用浏览器自动化工具打开页面，再拦截对后端的请求，给它一个<b>假后端</b>。这样不用真的登录，也能测点书签、取消、分页、刷新后恢复登录。</li><li>能测出写错的代码，但测不了真实的 Google 登录和线上数据库，所以最后要你线上再试一遍（你已经试过，没问题）。</li></ul><p class="one">先在家里排练，再上真舞台。</p></section>
+<section class="card"><h3><span class="n">6</span>顺手修了两个手机/iPad 显示问题</h3><svg viewBox="0 0 320 136" role="img" aria-label="iPad 横屏 → iPhone 横屏 → 原因"><g class="wob"><rect class="s fb" x="10.0" y="20" width="86.7" height="70" rx="9"/><path class="s" d="M98.7 55 h14" marker-end="url(#ah)"/><rect class="s fy" x="116.7" y="20" width="86.7" height="70" rx="9"/><path class="s" d="M205.3 55 h14" marker-end="url(#ah)"/><rect class="s fg" x="223.3" y="20" width="86.7" height="70" rx="9"/></g><g><text x="53.3" y="46" text-anchor="middle" class="zh" style="font-size:12.5px">iPad 横屏</text><text x="53.3" y="64" text-anchor="middle" class="zh" style="font-size:10.0px" fill-opacity=".85">两边空白</text></g><g><text x="160.0" y="46" text-anchor="middle" class="zh" style="font-size:12.5px">iPhone 横屏</text><text x="160.0" y="64" text-anchor="middle" class="zh" style="font-size:10.0px" fill-opacity=".85">两侧有条边</text></g><g><text x="266.7" y="46" text-anchor="middle" class="zh" style="font-size:12.5px">原因</text><text x="266.7" y="64" text-anchor="middle" class="zh" style="font-size:10.0px" fill-opacity=".85">浏览器给的宽度</text></g><circle r="5" class="fr" stroke="var(--ink)" stroke-width="2"><animateMotion dur="4.5s" repeatCount="indefinite" path="M18,108 L302,108"/></circle><text x="10" y="128" class="cap">都不是 CSS 写错，是浏览器行为</text></svg><p class="why"><b>遇到的问题：</b>电脑上看着没事，iPad 和手机上不对。</p><ul><li><b>iPad 的 Chrome</b> 横屏时，把页面“排版宽度”定在约 900px，屏幕却更宽。我们在 iPad 横屏时让它按真实屏幕宽度排版。</li><li><b>iPhone 横屏</b> 时，刘海两侧各留一条页面画不进去的区域，浏览器用页面底色填。我们让页面背景和那个底色变成同一种纯色，就看不出分界。</li><li>这些改法都记进了记忆，方便你让其他两个会话照着改。</li></ul><p class="one">遇到“只有某台设备不对”，先怀疑是设备的行为，不要先怀疑自己的代码。</p></section>
+</div>
+<h2>四 · 点一次书签，到底发生了什么</h2>
+<div class="grid">
+<section class="card full"><h3>一次收藏的完整旅程</h3><svg viewBox="0 0 640 136" role="img" aria-label="浏览器 → 带 token 请求 → 后端门卫 → 数据库 → 返回编号"><g class="wob"><rect class="s fb" x="10.0" y="20" width="103.2" height="70" rx="9"/><path class="s" d="M115.2 55 h20" marker-end="url(#ah)"/><rect class="s fy" x="139.2" y="20" width="103.2" height="70" rx="9"/><path class="s" d="M244.4 55 h20" marker-end="url(#ah)"/><rect class="s fg" x="268.4" y="20" width="103.2" height="70" rx="9"/><path class="s" d="M373.6 55 h20" marker-end="url(#ah)"/><rect class="s fp" x="397.6" y="20" width="103.2" height="70" rx="9"/><path class="s" d="M502.8 55 h20" marker-end="url(#ah)"/><rect class="s fr" x="526.8" y="20" width="103.2" height="70" rx="9"/></g><g class="a-st" style="animation-delay:0.0s"><text x="61.6" y="46" text-anchor="middle" class="zh" style="font-size:14.0px">浏览器</text><text x="61.6" y="64" text-anchor="middle" class="zh" style="font-size:11.0px" fill-opacity=".85">toggleFav</text></g><g class="a-st" style="animation-delay:1.2s"><text x="190.8" y="46" text-anchor="middle" class="zh" style="font-size:13.5px">带 token 请求</text><text x="190.8" y="64" text-anchor="middle" class="zh" style="font-size:11.0px" fill-opacity=".85">POST /favorites</text></g><g class="a-st" style="animation-delay:2.4s"><text x="320.0" y="46" text-anchor="middle" class="zh" style="font-size:14.0px">后端门卫</text><text x="320.0" y="64" text-anchor="middle" class="zh" style="font-size:11.0px" fill-opacity=".85">验 token</text></g><g class="a-st" style="animation-delay:3.6s"><text x="449.2" y="46" text-anchor="middle" class="zh" style="font-size:14.0px">数据库</text><text x="449.2" y="64" text-anchor="middle" class="zh" style="font-size:11.0px" fill-opacity=".85">INSERT</text></g><g class="a-st" style="animation-delay:4.8s"><text x="578.4" y="46" text-anchor="middle" class="zh" style="font-size:14.0px">返回编号</text><text x="578.4" y="64" text-anchor="middle" class="zh" style="font-size:11.0px" fill-opacity=".85">页面记下</text></g><circle r="5" class="fr" stroke="var(--ink)" stroke-width="2"><animateMotion dur="4.5s" repeatCount="indefinite" path="M18,108 L622,108"/></circle><text x="10" y="128" class="cap">日语站发的请求里多带了 site: "jlpt" 和 kind: "w" 或 "g"</text></svg><ul><li><b>用户编号不是前端传的</b>：后端从 token 里取出来。所以别人没法冒充你收藏。</li><li>取消收藏是 <code>DELETE /favorites/编号</code>，后端用“编号 + 用户编号”一起找，别人的收藏碰不到。</li><li>你可以试着不看笔记，用自己的话把这条线从头讲一遍；卡住的地方就是要补的。</li></ul><p class="one">能讲清这条线，登录、收藏、安全三个概念就都串起来了。</p></section>
+</div>
+<h2>五 · 面试时，可以这样讲这次的经历</h2>
+<div class="grid">
+<section class="card full"><h3>三句话</h3><svg viewBox="0 0 640 136" role="img" aria-label="场景 → 做法 → 收获"><g class="wob"><rect class="s fb" x="10.0" y="20" width="189.3" height="70" rx="9"/><path class="s" d="M201.3 55 h20" marker-end="url(#ah)"/><rect class="s fy" x="225.3" y="20" width="189.3" height="70" rx="9"/><path class="s" d="M416.7 55 h20" marker-end="url(#ah)"/><rect class="s fg" x="440.7" y="20" width="189.3" height="70" rx="9"/></g><g><text x="104.7" y="46" text-anchor="middle" class="zh" style="font-size:14.0px">场景</text><text x="104.7" y="64" text-anchor="middle" class="zh" style="font-size:11.0px" fill-opacity=".85">两个学习网站</text></g><g><text x="320.0" y="46" text-anchor="middle" class="zh" style="font-size:14.0px">做法</text><text x="320.0" y="64" text-anchor="middle" class="zh" style="font-size:11.0px" fill-opacity=".85">共用一套后端</text></g><g><text x="535.3" y="46" text-anchor="middle" class="zh" style="font-size:14.0px">收获</text><text x="535.3" y="64" text-anchor="middle" class="zh" style="font-size:11.0px" fill-opacity=".85">设计对了很省事</text></g><circle r="5" class="fr" stroke="var(--ink)" stroke-width="2"><animateMotion dur="4.5s" repeatCount="indefinite" path="M18,108 L622,108"/></circle><text x="10" y="128" class="cap">每一句都能展开讲</text></svg><ul><li><b>场景：</b>我有英语和日语两个学习网站，需要同一个账号、云端收藏，手机和电脑同步。</li><li><b>做法：</b>两个站共用一个 Node 后端和一个数据库，表里用 site、kind 两列区分；日语站接入时，后端只加了一个类型，不用新建项目和表。</li><li><b>收获：</b>前期把表设计成“多站点、多类型”，后面扩展的成本很低；我也做了测试和安全检查（用户编号只来自 token、类型用白名单）。</li></ul><p class="one">讲得出“为什么这样设计”，比讲“用了什么”更打动人。</p></section>
+</div>
+</div>
+</div>
+</template>
+
 <!-- 真正挂载 Vue 的地方：router-view 是个"占位框"，当前网址对应哪个页面，就把哪个页面放进来 -->
 <div id="app"><router-view></router-view></div>
 
@@ -3350,18 +3450,39 @@ const Home = {
 };
 
 // ===================== 页面组件 2：后端笔记外壳（分类栏）=====================
+// ===================== 后端笔记的分类数据 =====================
+// 两大类：基础概念（不看自己的代码，先弄懂后端）/ 项目实战（我自己的收藏后端，按做的先后排）
+// 以后加新笔记：在对应组的 notes 里加一行，再写模板、加路由
+const BK_GROUPS = [
+  {
+    id: "basics", name: "基础概念", short: "基础", color: "blue",
+    desc: "不管具体项目，先把后端是什么、Java 和 Spring 怎么读、代码该怎么想弄明白。",
+    notes: [
+      { to: "/backend/diagram", label: "图解", title: "后端图解全集", desc: "Java · Spring · 数据库 · 网络，一张小图讲一件事" },
+      { to: "/backend/java", label: "Java 速查", title: "Java 与 Spring 速查", desc: "从分号、修饰符到 @ 标签和 JVM，看到陌生写法就来查" },
+      { to: "/backend/mindset", label: "思路", title: "后端写代码的思路", desc: "先干嘛后干嘛、一个文件是什么、刚进公司第一周做什么" },
+    ],
+  },
+  {
+    id: "project", name: "项目实战：收藏后端", short: "实战", color: "pink",
+    desc: "我自己的项目：先用 Java 做出来，再用 Node 重写上线，最后接上日语站。",
+    notes: [
+      { to: "/backend/java-log", label: "Java 全记录", title: "Java 后端全记录", desc: "从第一个接口到 Google 登录，每一步解决一个问题" },
+      { to: "/backend/map", label: "代码地图", title: "后端代码地图", desc: "Java 版每个文件、每个 @ 标签、每行配置在做什么" },
+      { to: "/backend/node-log", label: "Node 全记录", title: "Node 后端全记录", desc: "同样的功能换 Express + Neon 重写，并部署到 Vercel" },
+      { to: "/backend/jlpt", label: "日语站接入", title: "日语站接入后端", desc: "后端只改一行：同一个后端服务英语站和日语站" },
+    ],
+  },
+];
+
+// ===================== 页面组件 2：后端笔记外壳（顶部栏）=====================
 const BackendLayout = {
   template: "#tpl-bk-layout",
   setup() {
     const root = ref(null);
-    const tabs = [
-      { to: "/backend/diagram", label: "图解" },
-      { to: "/backend/map", label: "代码地图" },
-      { to: "/backend/java", label: "Java 速查" },
-      { to: "/backend/mindset", label: "思路" },
-      { to: "/backend/java-log", label: "Java 全记录" },
-      { to: "/backend/node-log", label: "Node 全记录" },
-    ];
+    const route = VueRouter.useRoute();   // 拿到"当前网址"对象，网址一变它就跟着变
+    // 当前打开的笔记属于哪一组；在目录页（/backend）时找不到，就是 null
+    const group = computed(() => BK_GROUPS.find((g) => g.notes.some((n) => n.to === route.path)) || null);
     // 笔记里原来有自己的小脚本（章节跳转、全部展开/收起），嵌进来以后统一在这里处理：
     // 用"事件委托"——只在最外层监听一次点击，再看点到的是什么
     function onClick(e) {
@@ -3383,9 +3504,12 @@ const BackendLayout = {
         root.value.querySelectorAll("details").forEach((d) => (d.open = btn.id === "openAll"));
       }
     }
-    return { root, tabs, onClick };
+    return { root, group, onClick };
   },
 };
+
+// ===================== 后端笔记目录页 =====================
+const BkIndex = { template: "#tpl-bk-index", setup() { return { groups: BK_GROUPS }; } };
 
 // ===================== 后端笔记里的四篇（都只是一段静态模板）=====================
 const BkDiagram = {
@@ -3413,6 +3537,7 @@ const pauseSvg = () => {
 };
 const BkJavaLog = { template: "#tpl-bk-java-log", setup() { onMounted(pauseSvg); return {}; } };
 const BkNodeLog = { template: "#tpl-bk-node-log", setup() { onMounted(pauseSvg); return {}; } };
+const BkJlptLog = { template: "#tpl-bk-jlpt-log", setup() { onMounted(pauseSvg); return {}; } };
 
 // ===================== 路由：网址 → 页面 的对照表 =====================
 // 用 hash 模式：网址长这样 index.html#/backend
@@ -3439,13 +3564,14 @@ const router = createRouter({
       path: "/backend",
       component: BackendLayout,
       children: [
-        { path: "", redirect: "/backend/diagram" },
+        { path: "", component: BkIndex, meta: { title: "后端笔记" } },   // 进 /backend 先看目录
         { path: "diagram", component: BkDiagram, meta: { title: "后端图解" } },
         { path: "map", component: BkMap, meta: { title: "后端代码地图" } },
         { path: "java", component: BkJava, meta: { title: "Java 与 Spring 速查" } },
         { path: "mindset", component: BkMindset, meta: { title: "后端写代码的思路" } },
         { path: "java-log", component: BkJavaLog, meta: { title: "Java 后端全记录" } },
         { path: "node-log", component: BkNodeLog, meta: { title: "Node 后端全记录" } },
+        { path: "jlpt", component: BkJlptLog, meta: { title: "日语站接入后端" } },
       ],
     },
     { path: "/:any(.*)", redirect: "/" },   // 乱输的网址一律回首页
@@ -3455,13 +3581,16 @@ const router = createRouter({
 });
 
 // 每次切换页面后，按路由里写的 meta.title 改浏览器标签页标题
-router.afterEach((to) => {
+router.afterEach((to, from) => {
+  // 换到另一页时滚回顶部。路由自带的 scrollBehavior 在某些情况下（比如 memory 模式、或新页面还没渲染完）不生效，
+  // 这里等新页面画到屏幕上（nextTick）之后再滚一次，保证每篇笔记都从标题开始看
+  if (to.path !== from.path) Vue.nextTick(() => window.scrollTo(0, 0));
   document.title = to.meta.title ? `${to.meta.title} · Goen` : "Goen 秘密基地";
 });
 
 // ===================== 调试用：网址后面加 ?dbg 就在右下角显示尺寸信息 =====================
 // 用来排查 iPad / iPhone 上的空白：看页面拿到的宽度（innerWidth）和屏幕真实宽度（screen）差多少
-const VERSION = "2026-10-30c";
+const VERSION = "2026-10-30d";
 if (location.search.includes("dbg")) {
   const box = document.createElement("pre");
   box.style.cssText = "position:fixed;right:8px;bottom:8px;z-index:9999;margin:0;padding:8px 10px;font:11px/1.4 ui-monospace,monospace;background:rgba(0,0,0,.78);color:#fff;border-radius:8px;max-width:90vw;white-space:pre-wrap;pointer-events:none";
