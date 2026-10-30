@@ -320,8 +320,11 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
 /* ===================== 隐藏滚动条 =====================
    分类横条、表格、代码块这些地方本来就能左右滑，但有的电脑会把滚动条画出来，很难看。
    这里只是"不画出来"，手指滑、触控板滑、Shift+滚轮照样能滚 */
-body *{scrollbar-width:none;-ms-overflow-style:none}
-body *::-webkit-scrollbar{display:none;width:0;height:0}
+/* 用 * 并加 !important：有些笔记自己写了 scrollbar-width:thin（比如全栈基础的分类条），
+   它的选择器更具体，会盖过普通规则，所以这里必须用 !important 才压得住。
+   另外 Chrome 新版只要 scrollbar-width 不是 auto，就不再看 ::-webkit-scrollbar，所以两种写法都要有 */
+*{scrollbar-width:none!important;-ms-overflow-style:none!important}
+*::-webkit-scrollbar{display:none!important;width:0!important;height:0!important;background:transparent!important}
 
 /* ===================== 后端笔记目录页 ===================== */
 .bi{padding-block:24px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -654,7 +657,7 @@ body *::-webkit-scrollbar{display:none;width:0;height:0}
 .fs .legend .r{background:var(--f-red)}
 .fs .legend .k{background:var(--f-gry)}
 .fs .nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--bg);padding:8px 0 10px;margin:0 0 6px;border-bottom:1px solid var(--line)}
-.fs .nav .row{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 4px;scrollbar-width:thin}
+.fs .nav .row{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 4px}
 .fs .nav button{flex:none;font:400 17px/1 var(--hand);color:var(--ink);background:var(--card);border:2px solid var(--ink);border-radius:16px 6px 14px 6px;padding:7px 13px;cursor:pointer}
 .fs .nav button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .fs .nav button[aria-selected="true"]{background:var(--f-yel);box-shadow:3px 3px 0 var(--ink)}
@@ -3642,8 +3645,8 @@ const { createApp, ref, computed, watch, onMounted, onUnmounted, nextTick } = Vu
 // ===================== 版本号 =====================
 // 每次改完准备发布，就改这两行：VERSION 往上加一，UPDATED 写当时的时间。
 // 首页左上角 GK 旁边会显示它们，这样打开网站一眼就知道是不是最新版
-const VERSION = "v1.3";
-const UPDATED = "2026-10-30 21:10";
+const VERSION = "v1.4";
+const UPDATED = "2026-10-30 21:06";
 const { createRouter, createWebHashHistory, createMemoryHistory } = VueRouter;
 
 // 激励语录：按"今年第几天"轮换，每天一句（都是自己写的短句）
