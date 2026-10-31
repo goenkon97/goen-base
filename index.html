@@ -87,7 +87,7 @@ html{background-color:var(--paper)}
 /* iPhone 横屏（矮屏 + 触屏）：两侧那条画不到的区域只能是纯色，这时去掉点点纹理，
    否则中间有点点、两边没有，看起来就像一道缝（和雅思站同一个修法） */
 @media (orientation:landscape) and (max-height:520px) and (hover:none){
-  body,.bl,.bl-bar,.bk,.nb,.rec,.bi,.fs,.cb{background-image:none!important}
+  body,.bl,.bl-bar,.bk,.nb,.rec,.bi,.fs,.cb,.sx{background-image:none!important}
 }
 /* #app 撑满整屏，里面当前显示的页面（首页或后端图解）再撑满 #app */
 #app{min-height:100%;display:flex;flex-direction:column}
@@ -404,6 +404,51 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
 .cb-list button small{font-size:11px;color:var(--ink-soft)}
 .cb-list button.on{background:var(--yellow);border-width:2px}
 .cb-view{display:flex;flex-direction:column;gap:8px;min-width:0}
+
+/* ===================== 语法速查页（.sx）=====================
+   每篇：顶部标签 + 大标题 + 导语 → 吸顶的章节导航 → 一章一章往下：章节标题（黄色手绘条）+ 两列卡片，图横跨整行 */
+.sx{padding-block:20px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.sx-wrap{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.sx-chips{display:flex;flex-wrap:wrap;gap:8px}
+.sx-chip{font-family:var(--hand);font-size:16px;padding:0 12px;border:2px solid var(--ink);border-radius:18px 7px 16px 7px;background:var(--mint)}
+.sx-chip:nth-child(2){background:var(--yellow)}.sx-chip:nth-child(3){background:var(--blue)}
+.sx-h1{margin:2px 0 0;font-family:var(--hand);font-weight:400;font-size:clamp(34px,6vw,48px);line-height:1.15}
+.sx-intro{margin:0;color:var(--ink-soft);max-width:68ch;line-height:1.75}
+.sx-intro b{color:var(--ink)}
+/* 章节导航：吸在顶部"后端笔记"栏下面 */
+.sx-nav{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--bar-h));z-index:5;display:flex;gap:6px;overflow-x:auto;
+  padding:10px 2px 8px;background:var(--paper);border-bottom:2px dashed var(--dot)}
+.sx-nav a{flex:none;white-space:nowrap;font-family:var(--hand);font-size:16px;color:var(--ink);text-decoration:none;padding:0 12px;
+  border:2px solid var(--ink);border-radius:16px 6px 16px 6px;background:var(--card)}
+.sx-nav a:hover,.sx-nav a:focus-visible{background:var(--yellow);outline:none}
+.sx-sec{display:flex;flex-direction:column;gap:10px;margin-top:18px;scroll-margin-top:calc(var(--bar-h) + 64px)}
+.sx-sec>h2{align-self:flex-start;display:flex;align-items:center;margin:0;font-family:var(--hand);font-weight:400;font-size:26px;padding:0 14px;
+  border:2.5px solid var(--ink);border-radius:255px 18px 225px 18px/18px 225px 18px 255px;background:var(--yellow);transform:rotate(-.8deg)}
+.sx-desc{margin:0;color:var(--ink-soft);font-size:14px;max-width:70ch}
+.sx-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+@media (max-width:760px){.sx-grid{grid-template-columns:minmax(0,1fr)}}
+/* 一个语法点 = 一张卡片 */
+.sx-item{min-width:0;display:flex;flex-direction:column;gap:8px;padding:12px 14px 14px;background:var(--card);border:2px solid var(--ink);
+  border-radius:16px 7px 18px 7px/7px 18px 7px 16px;box-shadow:4px 4px 0 var(--mint)}
+.sx-item h3{margin:0}
+.sx-item h3 code{font:700 15px ui-monospace,Menlo,monospace;color:var(--ink);background:var(--yellow);padding:1px 8px;border:1.5px solid var(--ink);border-radius:8px 3px 8px 3px}
+.sx-what{margin:0;font-size:14px;line-height:1.7}
+.sx-what code,.sx-tip code,.sx-front code,.sx-intro code{font:600 .9em ui-monospace,Menlo,monospace;background:color-mix(in srgb,var(--blue) 55%,transparent);padding:0 4px;border-radius:4px}
+.sx-tip,.sx-front{margin:0;font-size:13px;line-height:1.6;padding:6px 10px;border-radius:8px;border:1.5px dashed var(--dot)}
+.sx-tip b,.sx-front b{display:inline-block;margin-right:6px;padding:0 6px;font-size:11.5px;border:1.5px solid var(--ink);border-radius:5px}
+.sx-tip b{background:var(--pink)}.sx-front b{background:var(--blue)}
+.sx-item pre.code{font-size:12px}
+/* 手绘小图：横跨整行 */
+.sx-fig{grid-column:1/-1;margin:0;padding:10px 12px 8px;background:var(--card);border:2px solid var(--ink);border-radius:14px 6px 16px 6px;box-shadow:4px 4px 0 var(--yellow)}
+.sx-fig svg{display:block;width:100%;height:auto;max-height:320px}
+.sx-fig figcaption{margin-top:4px;font-size:12.5px;color:var(--ink-soft);line-height:1.6}
+.sx-fig .sx-s{stroke:var(--ink);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.sx-fig path.sx-s,.sx-fig ellipse.sx-s{fill:none}
+.sx-fig .sx-dash{stroke-dasharray:6 5}
+.sx-fig text{fill:var(--ink);font-family:var(--sans)}
+.sx-fig text.sx-sub{fill:var(--ink-soft)}
+.sx-fig text.sx-good{fill:#2C9A55}.sx-fig text.sx-bad{fill:#D6453D}
+@media (max-width:620px){.sx-fig{padding:8px}.sx-fig svg{max-height:none}}
 
 /* ===================== 后端笔记目录页 ===================== */
 .bi{padding-block:24px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -1559,7 +1604,7 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
       <span class="lv lv-ref">查阅</span>不用通读，用到再查
       <span class="bi-star">★</span>篇内重点章节
     </div>
-    <p class="bi-path"><b>推荐顺序：</b>全栈基础（★ 那几类）→ 图解 → 思路 → Node 全记录 → Java 全记录 → 日语站接入；Java 速查和代码地图放手边随时查。</p>
+    <p class="bi-path"><b>推荐顺序：</b>全栈基础（★ 那几类）→ 图解 → 思路 → Node 全记录 → Java 全记录 → 日语站接入；Java 速查、代码地图和「语法速查」放手边随时查。</p>
     <section v-for="g in groups" :key="g.id" class="bi-group">
       <h2 class="bi-h2" :style="{ '--c': `var(--${g.color})` }">{{ g.name }}</h2>
       <p class="bi-desc">{{ g.desc }}</p>
@@ -3753,8 +3798,666 @@ serverless 每个实例都开连接会爆，
 </div>
 </template>
 
+<!-- ===================== 语法速查：8 篇（构建时生成的静态内容，根元素 v-pre，Vue 不解析里面的 {{ }}）===================== -->
+<template id="tpl-sx-js">
+<div class="sx" v-pre>
+<div class="sx-wrap"><div class="sx-chips"><span class="sx-chip">前端 + Node 后端共用</span><span class="sx-chip">ES2015+</span><span class="sx-chip">TypeScript 的底子</span></div><h1 class="sx-h1">JavaScript 语法</h1><p class="sx-intro">你前端写过 JavaScript，这里把容易忘、后端常用的语法系统过一遍：变量、函数、对象数组、解构展开、模块、类、异步（Promise / async / await）、错误处理（try / catch）。每个都配一个小例子，很多例子来自我们自己的收藏后端。</p><nav class="sx-nav" aria-label="章节"><a href="#js-var">变量与数据类型</a><a href="#js-fn">函数</a><a href="#js-obj">对象与数组</a><a href="#js-mod">模块 import / export</a><a href="#js-class">类 class</a><a href="#js-async">异步：Promise / async / await</a><a href="#js-err">错误处理：try / catch / finally / throw</a><a href="#js-misc">其他常用</a></nav><section class="sx-sec" id="js-var"><h2>变量与数据类型</h2><p class="sx-desc">先分清“值”和“引用”：数字、字符串这类是值，对象、数组是引用（指向同一个东西）。</p><div class="sx-grid"><article class="sx-item"><h3><code>let / const</code></h3><p class="sx-what">声明变量。<b>const</b>：之后不能再被赋值（最常用）；<b>let</b>：之后还要改。<b>var</b> 是老写法，作用域奇怪，别用。</p><pre class="code"><code><span class="hl-k">const</span> <span class="hl-t">API_BASE</span> = <span class="hl-s">"https://ielts-backend-node.vercel.app"</span>; <span class="hl-c">// 不会变的用 const</span>
+<span class="hl-k">let</span> page = 1;     <span class="hl-c">// 会变的用 let</span>
+page = page + 1;  <span class="hl-c">// OK</span>
+<span class="hl-c">// API_BASE = "x"; // ❌ TypeError: Assignment to constant variable</span></code></pre><p class="sx-tip"><b>记住</b>默认用 const，确实要改再换成 let。</p></article><article class="sx-item"><h3><code>基本类型</code></h3><p class="sx-what">一共 7 种：<b>string</b> 字符串、<b>number</b> 数字（整数小数都是它）、<b>boolean</b> 真假、<b>null</b> 故意的空、<b>undefined</b> 还没赋值、<b>bigint</b> 超大整数、<b>symbol</b> 唯一标记。</p><pre class="code"><code><span class="hl-k">typeof</span> <span class="hl-s">"abc"</span>      <span class="hl-c">// "string"</span>
+<span class="hl-k">typeof</span> 42         <span class="hl-c">// "number"</span>
+<span class="hl-k">typeof</span> <span class="hl-k">true</span>       <span class="hl-c">// "boolean"</span>
+<span class="hl-k">typeof</span> <span class="hl-k">undefined</span>  <span class="hl-c">// "undefined"</span>
+<span class="hl-k">typeof</span> <span class="hl-k">null</span>       <span class="hl-c">// "object"  ← 历史遗留的坑，记住就好</span>
+<span class="hl-k">typeof</span> {}         <span class="hl-c">// "object"</span>
+<span class="hl-k">typeof</span> []         <span class="hl-c">// "object"  ← 判断数组用 Array.isArray([])</span></code></pre></article><figure class="sx-fig"><svg viewBox="0 0 640 236" role="img" aria-label="值类型直接存在变量里；对象存的是“地址”。copy = fav 只是复制地址，改 copy.word，fav 也跟着变"><g filter="url(#sxwob)"><rect x="20" y="14" width="260" height="208" rx="12" class="sx-s" fill="var(--blue)" fill-opacity=".35"/><rect x="360" y="14" width="260" height="208" rx="12" class="sx-s" fill="var(--mint)" fill-opacity=".35"/><rect x="36" y="52" width="228" height="30" rx="7" class="sx-s" fill="var(--card)"/><rect x="36" y="92" width="228" height="30" rx="7" class="sx-s" fill="var(--card)"/><rect x="36" y="132" width="228" height="30" rx="7" class="sx-s" fill="var(--card)"/><rect x="36" y="172" width="228" height="30" rx="7" class="sx-s" fill="var(--card)"/><rect x="376" y="52" width="228" height="30" rx="7" class="sx-s" fill="var(--yellow)"/><rect x="376" y="92" width="228" height="30" rx="7" class="sx-s" fill="var(--yellow)"/><rect x="376" y="132" width="228" height="30" rx="7" class="sx-s" fill="var(--yellow)"/><path d="M264 147 C 320 147, 320 147, 376 147" class="sx-s sx-dash" marker-end="url(#sxah)"/><path d="M264 187 C 320 187, 320 147, 376 147" class="sx-s sx-dash" marker-end="url(#sxah)"/></g><text x="150.0" y="36" text-anchor="middle" font-size="13.5" font-weight="700" class="">变量里存的（栈）</text><text x="490.0" y="36" text-anchor="middle" font-size="13.5" font-weight="700" class="">对象本体（堆）</text><text x="150.0" y="72" text-anchor="middle" font-size="12" class="">page = 2</text><text x="150.0" y="112" text-anchor="middle" font-size="12" class="">word = \“abandon\”</text><text x="150.0" y="152" text-anchor="middle" font-size="12" class="">fav ─→（一个地址）</text><text x="150.0" y="192" text-anchor="middle" font-size="12" class="">copy ─→（同一个地址）</text><text x="490.0" y="72" text-anchor="middle" font-size="12" class=""></text><text x="490.0" y="112" text-anchor="middle" font-size="12" class=""></text><text x="490.0" y="152" text-anchor="middle" font-size="12" class="">{ id: 1, word: \“abandon\” }</text></svg><figcaption>值类型直接存在变量里；对象存的是“地址”。copy = fav 只是复制地址，改 copy.word，fav 也跟着变</figcaption></figure><article class="sx-item"><h3><code>值 vs 引用</code></h3><p class="sx-what">把对象赋给另一个变量，两个变量指向<b>同一个对象</b>。想要一份独立的副本，用展开 <code>{...obj}</code> 或 <code>structuredClone(obj)</code>。</p><pre class="code"><code><span class="hl-k">const</span> fav = { id: 1, word: <span class="hl-s">"abandon"</span> };
+<span class="hl-k">const</span> copy = fav;          <span class="hl-c">// 复制的是地址</span>
+copy.word = <span class="hl-s">"reduce"</span>;
+console.log(fav.word);     <span class="hl-c">// "reduce" ← 原来的也变了！</span>
+<span class="hl-k">const</span> safe = { ...fav };   <span class="hl-c">// 浅拷贝：新对象</span>
+safe.word = <span class="hl-s">"hence"</span>;
+console.log(fav.word);     <span class="hl-c">// 还是 "reduce"</span></code></pre><p class="sx-tip"><b>记住</b>前端里“改了一个地方，别处也莫名变了”，十有八九是这个原因。</p></article><article class="sx-item"><h3><code>== 和 ===</code></h3><p class="sx-what"><b>===</b> 严格相等：类型和值都要一样。<b>==</b> 会偷偷转换类型，结果反直觉。一律用 ===。</p><pre class="code"><code>0 == <span class="hl-s">""</span>        <span class="hl-c">// true  ← 奇怪</span>
+0 === <span class="hl-s">""</span>       <span class="hl-c">// false</span>
+<span class="hl-s">"1"</span> === 1      <span class="hl-c">// false</span>
+<span class="hl-k">null</span> == <span class="hl-k">undefined</span>   <span class="hl-c">// true</span>
+<span class="hl-k">null</span> === <span class="hl-k">undefined</span>  <span class="hl-c">// false</span></code></pre><p class="sx-tip"><b>记住</b>只用 === 和 !==。</p></article><article class="sx-item"><h3><code>真值 / 假值</code></h3><p class="sx-what">if 里会被当成 false 的只有 6 个：<b>false、0、""、null、undefined、NaN</b>。其他（包括 [] 和 {}）都是 true。</p><pre class="code"><code><span class="hl-k">if</span> (!word) <span class="hl-k">return</span> res.status(400).json({ error: <span class="hl-s">"bad_request"</span> });
+<span class="hl-c">// word 是 "" 或 undefined 时都会进来</span>
+
+<span class="hl-k">if</span> ([]) console.log(<span class="hl-s">"空数组也是真值！"</span>);</code></pre></article><article class="sx-item"><h3><code>?? 和 ?.</code></h3><p class="sx-what"><b>??</b>（空值合并）：左边是 null / undefined 才用右边。<b>?.</b>（可选链）：左边是空就直接返回 undefined，不报错。</p><pre class="code"><code><span class="hl-k">const</span> body = req.body ?? {};           <span class="hl-c">// 没有请求体时给个空对象（我们后端真有这行）</span>
+<span class="hl-k">const</span> status = body.status ?? <span class="hl-s">"unknown"</span>;
+<span class="hl-k">const</span> city = user?.address?.city;      <span class="hl-c">// user 或 address 是空都不会崩</span>
+
+<span class="hl-c">// 和 || 的区别：|| 遇到 0、"" 也会用右边</span>
+0 || 10   <span class="hl-c">// 10</span>
+0 ?? 10   <span class="hl-c">// 0</span></code></pre><p class="sx-tip"><b>记住</b>给默认值优先用 ??，它不会误伤 0 和空字符串。</p></article><article class="sx-item"><h3><code>模板字符串</code></h3><p class="sx-what">用反引号 <code>`</code>，里面 <code>${}</code> 放变量，可以换行。</p><pre class="code"><code><span class="hl-k">const</span> id = 12;
+<span class="hl-k">const</span> url = <span class="hl-s">`/favorites/${id}`</span>;              <span class="hl-c">// "/favorites/12"</span>
+<span class="hl-k">const</span> header = <span class="hl-s">`Bearer ${token}`</span>;
+<span class="hl-k">const</span> msg = <span class="hl-s">`第 ${page} 页，共 ${total} 条`</span>;</code></pre></article></div></section><section class="sx-sec" id="js-fn"><h2>函数</h2><p class="sx-desc">函数就是“一段可以反复调用的代码”。JS 里函数也是值，可以存进变量、当参数传。</p><div class="sx-grid"><article class="sx-item"><h3><code>函数声明 / 箭头函数</code></h3><p class="sx-what">两种常见写法。箭头函数更短，而且<b>没有自己的 this</b>（用外层的），回调里最常用。</p><pre class="code"><code><span class="hl-k">function</span> add(a, b) { <span class="hl-k">return</span> a + b; }       <span class="hl-c">// 函数声明</span>
+<span class="hl-k">const</span> add2 = (a, b) =&gt; a + b;              <span class="hl-c">// 箭头函数：只有一行时可省略 {} 和 return</span>
+<span class="hl-k">const</span> square = x =&gt; x * x;                 <span class="hl-c">// 只有一个参数时可省略 ()</span>
+<span class="hl-k">const</span> makeUser = (name) =&gt; ({ name });     <span class="hl-c">// 返回对象要包一层 ()</span></code></pre></article><article class="sx-item"><h3><code>默认参数 / 剩余参数</code></h3><p class="sx-what">参数没传时用默认值；<code>...rest</code> 把“剩下的所有参数”收成一个数组。</p><pre class="code"><code><span class="hl-k">function</span> greet(name = <span class="hl-s">"Goen"</span>) { <span class="hl-k">return</span> <span class="hl-s">`Hello, ${name}`</span>; }
+greet();          <span class="hl-c">// "Hello, Goen"</span>
+
+<span class="hl-k">function</span> sum(...nums) { <span class="hl-k">return</span> nums.reduce((a, b) =&gt; a + b, 0); }
+sum(1, 2, 3);     <span class="hl-c">// 6</span></code></pre></article><article class="sx-item"><h3><code>回调函数</code></h3><p class="sx-what">把函数当参数传给别人，让别人在合适的时候调用。数组方法、事件监听、Express 路由全是这个套路。</p><pre class="code"><code><span class="hl-c">// 我们传一个函数进去，Express 收到 GET /health 请求时才调用它</span>
+app.get(<span class="hl-s">"/health"</span>, (req, res) =&gt; {
+  res.json({ ok: <span class="hl-k">true</span> });
+});
+
+button.addEventListener(<span class="hl-s">"click"</span>, () =&gt; console.log(<span class="hl-s">"点了"</span>));</code></pre><p class="sx-tip"><b>记住</b>看到 (req, res) => {...}，就想：“这是交给框架、等它来调用的”。</p></article><article class="sx-item"><h3><code>闭包</code></h3><p class="sx-what">函数可以“记住”它被创建时外面的变量，即使外面的函数已经执行完了。</p><pre class="code"><code><span class="hl-k">function</span> createCounter() {
+  <span class="hl-k">let</span> count = 0;                 <span class="hl-c">// 外面的变量</span>
+  <span class="hl-k">return</span> () =&gt; ++count;          <span class="hl-c">// 里面的函数一直记得 count</span>
+}
+<span class="hl-k">const</span> next = createCounter();
+next(); <span class="hl-c">// 1</span>
+next(); <span class="hl-c">// 2   ← count 没有被重置</span>
+
+<span class="hl-c">// 我们后端的 createFavoritesRouter(deps) 也是闭包：里面每个路由都记得 deps.db</span></code></pre><p class="sx-tip"><b>记住</b>工厂函数（createXxx）+ 闭包，是 Node 后端不用 class 也能“装配零件”的方式。</p></article></div></section><section class="sx-sec" id="js-obj"><h2>对象与数组</h2><p class="sx-desc">后端每天都在和 JSON 打交道，而 JSON 就是对象和数组。</p><div class="sx-grid"><article class="sx-item"><h3><code>对象</code></h3><p class="sx-what">一组“键: 值”。读写用 <code>.键名</code> 或 <code>[\“键名"]</code>。</p><pre class="code"><code><span class="hl-k">const</span> fav = { id: 1, kind: <span class="hl-s">"w"</span>, word: <span class="hl-s">"abandon"</span> };
+fav.word;              <span class="hl-c">// "abandon"</span>
+fav[<span class="hl-s">"kind"</span>];           <span class="hl-c">// "w"</span>
+fav.status = <span class="hl-s">"known"</span>;  <span class="hl-c">// 新增一个键</span>
+delete fav.status;     <span class="hl-c">// 删掉</span>
+<span class="hl-t">Object</span>.keys(fav);      <span class="hl-c">// ["id", "kind", "word"]</span>
+<span class="hl-k">const</span> name = <span class="hl-s">"Goen"</span>; <span class="hl-k">const</span> user = { name };   <span class="hl-c">// 简写：等于 { name: name }</span></code></pre></article><article class="sx-item"><h3><code>数组常用方法</code></h3><p class="sx-what"><b>map</b> 一个变一个、<b>filter</b> 留下符合条件的、<b>find</b> 找第一个、<b>some</b> 有没有、<b>reduce</b> 汇总、<b>includes</b> 包不包含。它们都<b>不改原数组</b>（返回新的）。</p><pre class="code"><code><span class="hl-k">const</span> favs = [{ word: <span class="hl-s">"a"</span>, kind: <span class="hl-s">"w"</span> }, { word: <span class="hl-s">"b c"</span>, kind: <span class="hl-s">"p"</span> }];
+favs.map(f =&gt; f.word);              <span class="hl-c">// ["a", "b c"]</span>
+favs.filter(f =&gt; f.kind === <span class="hl-s">"w"</span>);   <span class="hl-c">// [{ word: "a", ... }]</span>
+favs.find(f =&gt; f.word === <span class="hl-s">"a"</span>);     <span class="hl-c">// { word: "a", ... }</span>
+favs.some(f =&gt; f.kind === <span class="hl-s">"p"</span>);     <span class="hl-c">// true</span>
+[<span class="hl-s">"w"</span>, <span class="hl-s">"p"</span>].includes(<span class="hl-s">"g"</span>);           <span class="hl-c">// false ← 我们后端校验 kind 就是这么做的</span>
+[1, 2, 3].reduce((sum, x) =&gt; sum + x, 0);  <span class="hl-c">// 6</span></code></pre><p class="sx-tip"><b>记住</b>会改原数组的是 push / pop / splice / sort，用的时候要清楚。</p></article><article class="sx-item"><h3><code>解构</code></h3><p class="sx-what">从对象 / 数组里“拆出”想要的部分，直接变成变量。</p><pre class="code"><code><span class="hl-k">const</span> { kind, word } = req.body;          <span class="hl-c">// 等于 const kind = req.body.kind; ...</span>
+<span class="hl-k">const</span> { id: favId } = fav;                <span class="hl-c">// 改个名字</span>
+<span class="hl-k">const</span> { site = <span class="hl-s">"ielts"</span> } = body;          <span class="hl-c">// 带默认值</span>
+<span class="hl-k">const</span> [first, second] = [<span class="hl-s">"w"</span>, <span class="hl-s">"p"</span>];       <span class="hl-c">// 数组按位置拆</span>
+<span class="hl-k">const</span> [existing] = <span class="hl-k">await</span> db.select()...;  <span class="hl-c">// 我们后端：只要查询结果的第一条</span></code></pre></article><article class="sx-item"><h3><code>展开 ...</code></h3><p class="sx-what">把对象 / 数组“摊开”。常用来复制、合并。</p><pre class="code"><code><span class="hl-k">const</span> a = { x: 1 }, b = { y: 2 };
+<span class="hl-k">const</span> merged = { ...a, ...b, z: 3 };   <span class="hl-c">// { x: 1, y: 2, z: 3 }</span>
+<span class="hl-k">const</span> updated = { ...fav, status: <span class="hl-s">"known"</span> };  <span class="hl-c">// 复制一份并改一个字段（Vue/React 常用）</span>
+<span class="hl-k">const</span> all = [...list1, ...list2];
+<span class="hl-t">Math</span>.max(...[3, 9, 1]);                <span class="hl-c">// 9</span></code></pre></article><article class="sx-item"><h3><code>JSON</code></h3><p class="sx-what"><b>JSON.stringify</b>：对象 → 字符串（发给后端）；<b>JSON.parse</b>：字符串 → 对象（收到后读）。网络上传的只能是字符串。</p><pre class="code"><code><span class="hl-k">const</span> text = <span class="hl-t">JSON</span>.stringify({ kind: <span class="hl-s">"w"</span>, word: <span class="hl-s">"abandon"</span> });
+<span class="hl-c">// '{"kind":"w","word":"abandon"}'</span>
+<span class="hl-k">const</span> obj = <span class="hl-t">JSON</span>.parse(text);
+obj.word; <span class="hl-c">// "abandon"</span>
+
+<span class="hl-c">// fetch 里：body: JSON.stringify(data)；收到用 await res.json()</span></code></pre></article></div></section><section class="sx-sec" id="js-mod"><h2>模块 import / export</h2><p class="sx-desc">一个文件就是一个模块。export 往外给，import 从别处拿。</p><div class="sx-grid"><article class="sx-item"><h3><code>具名导出 / 默认导出</code></h3><p class="sx-what"><b>export</b>：可以有很多个，导入时名字要对上，用 {}。<b>export default</b>：一个文件只有一个，导入时可以随便起名。</p><pre class="code"><code><span class="hl-c">// jwt.ts</span>
+<span class="hl-k">export</span> <span class="hl-k">function</span> createJwtService(secret) { ... }     <span class="hl-c">// 具名导出</span>
+<span class="hl-c">// index.ts（线上入口）</span>
+<span class="hl-k">export</span> <span class="hl-k">default</span> app;                                  <span class="hl-c">// 默认导出：Vercel 拿它当处理函数</span>
+
+<span class="hl-c">// 别的文件里：</span>
+<span class="hl-k">import</span> { createJwtService } <span class="hl-k">from</span> <span class="hl-s">"./auth/jwt.js"</span>;   <span class="hl-c">// 具名：要加 {}，名字要对</span>
+<span class="hl-k">import</span> app <span class="hl-k">from</span> <span class="hl-s">"./index.js"</span>;                         <span class="hl-c">// 默认：不加 {}</span>
+<span class="hl-k">import</span> express <span class="hl-k">from</span> <span class="hl-s">"express"</span>;                       <span class="hl-c">// 从 npm 包导入</span></code></pre></article><article class="sx-item"><h3><code>ESM 和 CommonJS</code></h3><p class="sx-what">两套模块系统。新的 <b>ESM</b> 用 import / export；老的 <b>CommonJS</b> 用 require / module.exports。我们的 package.json 里写了 <code>"type": "module"</code>，所以用 ESM。</p><pre class="code"><code><span class="hl-c">// ESM（我们用的）</span>
+<span class="hl-k">import</span> express <span class="hl-k">from</span> <span class="hl-s">"express"</span>;
+<span class="hl-k">export</span> <span class="hl-k">const</span> x = 1;
+
+<span class="hl-c">// CommonJS（老项目、很多教程里还能看到）</span>
+<span class="hl-k">const</span> express = require(<span class="hl-s">"express"</span>);
+module.exports = { x: 1 };</code></pre><p class="sx-tip"><b>记住</b>ESM 里导入本地文件要写 .js 后缀（哪怕源文件是 .ts），这是我们后端 import 都带 .js 的原因。</p></article></div></section><section class="sx-sec" id="js-class"><h2>类 class</h2><p class="sx-desc">class 是“造对象的图纸”。JS 的 class 本质上是函数 + 原型的语法糖。</p><div class="sx-grid"><article class="sx-item"><h3><code>class / constructor / 方法</code></h3><p class="sx-what">constructor 在 new 的时候执行，用来设置初始值；方法写在类里，所有对象共用。</p><pre class="code"><code><span class="hl-k">class</span> <span class="hl-t">Counter</span> {
+  #count = 0;                      <span class="hl-c">// # 开头：私有字段，外面访问不到</span>
+  constructor(start = 0) { <span class="hl-k">this</span>.#count = start; }
+  next() { <span class="hl-k">return</span> ++<span class="hl-k">this</span>.#count; }
+  get value() { <span class="hl-k">return</span> <span class="hl-k">this</span>.#count; }   <span class="hl-c">// getter：像读属性一样调用</span>
+  static create() { <span class="hl-k">return</span> <span class="hl-k">new</span> <span class="hl-t">Counter</span>(); }  <span class="hl-c">// 静态方法：Counter.create()</span>
+}
+<span class="hl-k">const</span> c = <span class="hl-k">new</span> <span class="hl-t">Counter</span>(5);
+c.next();   <span class="hl-c">// 6</span>
+c.value;    <span class="hl-c">// 6</span></code></pre></article><article class="sx-item"><h3><code>extends / super</code></h3><p class="sx-what">继承：子类拿到父类的全部能力，super 调用父类的构造器或方法。</p><pre class="code"><code><span class="hl-k">class</span> <span class="hl-t">HttpError</span> <span class="hl-k">extends</span> <span class="hl-t">Error</span> {
+  constructor(status, message) {
+    <span class="hl-k">super</span>(message);          <span class="hl-c">// 先让父类 Error 把 message 设好</span>
+    <span class="hl-k">this</span>.status = status;
+  }
+}
+<span class="hl-k">throw</span> <span class="hl-k">new</span> <span class="hl-t">HttpError</span>(404, <span class="hl-s">"not_found"</span>);</code></pre></article></div></section><section class="sx-sec" id="js-async"><h2>异步：Promise / async / await</h2><p class="sx-desc">后端最重要的一章。查数据库、调 Google、读文件都要“等”，JS 不会傻等，而是先去干别的。</p><div class="sx-grid"><figure class="sx-fig"><svg viewBox="0 0 640 250" role="img" aria-label="事件循环：主线程只有一个。要等的事交给系统去等，等好了把回调排进队列，主线程空下来就一个个取出来执行"><g filter="url(#sxwob)"><ellipse cx="320.0" cy="127.0" rx="158" ry="88" class="sx-s sx-dash" fill="none"/><rect x="250.0" y="103.0" width="140" height="48" rx="24" class="sx-s" fill="var(--yellow)"/><rect x="250.0" y="17.0" width="140" height="44" rx="9" class="sx-s" fill="var(--blue)"/><rect x="408.0" y="105.0" width="140" height="44" rx="9" class="sx-s" fill="var(--mint)"/><rect x="250.0" y="193.0" width="140" height="44" rx="9" class="sx-s" fill="var(--yellow)"/><rect x="92.0" y="105.0" width="140" height="44" rx="9" class="sx-s" fill="var(--pink)"/></g><text x="320.0" y="132.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">调用栈（正在执行）</text><text x="320.0" y="37.0" text-anchor="middle" font-size="12.5" font-weight="700" class="">同步代码</text><text x="320.0" y="53.0" text-anchor="middle" font-size="10.5" class="sx-sub">从上往下立刻执行</text><text x="478.0" y="125.0" text-anchor="middle" font-size="12.5" font-weight="700" class="">Web API / 系统</text><text x="478.0" y="141.0" text-anchor="middle" font-size="10.5" class="sx-sub">定时器、网络、数据库在别处等</text><text x="320.0" y="213.0" text-anchor="middle" font-size="12.5" font-weight="700" class="">任务队列</text><text x="320.0" y="229.0" text-anchor="middle" font-size="10.5" class="sx-sub">等好了的回调排队</text><text x="162.0" y="125.00000000000001" text-anchor="middle" font-size="12.5" font-weight="700" class="">事件循环</text><text x="162.0" y="141.0" text-anchor="middle" font-size="10.5" class="sx-sub">栈空了就取下一个</text><circle r="6" class="sx-s" fill="var(--pink)"><animateMotion dur="6s" repeatCount="indefinite" path="M320.0 39.0 A 158 88 0 1 1 319.9 39.0"/></circle></svg><figcaption>事件循环：主线程只有一个。要等的事交给系统去等，等好了把回调排进队列，主线程空下来就一个个取出来执行</figcaption></figure><article class="sx-item"><h3><code>Promise</code></h3><p class="sx-what">一个“将来才会有结果”的盒子。三种状态：<b>pending</b>（等待中）→ <b>fulfilled</b>（成功，有值）或 <b>rejected</b>（失败，有错误）。</p><pre class="code"><code><span class="hl-k">const</span> p = fetch(<span class="hl-s">"/favorites"</span>);     <span class="hl-c">// 立刻返回一个 Promise，结果还没回来</span>
+p.then(res =&gt; res.json())          <span class="hl-c">// 成功后做什么</span>
+ .then(data =&gt; console.log(data))
+ .<span class="hl-k">catch</span>(err =&gt; console.error(err)) <span class="hl-c">// 任何一步失败都会到这里</span>
+ .<span class="hl-k">finally</span>(() =&gt; hideLoading());     <span class="hl-c">// 不管成功失败都执行</span></code></pre></article><article class="sx-item"><h3><code>async / await</code></h3><p class="sx-what">Promise 的“同步写法”。<b>async</b> 标在函数前，函数就一定返回 Promise；<b>await</b> 只能在 async 函数里用，意思是“等这个 Promise 有结果再往下走”。</p><pre class="code"><code><span class="hl-c">// 我们后端的收藏列表接口（简化）</span>
+router.get(<span class="hl-s">"/favorites"</span>, <span class="hl-k">async</span> (req, res) =&gt; {
+  <span class="hl-k">const</span> userId = getUserId(res);
+  <span class="hl-k">const</span> rows = <span class="hl-k">await</span> db.select().<span class="hl-k">from</span>(favoriteWord)    <span class="hl-c">// 等数据库返回</span>
+                       .where(eq(favoriteWord.userId, userId));
+  res.json(rows);
+});</code></pre><p class="sx-tip"><b>记住</b>await 不会卡住整个程序，只是暂停“这一个函数”，主线程趁机去处理别人的请求。</p></article><figure class="sx-fig"><svg viewBox="0 0 640 96" role="img" aria-label="Promise 的一生：从等待开始，最后要么成功、要么失败，只会变一次"><g filter="url(#sxwob)"><rect x="10.0" y="16" width="138.5" height="64" rx="10" class="sx-s" fill="var(--blue)"/><path d="M151.5 48.0 h14" class="sx-s" marker-end="url(#sxah)"/><rect x="170.5" y="16" width="138.5" height="64" rx="10" class="sx-s" fill="var(--yellow)"/><path d="M312.0 48.0 h14" class="sx-s" marker-end="url(#sxah)"/><rect x="331.0" y="16" width="138.5" height="64" rx="10" class="sx-s" fill="var(--mint)"/><path d="M472.5 48.0 h14" class="sx-s" marker-end="url(#sxah)"/><rect x="491.5" y="16" width="138.5" height="64" rx="10" class="sx-s" fill="var(--pink)"/></g><text x="79.25" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">发请求</text><text x="79.25" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">fetch(...)</text><text x="239.75" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">pending</text><text x="239.75" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">等待中</text><text x="400.25" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">fulfilled</text><text x="400.25" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">拿到结果</text><text x="560.75" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">rejected</text><text x="560.75" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">出错 → catch</text></svg><figcaption>Promise 的一生：从等待开始，最后要么成功、要么失败，只会变一次</figcaption></figure><article class="sx-item"><h3><code>Promise.all</code></h3><p class="sx-what">同时发出多个请求，全部完成后一起拿结果，比一个个 await 快。</p><pre class="code"><code><span class="hl-k">const</span> [user, favs] = <span class="hl-k">await</span> <span class="hl-t">Promise</span>.all([
+  fetch(<span class="hl-s">"/me"</span>).then(r =&gt; r.json()),
+  fetch(<span class="hl-s">"/favorites"</span>).then(r =&gt; r.json()),
+]);
+<span class="hl-c">// 任何一个失败，整个 Promise.all 就失败；想要“各管各的”用 Promise.allSettled</span></code></pre></article><article class="sx-item"><h3><code>setTimeout</code></h3><p class="sx-what">过一段时间再执行（异步）。哪怕写 0 毫秒，也要等当前同步代码全部跑完。</p><pre class="code"><code>console.log(<span class="hl-s">"1"</span>);
+setTimeout(() =&gt; console.log(<span class="hl-s">"3"</span>), 0);
+console.log(<span class="hl-s">"2"</span>);
+<span class="hl-c">// 输出顺序：1 2 3</span></code></pre></article></div></section><section class="sx-sec" id="js-err"><h2>错误处理：try / catch / finally / throw</h2><p class="sx-desc">程序出错时不让它直接崩掉，而是“接住”错误，给用户一个合理的回应。</p><div class="sx-grid"><figure class="sx-fig"><svg viewBox="0 0 640 200" role="img" aria-label="try 里一旦出错，后面的语句不再执行，直接跳到 catch；finally 不管成功失败都会执行（适合收尾：关加载动画、释放资源）"><g filter="url(#sxwob)"><rect x="14" y="74" width="150" height="52" rx="10" class="sx-s" fill="var(--blue)"/><rect x="245" y="16" width="170" height="52" rx="10" class="sx-s" fill="var(--mint)"/><rect x="245" y="132" width="170" height="52" rx="10" class="sx-s" fill="var(--pink)"/><rect x="490" y="74" width="136" height="52" rx="10" class="sx-s" fill="var(--yellow)"/><path d="M164 92 C 200 92, 210 42, 243 42" class="sx-s" marker-end="url(#sxah)"/><path d="M164 112 C 200 112, 210 158, 243 158" class="sx-s sx-dash" marker-end="url(#sxah)"/><path d="M415 42 C 450 42, 460 92, 488 92" class="sx-s" marker-end="url(#sxah)"/><path d="M415 158 C 450 158, 460 112, 488 112" class="sx-s sx-dash" marker-end="url(#sxah)"/></g><text x="89.0" y="96" text-anchor="middle" font-size="13" font-weight="700" class="">try { }</text><text x="89.0" y="114" text-anchor="middle" font-size="10.5" class="sx-sub">先试着执行</text><text x="330.0" y="38" text-anchor="middle" font-size="13" font-weight="700" class="">顺利执行完</text><text x="330.0" y="56" text-anchor="middle" font-size="10.5" class="sx-sub">跳过 catch</text><text x="330.0" y="154" text-anchor="middle" font-size="13" font-weight="700" class="">catch (e) { }</text><text x="330.0" y="172" text-anchor="middle" font-size="10.5" class="sx-sub">接住错误</text><text x="558.0" y="96" text-anchor="middle" font-size="13" font-weight="700" class="">finally { }</text><text x="558.0" y="114" text-anchor="middle" font-size="10.5" class="sx-sub">总会执行</text><text x="200" y="58" text-anchor="middle" font-size="11" class="sx-good">正常</text><text x="200" y="150" text-anchor="middle" font-size="11" class="sx-bad">出错</text></svg><figcaption>try 里一旦出错，后面的语句不再执行，直接跳到 catch；finally 不管成功失败都会执行（适合收尾：关加载动画、释放资源）</figcaption></figure><article class="sx-item"><h3><code>try / catch / finally</code></h3><p class="sx-what">把可能出错的代码放进 try；出错时跳到 catch，变量 e 就是错误对象；finally 最后一定执行。</p><pre class="code"><code><span class="hl-k">async</span> <span class="hl-k">function</span> loadFavs() {
+  showLoading();
+  <span class="hl-k">try</span> {
+    <span class="hl-k">const</span> res = <span class="hl-k">await</span> fetch(<span class="hl-s">"/favorites"</span>, { headers: { <span class="hl-t">Authorization</span>: <span class="hl-s">`Bearer ${token}`</span> } });
+    <span class="hl-k">if</span> (!res.ok) <span class="hl-k">throw</span> <span class="hl-k">new</span> <span class="hl-t">Error</span>(<span class="hl-s">`HTTP ${res.status}`</span>);  <span class="hl-c">// 状态码不对也当成错误</span>
+    favs = <span class="hl-k">await</span> res.json();
+  } <span class="hl-k">catch</span> (e) {
+    console.error(e);                 <span class="hl-c">// 打印出来方便排查</span>
+    toast(<span class="hl-s">"收藏加载失败，请重试"</span>);     <span class="hl-c">// 给用户看的话</span>
+  } <span class="hl-k">finally</span> {
+    hideLoading();                    <span class="hl-c">// 成功失败都要关掉加载动画</span>
+  }
+}</code></pre><p class="sx-tip"><b>记住</b>fetch 只有网络断了才会抛错；404、500 不会，要自己检查 res.ok。</p></article><article class="sx-item"><h3><code>throw / Error</code></h3><p class="sx-what">自己“抛出”一个错误，交给外面的 catch 去处理。最好抛 Error 对象（带堆栈信息），不要抛字符串。</p><pre class="code"><code><span class="hl-k">function</span> parseId(raw) {
+  <span class="hl-k">const</span> id = <span class="hl-t">Number</span>(raw);
+  <span class="hl-k">if</span> (!<span class="hl-t">Number</span>.isInteger(id) || id &lt;= 0) <span class="hl-k">throw</span> <span class="hl-k">new</span> <span class="hl-t">Error</span>(<span class="hl-s">"bad_id"</span>);
+  <span class="hl-k">return</span> id;
+}
+<span class="hl-k">try</span> { parseId(<span class="hl-s">"abc"</span>); }
+<span class="hl-k">catch</span> (e) { console.log(e.message); }   <span class="hl-c">// "bad_id"</span></code></pre></article><article class="sx-item"><h3><code>Promise 的错误</code></h3><p class="sx-what">async 函数里 await 一个失败的 Promise，会像 throw 一样被 try/catch 接住；不用 try 的话，用 .catch()。</p><pre class="code"><code><span class="hl-c">// 写法一：try / catch</span>
+<span class="hl-k">try</span> { <span class="hl-k">await</span> db.insert(...); } <span class="hl-k">catch</span> (e) { ... }
+
+<span class="hl-c">// 写法二：.catch</span>
+<span class="hl-k">await</span> db.insert(...).<span class="hl-k">catch</span>(e =&gt; { ... });
+
+<span class="hl-c">// 没人接住的 Promise 错误会变成 "UnhandledPromiseRejection"，Node 里可能直接让进程退出</span></code></pre><p class="sx-tip"><b>记住</b>Express 5 会自动接住 async 路由里抛出的错误，交给错误处理中间件，所以我们的路由里不用到处写 try。</p></article></div></section><section class="sx-sec" id="js-misc"><h2>其他常用</h2><p class="sx-desc">零碎但天天见。</p><div class="sx-grid"><article class="sx-item"><h3><code>条件写法</code></h3><p class="sx-what">三元运算 <code>a ? b : c</code>；短路 <code>&&</code>；switch。</p><pre class="code"><code><span class="hl-k">const</span> label = kind === <span class="hl-s">"w"</span> ? <span class="hl-s">"单词"</span> : <span class="hl-s">"短语"</span>;
+isLoggedIn &amp;&amp; loadFavs();            <span class="hl-c">// 左边为真才执行右边</span>
+<span class="hl-k">switch</span> (kind) {
+  <span class="hl-k">case</span> <span class="hl-s">"w"</span>: <span class="hl-k">return</span> <span class="hl-s">"单词"</span>;
+  <span class="hl-k">case</span> <span class="hl-s">"p"</span>: <span class="hl-k">return</span> <span class="hl-s">"短语"</span>;
+  <span class="hl-k">default</span>:  <span class="hl-k">return</span> <span class="hl-s">"未知"</span>;
+}</code></pre></article><article class="sx-item"><h3><code>循环</code></h3><p class="sx-what"><b>for...of</b> 遍历数组的值（最常用）；<b>for...in</b> 遍历对象的键；<b>forEach</b> 数组方法（不能 break）。</p><pre class="code"><code><span class="hl-k">for</span> (<span class="hl-k">const</span> fav <span class="hl-k">of</span> favs) console.log(fav.word);
+<span class="hl-k">for</span> (<span class="hl-k">const</span> key <span class="hl-k">in</span> fav) console.log(key, fav[key]);
+favs.forEach((f, i) =&gt; console.log(i, f.word));
+<span class="hl-k">for</span> (<span class="hl-k">let</span> i = 0; i &lt; 3; i++) { <span class="hl-k">if</span> (i === 1) <span class="hl-k">continue</span>; }</code></pre></article><article class="sx-item"><h3><code>Number / String 常用</code></h3><p class="sx-what">字符串和数字互转、去空格、截取。</p><pre class="code"><code><span class="hl-t">Number</span>(<span class="hl-s">"12"</span>);             <span class="hl-c">// 12</span>
+<span class="hl-t">Number</span>.isInteger(12.5);   <span class="hl-c">// false</span>
+<span class="hl-s">"  abc "</span>.trim();          <span class="hl-c">// "abc"   ← 我们后端存词前会 trim</span>
+<span class="hl-s">"Bearer xyz"</span>.startsWith(<span class="hl-s">"Bearer "</span>);  <span class="hl-c">// true</span>
+<span class="hl-s">"Bearer xyz"</span>.slice(7);    <span class="hl-c">// "xyz"</span>
+<span class="hl-s">"a,b"</span>.split(<span class="hl-s">","</span>);         <span class="hl-c">// ["a", "b"]</span>
+(3.14159).toFixed(2);     <span class="hl-c">// "3.14"</span></code></pre></article><article class="sx-item"><h3><code>Map / Set</code></h3><p class="sx-what"><b>Map</b>：键可以是任何东西的字典；<b>Set</b>：不重复的集合。</p><pre class="code"><code><span class="hl-k">const</span> seen = <span class="hl-k">new</span> <span class="hl-t">Set</span>([<span class="hl-s">"w"</span>, <span class="hl-s">"p"</span>]);
+seen.has(<span class="hl-s">"g"</span>);    <span class="hl-c">// false</span>
+seen.add(<span class="hl-s">"g"</span>);
+
+<span class="hl-k">const</span> byWord = <span class="hl-k">new</span> <span class="hl-t">Map</span>();
+byWord.set(<span class="hl-s">"abandon"</span>, [1, 2]);
+byWord.get(<span class="hl-s">"abandon"</span>);   <span class="hl-c">// [1, 2]  ← 日语站收藏本按文字合并旧数据就是用 Map</span></code></pre></article></div></section></div>
+</div>
+</template>
+<template id="tpl-sx-ts">
+<div class="sx" v-pre>
+<div class="sx-wrap"><div class="sx-chips"><span class="sx-chip">我们 Node 后端用的语言</span><span class="sx-chip">= JavaScript + 类型</span><span class="sx-chip">写代码时检查，运行时消失</span></div><h1 class="sx-h1">TypeScript 语法</h1><p class="sx-intro">TypeScript 就是“带类型的 JavaScript”。你写的类型只在写代码、编译时帮你检查错误，编译成 JavaScript 以后类型全部消失。所以它防得住“自己手滑”，防不住“前端传来的坏数据”。</p><nav class="sx-nav" aria-label="章节"><a href="#ts-why">它是什么、怎么跑起来</a><a href="#ts-basic">基础类型</a><a href="#ts-shape">描述对象：type / interface</a><a href="#ts-union">联合类型与收窄</a><a href="#ts-gen">泛型 &amp;lt;T&amp;gt;</a><a href="#ts-cfg">配置与小技巧</a></nav><section class="sx-sec" id="ts-why"><h2>它是什么、怎么跑起来</h2><p class="sx-desc">先理解“类型擦除”，后面很多事就说得通了。</p><div class="sx-grid"><figure class="sx-fig"><svg viewBox="0 0 640 96" role="img" aria-label="类型擦除：TypeScript 只活在编写和编译阶段，真正运行的是去掉类型后的 JavaScript"><g filter="url(#sxwob)"><rect x="10.0" y="16" width="138.5" height="64" rx="10" class="sx-s" fill="var(--blue)"/><path d="M151.5 48.0 h14" class="sx-s" marker-end="url(#sxah)"/><rect x="170.5" y="16" width="138.5" height="64" rx="10" class="sx-s" fill="var(--yellow)"/><path d="M312.0 48.0 h14" class="sx-s" marker-end="url(#sxah)"/><rect x="331.0" y="16" width="138.5" height="64" rx="10" class="sx-s" fill="var(--mint)"/><path d="M472.5 48.0 h14" class="sx-s" marker-end="url(#sxah)"/><rect x="491.5" y="16" width="138.5" height="64" rx="10" class="sx-s" fill="var(--lilac)"/></g><text x="79.25" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">app.ts</text><text x="79.25" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">带类型的代码</text><text x="239.75" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">tsc / tsx</text><text x="239.75" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">检查类型 + 去掉类型</text><text x="400.25" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">app.js</text><text x="400.25" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">普通 JavaScript</text><text x="560.75" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">Node.js 执行</text><text x="560.75" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">根本不知道有过类型</text></svg><figcaption>类型擦除：TypeScript 只活在编写和编译阶段，真正运行的是去掉类型后的 JavaScript</figcaption></figure><article class="sx-item"><h3><code>类型标注</code></h3><p class="sx-what">在变量、参数、返回值后面写 <code>: 类型</code>。写错了编辑器立刻标红，不用等运行。</p><pre class="code"><code><span class="hl-k">let</span> page: <span class="hl-k">number</span> = 1;
+<span class="hl-k">const</span> site: <span class="hl-k">string</span> = <span class="hl-s">"jlpt"</span>;
+<span class="hl-k">function</span> add(a: <span class="hl-k">number</span>, b: <span class="hl-k">number</span>): <span class="hl-k">number</span> { <span class="hl-k">return</span> a + b; }
+add(1, <span class="hl-s">"2"</span>);   <span class="hl-c">// ❌ 编辑器报错：string 不能给 number</span>
+
+<span class="hl-c">// 很多时候不用写，TS 会自己推断：</span>
+<span class="hl-k">const</span> word = <span class="hl-s">"abandon"</span>;   <span class="hl-c">// 推断出 string</span></code></pre><p class="sx-tip"><b>记住</b>能推断的就别写，函数参数和对外导出的东西要写。</p></article><article class="sx-item"><h3><code>运行时还是要自己检查</code></h3><p class="sx-what">前端发来的 JSON 在运行时才到，那时类型早就没了。所以收到的数据先当 <code>unknown</code>，检查过再用。</p><pre class="code"><code><span class="hl-c">// 我们后端：req.body 来自网络，不能相信</span>
+<span class="hl-k">const</span> kind = body.kind;                 <span class="hl-c">// 运行时可能是任何东西</span>
+<span class="hl-k">if</span> (!isKind(kind)) {                    <span class="hl-c">// 自己写的检查函数</span>
+  res.status(400).json({ error: <span class="hl-s">"bad_request"</span> });
+  <span class="hl-k">return</span>;
+}
+<span class="hl-c">// 这里往下，TS 才知道 kind 是 "w" | "p"</span></code></pre><p class="sx-tip"><b>记住</b>TS 管“写对”，校验管“防坏人”，两件事都要做。</p></article></div></section><section class="sx-sec" id="ts-basic"><h2>基础类型</h2><p class="sx-desc">比 JS 多了几个“只在类型层面存在”的东西。</p><div class="sx-grid"><article class="sx-item"><h3><code>string / number / boolean / 数组</code></h3><p class="sx-what">基本类型直接写名字；数组写 <code>类型[]</code> 或 <code>Array&lt;类型&gt;</code>。</p><pre class="code"><code><span class="hl-k">const</span> ids: <span class="hl-k">number</span>[] = [1, 2, 3];
+<span class="hl-k">const</span> words: <span class="hl-t">Array</span>&lt;<span class="hl-k">string</span>&gt; = [<span class="hl-s">"a"</span>, <span class="hl-s">"b"</span>];
+<span class="hl-k">const</span> pair: [<span class="hl-k">string</span>, <span class="hl-k">number</span>] = [<span class="hl-s">"abandon"</span>, 1];   <span class="hl-c">// 元组：固定长度、每一位类型固定</span></code></pre></article><article class="sx-item"><h3><code>any / unknown / never / void</code></h3><p class="sx-what"><b>any</b>：关掉检查（尽量别用）；<b>unknown</b>：可能是任何东西，但用之前必须先检查（安全版 any）；<b>void</b>：函数不返回值；<b>never</b>：永远不会发生。</p><pre class="code"><code><span class="hl-k">function</span> log(msg: <span class="hl-k">string</span>): <span class="hl-k">void</span> { console.log(msg); }
+
+<span class="hl-k">const</span> data: <span class="hl-k">unknown</span> = <span class="hl-t">JSON</span>.parse(text);
+data.word;                       <span class="hl-c">// ❌ 不检查不让用</span>
+<span class="hl-k">if</span> (<span class="hl-k">typeof</span> data === <span class="hl-s">"object"</span> &amp;&amp; data !== <span class="hl-k">null</span> &amp;&amp; <span class="hl-s">"word"</span> <span class="hl-k">in</span> data) { <span class="hl-c">/* 才能用 */</span> }
+
+<span class="hl-k">function</span> fail(msg: <span class="hl-k">string</span>): <span class="hl-k">never</span> { <span class="hl-k">throw</span> <span class="hl-k">new</span> <span class="hl-t">Error</span>(msg); }</code></pre></article><article class="sx-item"><h3><code>null / undefined 与可选</code></h3><p class="sx-what">开启 strict 后，null 和 undefined 要明确写出来。<code>?</code> 表示“可以没有”。</p><pre class="code"><code><span class="hl-k">let</span> token: <span class="hl-k">string</span> | <span class="hl-k">null</span> = <span class="hl-k">null</span>;      <span class="hl-c">// 可能是字符串，也可能是空</span>
+<span class="hl-k">function</span> greet(name?: <span class="hl-k">string</span>) {       <span class="hl-c">// name 可以不传（类型是 string | undefined）</span>
+  <span class="hl-k">return</span> <span class="hl-s">`Hello, ${name ?? "Goen"}`</span>;
+}
+<span class="hl-k">const</span> len = token!.length;   <span class="hl-c">// ! 非空断言：“我保证它不是空的”，慎用</span></code></pre></article></div></section><section class="sx-sec" id="ts-shape"><h2>描述对象：type / interface</h2><p class="sx-desc">后端里到处都是“一个对象长什么样”的描述：请求体、数据库行、零件清单。</p><div class="sx-grid"><article class="sx-item"><h3><code>type 和 interface</code></h3><p class="sx-what">都能描述对象的形状。interface 可以继承、可以重复声明合并；type 更灵活（能写联合类型）。项目里统一一种就行。</p><pre class="code"><code><span class="hl-c">// 我们后端 src/deps.ts：程序需要的零件清单</span>
+<span class="hl-k">export</span> <span class="hl-k">type</span> <span class="hl-t">Deps</span> = {
+  db: <span class="hl-t">Db</span>;                 <span class="hl-c">// 数据库</span>
+  jwt: <span class="hl-t">JwtService</span>;        <span class="hl-c">// 发 / 验 token 的工具</span>
+  google: <span class="hl-t">GoogleVerifier</span>; <span class="hl-c">// 核对 Google 证明书的工具</span>
+  allowedOrigins: <span class="hl-k">string</span>[];
+};
+
+<span class="hl-k">interface</span> <span class="hl-t">User</span> { id: <span class="hl-k">number</span>; email: <span class="hl-k">string</span>; name?: <span class="hl-k">string</span>; }   <span class="hl-c">// name 可选</span>
+<span class="hl-k">interface</span> <span class="hl-t">Admin</span> <span class="hl-k">extends</span> <span class="hl-t">User</span> { role: <span class="hl-s">"admin"</span>; }                 <span class="hl-c">// 继承</span></code></pre></article><article class="sx-item"><h3><code>readonly / 可选属性</code></h3><p class="sx-what"><b>readonly</b>：创建后不能改；<b>?</b>：可以没有这个字段。</p><pre class="code"><code><span class="hl-k">type</span> <span class="hl-t">Favorite</span> = {
+  <span class="hl-k">readonly</span> id: <span class="hl-k">number</span>;   <span class="hl-c">// 编号创建后不能改</span>
+  word: <span class="hl-k">string</span>;
+  status?: <span class="hl-k">string</span>;       <span class="hl-c">// 可以没有</span>
+};
+<span class="hl-k">const</span> f: <span class="hl-t">Favorite</span> = { id: 1, word: <span class="hl-s">"abandon"</span> };
+f.id = 2;   <span class="hl-c">// ❌ 只读</span></code></pre></article><article class="sx-item"><h3><code>函数类型</code></h3><p class="sx-what">描述“一个函数接收什么、返回什么”，常用于回调和依赖。</p><pre class="code"><code><span class="hl-k">type</span> <span class="hl-t">GoogleVerifier</span> = (idToken: <span class="hl-k">string</span>) =&gt; <span class="hl-t">Promise</span>&lt;<span class="hl-t">GoogleUser</span> | <span class="hl-k">null</span>&gt;;
+<span class="hl-c">// 读法：一个函数，参数是字符串，返回一个 Promise，里面是 GoogleUser 或 null</span>
+
+<span class="hl-c">// 测试里可以塞一个假的进去，类型对得上就行：</span>
+<span class="hl-k">const</span> fakeGoogle: <span class="hl-t">GoogleVerifier</span> = <span class="hl-k">async</span> (t) =&gt; (t.startsWith(<span class="hl-s">"google:"</span>) ? { sub: t } <span class="hl-k">as</span> <span class="hl-t">GoogleUser</span> : <span class="hl-k">null</span>);</code></pre></article></div></section><section class="sx-sec" id="ts-union"><h2>联合类型与收窄</h2><p class="sx-desc">TypeScript 最好用的能力：值只能是几种之一，并且在 if 里自动“收窄”。</p><div class="sx-grid"><article class="sx-item"><h3><code>联合类型 |</code></h3><p class="sx-what">值是几种类型之一。配合字面量，能把“只能是这几个字”写进类型里。</p><pre class="code"><code><span class="hl-k">type</span> <span class="hl-t">Kind</span> = <span class="hl-s">"w"</span> | <span class="hl-s">"p"</span>;               <span class="hl-c">// 只能是这两个字</span>
+<span class="hl-k">type</span> <span class="hl-t">Site</span> = <span class="hl-s">"ielts"</span> | <span class="hl-s">"jlpt"</span>;
+<span class="hl-k">let</span> k: <span class="hl-t">Kind</span> = <span class="hl-s">"w"</span>;
+k = <span class="hl-s">"g"</span>;                             <span class="hl-c">// ❌ 编辑器直接报错</span>
+<span class="hl-k">type</span> <span class="hl-t">Result</span> = { ok: <span class="hl-k">true</span>; data: <span class="hl-k">string</span> } | { ok: <span class="hl-k">false</span>; error: <span class="hl-k">string</span> };</code></pre></article><article class="sx-item"><h3><code>as const + typeof 推导</code></h3><p class="sx-what">从一个常量数组<b>推导</b>出联合类型，改规则只改一处。我们后端就是这么写的。</p><pre class="code"><code><span class="hl-k">const</span> <span class="hl-t">KINDS</span> = [<span class="hl-s">"w"</span>, <span class="hl-s">"p"</span>] <span class="hl-k">as</span> <span class="hl-k">const</span>;     <span class="hl-c">// as const：当成固定不变的字面量</span>
+<span class="hl-k">type</span> <span class="hl-t">Kind</span> = (<span class="hl-k">typeof</span> <span class="hl-t">KINDS</span>)[<span class="hl-k">number</span>];    <span class="hl-c">// 推导出 "w" | "p"</span>
+<span class="hl-c">// 以后加一个类型，只改上面那个数组，类型自动跟着变</span></code></pre></article><article class="sx-item"><h3><code>类型守卫 v is T</code></h3><p class="sx-what">自己写一个检查函数，告诉 TS：“如果我返回 true，这个值就是某种类型”。</p><pre class="code"><code><span class="hl-k">const</span> isKind = (v: <span class="hl-k">unknown</span>): v is <span class="hl-t">Kind</span> =&gt; <span class="hl-t">KINDS</span>.includes(v <span class="hl-k">as</span> <span class="hl-t">Kind</span>);
+
+<span class="hl-k">function</span> save(kind: <span class="hl-k">unknown</span>) {
+  <span class="hl-k">if</span> (!isKind(kind)) <span class="hl-k">return</span>;   <span class="hl-c">// 不合格就走</span>
+  kind;                        <span class="hl-c">// ← 这里 TS 已经知道它是 "w" | "p"</span>
+}</code></pre><p class="sx-tip"><b>记住</b>unknown 进来、守卫检查、收窄成确定类型，是处理外部数据的标准三步。</p></article><article class="sx-item"><h3><code>typeof / in / instanceof 收窄</code></h3><p class="sx-what">TS 能看懂这些判断，判断之后自动缩小类型范围。</p><pre class="code"><code><span class="hl-k">function</span> show(x: <span class="hl-k">string</span> | <span class="hl-k">number</span>) {
+  <span class="hl-k">if</span> (<span class="hl-k">typeof</span> x === <span class="hl-s">"string"</span>) <span class="hl-k">return</span> x.toUpperCase();  <span class="hl-c">// 这里 x 是 string</span>
+  <span class="hl-k">return</span> x.toFixed(2);                                <span class="hl-c">// 这里 x 是 number</span>
+}
+<span class="hl-k">if</span> (e <span class="hl-k">instanceof</span> <span class="hl-t">Error</span>) console.log(e.message);       <span class="hl-c">// catch 里的 e 默认是 unknown</span></code></pre></article></div></section><section class="sx-sec" id="ts-gen"><h2>泛型 &amp;lt;T&amp;gt;</h2><p class="sx-desc">泛型就是“类型的参数”：同一段代码，可以用在不同类型上，还保持类型安全。</p><div class="sx-grid"><article class="sx-item"><h3><code>泛型函数</code></h3><p class="sx-what">尖括号里的 T 是一个占位符，调用时由传进来的值决定。</p><pre class="code"><code><span class="hl-k">function</span> first&lt;<span class="hl-t">T</span>&gt;(list: <span class="hl-t">T</span>[]): <span class="hl-t">T</span> | <span class="hl-k">undefined</span> { <span class="hl-k">return</span> list[0]; }
+first([1, 2, 3]);        <span class="hl-c">// 类型是 number | undefined</span>
+first([<span class="hl-s">"a"</span>, <span class="hl-s">"b"</span>]);       <span class="hl-c">// 类型是 string | undefined</span></code></pre></article><article class="sx-item"><h3><code>常见的内置泛型</code></h3><p class="sx-what"><b>Promise&lt;T&gt;</b> 将来会给你一个 T；<b>Array&lt;T&gt;</b>；<b>Record&lt;K, V&gt;</b> 键值字典。</p><pre class="code"><code><span class="hl-k">async</span> <span class="hl-k">function</span> getUser(): <span class="hl-t">Promise</span>&lt;<span class="hl-t">User</span>&gt; { ... }   <span class="hl-c">// 返回"将来的 User"</span>
+<span class="hl-k">const</span> counts: <span class="hl-t">Record</span>&lt;<span class="hl-k">string</span>, <span class="hl-k">number</span>&gt; = { w: 3, p: 1 };</code></pre></article><article class="sx-item"><h3><code>工具类型</code></h3><p class="sx-what">从已有类型“加工”出新类型：<b>Partial</b> 全部变可选、<b>Pick</b> 挑几个、<b>Omit</b> 去掉几个、<b>ReturnType</b> 取函数返回值类型。</p><pre class="code"><code><span class="hl-k">type</span> <span class="hl-t">Favorite</span> = { id: <span class="hl-k">number</span>; userId: <span class="hl-k">number</span>; word: <span class="hl-k">string</span>; status: <span class="hl-k">string</span> };
+<span class="hl-k">type</span> <span class="hl-t">FavoriteView</span> = <span class="hl-t">Omit</span>&lt;<span class="hl-t">Favorite</span>, <span class="hl-s">"userId"</span>&gt;;        <span class="hl-c">// 返回给前端：去掉 userId</span>
+<span class="hl-k">type</span> <span class="hl-t">FavoritePatch</span> = <span class="hl-t">Partial</span>&lt;<span class="hl-t">Pick</span>&lt;<span class="hl-t">Favorite</span>, <span class="hl-s">"word"</span> | <span class="hl-s">"status"</span>&gt;&gt;;  <span class="hl-c">// PUT 时两个都可选</span>
+<span class="hl-k">type</span> <span class="hl-t">Db</span> = <span class="hl-t">ReturnType</span>&lt;<span class="hl-k">typeof</span> createDb&gt;;               <span class="hl-c">// 我们后端：Db 的类型直接从函数推出来</span></code></pre></article></div></section><section class="sx-sec" id="ts-cfg"><h2>配置与小技巧</h2><p class="sx-desc">tsconfig.json 和几个经常看到的写法。</p><div class="sx-grid"><article class="sx-item"><h3><code>tsconfig.json 关键项</code></h3><p class="sx-what"><b>strict</b>：打开所有严格检查（一定要开）；<b>target</b>：编译成哪个版本的 JS；<b>module</b>：用哪种模块系统。</p><pre class="code"><code>{
+  <span class="hl-s">"compilerOptions"</span>: {
+    <span class="hl-s">"strict"</span>: <span class="hl-k">true</span>,            <span class="hl-c">// 严格模式：null 检查、隐式 any 报错……</span>
+    <span class="hl-s">"target"</span>: <span class="hl-s">"ES2022"</span>,
+    <span class="hl-s">"module"</span>: <span class="hl-s">"NodeNext"</span>,      <span class="hl-c">// Node 的 ESM 规则：导入本地文件要写 .js</span>
+    <span class="hl-s">"outDir"</span>: <span class="hl-s">"dist"</span>
+  }
+}</code></pre></article><article class="sx-item"><h3><code>import type</code></h3><p class="sx-what">只导入类型，编译后整行消失，不会产生运行时依赖。</p><pre class="code"><code><span class="hl-k">import</span> <span class="hl-k">type</span> { <span class="hl-t">Deps</span> } <span class="hl-k">from</span> <span class="hl-s">"../deps.js"</span>;        <span class="hl-c">// 只用到类型</span>
+<span class="hl-k">import</span> { createDb } <span class="hl-k">from</span> <span class="hl-s">"./db/client.js"</span>;     <span class="hl-c">// 用到真实的函数</span></code></pre></article><article class="sx-item"><h3><code>as 类型断言</code></h3><p class="sx-what">告诉 TS“按我说的类型来”。它不做任何检查，用错了运行时照样出错，能不用就不用。</p><pre class="code"><code><span class="hl-k">const</span> el = document.getElementById(<span class="hl-s">"app"</span>) <span class="hl-k">as</span> <span class="hl-t">HTMLDivElement</span>;
+<span class="hl-k">const</span> v = input <span class="hl-k">as</span> <span class="hl-t">Kind</span>;   <span class="hl-c">// ⚠️ 只是“骗过”编译器，不会真的检查 input</span></code></pre></article></div></section></div>
+</div>
+</template>
+<template id="tpl-sx-node">
+<div class="sx" v-pre>
+<div class="sx-wrap"><div class="sx-chips"><span class="sx-chip">让 JavaScript 跑在服务器上</span><span class="sx-chip">我们线上后端的运行环境</span><span class="sx-chip">npm 管依赖</span></div><h1 class="sx-h1">Node.js 语法与核心概念</h1><p class="sx-intro">Node.js 不是一门新语言，而是一个「能在电脑 / 服务器上运行 JavaScript 的程序」。浏览器里的 JS 能操作网页，Node 里的 JS 能读写文件、开端口、连数据库。这一篇讲 Node 特有的东西：进程、模块、npm、环境变量、事件循环、文件和网络。</p><nav class="sx-nav" aria-label="章节"><a href="#node-what">Node 是什么</a><a href="#node-npm">npm 与 package.json</a><a href="#node-env">环境变量与配置</a><a href="#node-loop">单线程与事件循环</a><a href="#node-api">常用内置模块</a></nav><section class="sx-sec" id="node-what"><h2>Node 是什么</h2><p class="sx-desc">把它想成「装在服务器上的、没有网页的浏览器引擎」。</p><div class="sx-grid"><figure class="sx-fig"><svg viewBox="0 0 640 236" role="img" aria-label="同一门语言，换了运行环境，能用的 API 不一样：Node 拿掉了网页相关的，加上了操作系统相关的"><g filter="url(#sxwob)"><rect x="20" y="14" width="260" height="208" rx="12" class="sx-s" fill="var(--blue)" fill-opacity=".35"/><rect x="360" y="14" width="260" height="208" rx="12" class="sx-s" fill="var(--mint)" fill-opacity=".35"/><rect x="36" y="52" width="228" height="30" rx="7" class="sx-s" fill="var(--card)"/><rect x="36" y="92" width="228" height="30" rx="7" class="sx-s" fill="var(--card)"/><rect x="36" y="132" width="228" height="30" rx="7" class="sx-s" fill="var(--card)"/><rect x="36" y="172" width="228" height="30" rx="7" class="sx-s" fill="var(--card)"/><rect x="376" y="52" width="228" height="30" rx="7" class="sx-s" fill="var(--yellow)"/><rect x="376" y="92" width="228" height="30" rx="7" class="sx-s" fill="var(--yellow)"/><rect x="376" y="132" width="228" height="30" rx="7" class="sx-s" fill="var(--yellow)"/><rect x="376" y="172" width="228" height="30" rx="7" class="sx-s" fill="var(--yellow)"/></g><text x="150.0" y="36" text-anchor="middle" font-size="13.5" font-weight="700" class="">浏览器里的 JavaScript</text><text x="490.0" y="36" text-anchor="middle" font-size="13.5" font-weight="700" class="">Node.js 里的 JavaScript</text><text x="150.0" y="72" text-anchor="middle" font-size="12" class="">能用：document、window</text><text x="150.0" y="112" text-anchor="middle" font-size="12" class="">能用：fetch、localStorage</text><text x="150.0" y="152" text-anchor="middle" font-size="12" class="">不能：读写电脑上的文件</text><text x="150.0" y="192" text-anchor="middle" font-size="12" class="">不能：开一个端口等别人来连</text><text x="490.0" y="72" text-anchor="middle" font-size="12" class="">没有：document、window</text><text x="490.0" y="112" text-anchor="middle" font-size="12" class="">能用：fetch、process、fs</text><text x="490.0" y="152" text-anchor="middle" font-size="12" class="">能：读写文件、连数据库</text><text x="490.0" y="192" text-anchor="middle" font-size="12" class="">能：监听 8080 端口当服务器</text></svg><figcaption>同一门语言，换了运行环境，能用的 API 不一样：Node 拿掉了网页相关的，加上了操作系统相关的</figcaption></figure><article class="sx-item"><h3><code>运行一个文件</code></h3><p class="sx-what"><code>node 文件名</code> 就启动一个 Node <b>进程</b>，执行完代码就退出；如果代码里开了服务器（listen），进程会一直开着等请求。</p><pre class="code"><code>node hello.js            <span class="hl-c"># 运行 JavaScript</span>
+npx tsx dev/server.ts    <span class="hl-c"># 运行 TypeScript（tsx 先帮你去掉类型再交给 Node）</span>
+npm run dev              <span class="hl-c"># 运行 package.json 里写好的 dev 命令</span>
+<span class="hl-c"># Ctrl + C：结束这个进程（端口也随之释放）</span></code></pre><p class="sx-tip"><b>记住</b>「端口被占用」= 之前那个进程还没关。</p></article><article class="sx-item"><h3><code>process 对象</code></h3><p class="sx-what">代表「当前这个 Node 进程」。最常用：<b>process.env</b> 读环境变量、<b>process.argv</b> 读命令行参数、<b>process.exit()</b> 结束进程。</p><pre class="code"><code><span class="hl-k">const</span> port = <span class="hl-t">Number</span>(process.env.<span class="hl-t">PORT</span> ?? 8080);
+<span class="hl-k">const</span> isProd = process.env.<span class="hl-t">NODE_ENV</span> === <span class="hl-s">"production"</span>;
+console.log(process.argv);   <span class="hl-c">// ["node", "/path/server.js", ...命令行后面跟的参数]</span>
+process.exit(1);             <span class="hl-c">// 非 0 = 出错退出（CI、部署平台会据此判断失败）</span></code></pre></article></div></section><section class="sx-sec" id="node-npm"><h2>npm 与 package.json</h2><p class="sx-desc">相当于 Java 世界的 Maven + pom.xml。</p><div class="sx-grid"><article class="sx-item"><h3><code>package.json</code></h3><p class="sx-what">项目说明书：名字、依赖、能跑哪些命令。<b>dependencies</b> 运行时要用的；<b>devDependencies</b> 只在开发 / 测试时用。</p><pre class="code"><code>{
+  <span class="hl-s">"name"</span>: <span class="hl-s">"ielts-backend-node"</span>,
+  <span class="hl-s">"type"</span>: <span class="hl-s">"module"</span>,                  <span class="hl-c">// 用 ESM（import / export）</span>
+  <span class="hl-s">"scripts"</span>: {
+    <span class="hl-s">"dev"</span>: <span class="hl-s">"tsx watch dev/server.ts"</span>,  <span class="hl-c">// npm run dev</span>
+    <span class="hl-s">"test"</span>: <span class="hl-s">"vitest run"</span>,              <span class="hl-c">// npm test</span>
+    <span class="hl-s">"db:migrate"</span>: <span class="hl-s">"drizzle-kit migrate"</span>
+  },
+  <span class="hl-s">"dependencies"</span>: { <span class="hl-s">"express"</span>: <span class="hl-s">"^5.3.0"</span>, <span class="hl-s">"jose"</span>: <span class="hl-s">"^6.2.14"</span> },
+  <span class="hl-s">"devDependencies"</span>: { <span class="hl-s">"vitest"</span>: <span class="hl-s">"^5.0.5"</span>, <span class="hl-s">"typescript"</span>: <span class="hl-s">"^5.9.3"</span> }
+}</code></pre></article><article class="sx-item"><h3><code>常用命令</code></h3><p class="sx-what">装依赖、跑脚本、临时执行一个包。</p><pre class="code"><code>npm install            <span class="hl-c"># 按 package.json 装好所有依赖到 node_modules/</span>
+npm install express    <span class="hl-c"># 新装一个包（会写进 dependencies）</span>
+npm install -D vitest  <span class="hl-c"># 装成开发依赖</span>
+npm ci                 <span class="hl-c"># 按 package-lock.json 一模一样地装（部署、CI 用）</span>
+npm run dev            <span class="hl-c"># 执行 scripts 里的 dev</span>
+npx drizzle-kit generate   <span class="hl-c"># 临时运行一个包里的命令</span></code></pre></article><article class="sx-item"><h3><code>版本号 ^5.3.0</code></h3><p class="sx-what">三段：<b>主版本.次版本.补丁</b>。<code>^</code> 表示「允许升级次版本和补丁，不升主版本」。<b>package-lock.json</b> 记下实际装的精确版本，保证大家装出来一样。</p><pre class="code"><code>^5.3.0   →  可以装 5.3.1、5.9.0，不能装 6.0.0
+~5.3.0   →  只能装 5.3.x
+5.3.0    →  只能是这一个版本</code></pre><p class="sx-tip"><b>记住</b>node_modules 不要提交到 Git，package-lock.json 要提交。</p></article></div></section><section class="sx-sec" id="node-env"><h2>环境变量与配置</h2><p class="sx-desc">密钥、数据库地址不写进代码，而是由「运行这个进程的环境」交给它。</p><div class="sx-grid"><figure class="sx-fig"><svg viewBox="0 0 640 96" role="img" aria-label="环境变量从哪来：本地放 .env，线上填在 Vercel 设置里；代码只认 process.env，不关心值从哪来"><g filter="url(#sxwob)"><rect x="10.0" y="16" width="138.5" height="64" rx="10" class="sx-s" fill="var(--yellow)"/><path d="M151.5 48.0 h14" class="sx-s" marker-end="url(#sxah)"/><rect x="170.5" y="16" width="138.5" height="64" rx="10" class="sx-s" fill="var(--blue)"/><path d="M312.0 48.0 h14" class="sx-s" marker-end="url(#sxah)"/><rect x="331.0" y="16" width="138.5" height="64" rx="10" class="sx-s" fill="var(--mint)"/><path d="M472.5 48.0 h14" class="sx-s" marker-end="url(#sxah)"/><rect x="491.5" y="16" width="138.5" height="64" rx="10" class="sx-s" fill="var(--lilac)"/></g><text x="79.25" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">.env 文件 / Vercel 设置</text><text x="79.25" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">APP_JWT_SECRET=...</text><text x="239.75" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">启动进程时带上</text><text x="239.75" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">操作系统交给进程</text><text x="400.25" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">process.env</text><text x="400.25" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">代码里读取</text><text x="560.75" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">config.ts</text><text x="560.75" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">集中检查一次</text></svg><figcaption>环境变量从哪来：本地放 .env，线上填在 Vercel 设置里；代码只认 process.env，不关心值从哪来</figcaption></figure><article class="sx-item"><h3><code>dotenv 与 .env</code></h3><p class="sx-what">本地开发时，用 dotenv 把 .env 文件里的「名字=值」读进 process.env。.env 一定要写进 .gitignore。</p><pre class="code"><code><span class="hl-c">// .env（不提交到 Git）</span>
+<span class="hl-c">// DATABASE_URL="postgresql://...neon.tech/neondb"</span>
+<span class="hl-c">// APP_JWT_SECRET="一串很长的随机字符"</span>
+
+<span class="hl-k">import</span> <span class="hl-s">"dotenv/config"</span>;                 <span class="hl-c">// 一行就把 .env 读进 process.env</span>
+<span class="hl-k">const</span> url = process.env.<span class="hl-t">DATABASE_URL</span>;   <span class="hl-c">// 读到了</span></code></pre></article><article class="sx-item"><h3><code>集中读取 + 启动时检查</code></h3><p class="sx-what">所有配置在一个文件里读，生产环境缺关键配置就直接拒绝启动。我们后端的 config.ts 就是这样。</p><pre class="code"><code><span class="hl-k">export</span> <span class="hl-k">function</span> loadConfig(env = process.env) {
+  <span class="hl-k">const</span> jwtSecret = env.<span class="hl-t">APP_JWT_SECRET</span> ?? <span class="hl-s">""</span>;
+  <span class="hl-k">if</span> (env.<span class="hl-t">NODE_ENV</span> === <span class="hl-s">"production"</span> &amp;&amp; jwtSecret.length &lt; 32) {
+    <span class="hl-k">throw</span> <span class="hl-k">new</span> <span class="hl-t">Error</span>(<span class="hl-s">"生产环境必须设置 APP_JWT_SECRET，且至少 32 个字符"</span>);
+  }
+  <span class="hl-k">return</span> { jwtSecret, databaseUrl: env.<span class="hl-t">DATABASE_URL</span> };
+}</code></pre><p class="sx-tip"><b>记住</b>宁可起不来，也不要带着不安全的配置上线。</p></article></div></section><section class="sx-sec" id="node-loop"><h2>单线程与事件循环</h2><p class="sx-desc">Node 只有一个主线程，却能同时服务很多请求，秘密就是「不等」。</p><div class="sx-grid"><figure class="sx-fig"><svg viewBox="0 0 640 250" role="img" aria-label="像一个服务员同时照顾很多桌：点完菜交给厨房，不站在厨房门口等，先去招呼下一桌；菜好了再端过去"><g filter="url(#sxwob)"><ellipse cx="320.0" cy="127.0" rx="158" ry="88" class="sx-s sx-dash" fill="none"/><rect x="250.0" y="103.0" width="140" height="48" rx="24" class="sx-s" fill="var(--yellow)"/><rect x="250.0" y="17.0" width="140" height="44" rx="9" class="sx-s" fill="var(--blue)"/><rect x="408.0" y="105.0" width="140" height="44" rx="9" class="sx-s" fill="var(--mint)"/><rect x="250.0" y="193.0" width="140" height="44" rx="9" class="sx-s" fill="var(--yellow)"/><rect x="92.0" y="105.0" width="140" height="44" rx="9" class="sx-s" fill="var(--pink)"/></g><text x="320.0" y="132.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">主线程（只有一个）</text><text x="320.0" y="37.0" text-anchor="middle" font-size="12.5" font-weight="700" class="">请求 A 进来</text><text x="320.0" y="53.0" text-anchor="middle" font-size="10.5" class="sx-sub">执行到 await 查数据库</text><text x="478.0" y="125.0" text-anchor="middle" font-size="12.5" font-weight="700" class="">交给系统去等</text><text x="478.0" y="141.0" text-anchor="middle" font-size="10.5" class="sx-sub">数据库在另一台机器上忙</text><text x="320.0" y="213.0" text-anchor="middle" font-size="12.5" font-weight="700" class="">请求 B 进来</text><text x="320.0" y="229.0" text-anchor="middle" font-size="10.5" class="sx-sub">主线程空着，先处理 B</text><text x="162.0" y="125.00000000000001" text-anchor="middle" font-size="12.5" font-weight="700" class="">A 的结果回来</text><text x="162.0" y="141.0" text-anchor="middle" font-size="10.5" class="sx-sub">回调排队，主线程接着处理 A</text><circle r="6" class="sx-s" fill="var(--pink)"><animateMotion dur="6s" repeatCount="indefinite" path="M320.0 39.0 A 158 88 0 1 1 319.9 39.0"/></circle></svg><figcaption>像一个服务员同时照顾很多桌：点完菜交给厨房，不站在厨房门口等，先去招呼下一桌；菜好了再端过去</figcaption></figure><article class="sx-item"><h3><code>阻塞 vs 不阻塞</code></h3><p class="sx-what">await 一个异步操作不会卡住别人；但一个很久的<b>同步计算</b>（比如死循环、超大 JSON 处理）会卡住所有请求。</p><pre class="code"><code><span class="hl-c">// ✅ 不阻塞：等数据库时，主线程去处理别的请求</span>
+<span class="hl-k">const</span> rows = <span class="hl-k">await</span> db.select().<span class="hl-k">from</span>(favoriteWord);
+
+<span class="hl-c">// ❌ 阻塞：这 3 秒里，所有用户的请求都在排队</span>
+<span class="hl-k">const</span> end = <span class="hl-t">Date</span>.now() + 3000;
+while (<span class="hl-t">Date</span>.now() &lt; end) {}        <span class="hl-c">// 同步死等</span>
+
+<span class="hl-c">// 文件也一样：fs.readFileSync 会阻塞，fs.promises.readFile 不会</span></code></pre><p class="sx-tip"><b>记住</b>和 Java（一个请求一个线程）对比：Java 靠多线程并行，Node 靠「不等」。</p></article></div></section><section class="sx-sec" id="node-api"><h2>常用内置模块</h2><p class="sx-desc">Node 自带的工具箱，不用装。导入时可以加 node: 前缀。</p><div class="sx-grid"><article class="sx-item"><h3><code>fs 文件</code></h3><p class="sx-what">读写文件。推荐用 promise 版本（不阻塞）。</p><pre class="code"><code><span class="hl-k">import</span> { readFile, writeFile } <span class="hl-k">from</span> <span class="hl-s">"node:fs/promises"</span>;
+<span class="hl-k">const</span> text = <span class="hl-k">await</span> readFile(<span class="hl-s">"data/words.json"</span>, <span class="hl-s">"utf8"</span>);
+<span class="hl-k">await</span> writeFile(<span class="hl-s">"out.txt"</span>, <span class="hl-s">"hello"</span>);</code></pre></article><article class="sx-item"><h3><code>path 路径</code></h3><p class="sx-what">拼路径时用它，自动处理不同系统的斜杠。</p><pre class="code"><code><span class="hl-k">import</span> path <span class="hl-k">from</span> <span class="hl-s">"node:path"</span>;
+path.join(<span class="hl-s">"data"</span>, <span class="hl-s">"ielts.db"</span>);        <span class="hl-c">// "data/ielts.db"</span>
+path.extname(<span class="hl-s">"index.html"</span>);           <span class="hl-c">// ".html"</span></code></pre></article><article class="sx-item"><h3><code>http 与 listen</code></h3><p class="sx-what">Express 底下其实是 Node 自带的 http 模块。<code>listen(8080)</code> 让进程占住 8080 端口，开始接收请求。</p><pre class="code"><code><span class="hl-k">import</span> http <span class="hl-k">from</span> <span class="hl-s">"node:http"</span>;
+<span class="hl-k">const</span> server = http.createServer((req, res) =&gt; {
+  res.end(<span class="hl-s">"hello"</span>);                 <span class="hl-c">// 最原始的写法：自己处理每个请求</span>
+});
+server.listen(8080, () =&gt; console.log(<span class="hl-s">"listening on 8080"</span>));
+<span class="hl-c">// 有了 Express，就是 app.listen(8080)</span></code></pre></article><article class="sx-item"><h3><code>fetch / crypto</code></h3><p class="sx-what">Node 18+ 自带 fetch（和浏览器一样）；crypto 生成随机数、哈希。</p><pre class="code"><code><span class="hl-k">const</span> res = <span class="hl-k">await</span> fetch(<span class="hl-s">"https://oauth2.googleapis.com/tokeninfo?id_token=..."</span>);
+<span class="hl-k">const</span> data = <span class="hl-k">await</span> res.json();
+
+<span class="hl-k">import</span> { randomBytes } <span class="hl-k">from</span> <span class="hl-s">"node:crypto"</span>;
+randomBytes(32).toString(<span class="hl-s">"hex"</span>);   <span class="hl-c">// 生成一个随机密钥</span></code></pre></article></div></section></div>
+</div>
+</template>
+<template id="tpl-sx-express">
+<div class="sx" v-pre>
+<div class="sx-wrap"><div class="sx-chips"><span class="sx-chip">Node 上最常用的 Web 框架</span><span class="sx-chip">我们线上后端在用 Express 5</span><span class="sx-chip">相当于 Spring MVC</span></div><h1 class="sx-h1">Express 语法</h1><p class="sx-intro">Express 帮你做三件事：接住 HTTP 请求、按「方法 + 路径」找到对应的处理函数、把你的返回值发回去。核心只有两个概念：<b>路由</b>（哪个网址交给谁）和<b>中间件</b>（请求经过的一道道关卡）。</p><nav class="sx-nav" aria-label="章节"><a href="#ex-app">app 与启动</a><a href="#ex-route">路由</a><a href="#ex-mw">中间件</a><a href="#ex-res">返回响应</a><a href="#ex-test">测试 Express</a></nav><section class="sx-sec" id="ex-app"><h2>app 与启动</h2><p class="sx-desc">从零搭一个最小的后端。</p><div class="sx-grid"><article class="sx-item"><h3><code>创建 app、监听端口</code></h3><p class="sx-what">express() 造出一个 app 对象；app.listen 让它开始在端口上等请求。</p><pre class="code"><code><span class="hl-k">import</span> express <span class="hl-k">from</span> <span class="hl-s">"express"</span>;
+<span class="hl-k">const</span> app = express();                       <span class="hl-c">// 造一个应用</span>
+app.get(<span class="hl-s">"/health"</span>, (req, res) =&gt; {           <span class="hl-c">// GET /health 交给这个函数</span>
+  res.json({ ok: <span class="hl-k">true</span> });
+});
+app.listen(8080, () =&gt; console.log(<span class="hl-s">"http://localhost:8080"</span>));</code></pre></article><article class="sx-item"><h3><code>我们后端的结构：createApp(deps)</code></h3><p class="sx-what">把「装配 app」写成一个函数，零件从外面传进来。线上传真数据库，测试传内存数据库，同一套代码。</p><pre class="code"><code><span class="hl-k">export</span> <span class="hl-k">function</span> createApp(deps: <span class="hl-t">Deps</span>) {
+  <span class="hl-k">const</span> app = express();
+  app.use(cors({ origin: deps.allowedOrigins }));  <span class="hl-c">// 跨域放行条</span>
+  app.use(express.json({ limit: <span class="hl-s">"10kb"</span> }));        <span class="hl-c">// 解析 JSON 请求体</span>
+  app.get(<span class="hl-s">"/health"</span>, (_req, res) =&gt; res.json({ ok: <span class="hl-k">true</span> }));
+  app.use(createAuthRouter(deps));                 <span class="hl-c">// 登录相关接口</span>
+  app.use(createFavoritesRouter(deps));            <span class="hl-c">// 收藏相关接口</span>
+  app.use((_req, res) =&gt; res.status(404).json({ error: <span class="hl-s">"not_found"</span> }));  <span class="hl-c">// 都没匹配上</span>
+  <span class="hl-k">return</span> app;
+}</code></pre><p class="sx-tip"><b>记住</b>Spring 自动扫描、自动注入；Express 什么都要你亲手按顺序挂上去。</p></article></div></section><section class="sx-sec" id="ex-route"><h2>路由</h2><p class="sx-desc">「方法 + 路径」对应一个处理函数。</p><div class="sx-grid"><article class="sx-item"><h3><code>app.get / post / put / delete</code></h3><p class="sx-what">第一个参数是路径，第二个是处理函数 (req, res)。</p><pre class="code"><code>app.get(<span class="hl-s">"/favorites"</span>, handler);          <span class="hl-c">// 查</span>
+app.post(<span class="hl-s">"/favorites"</span>, handler);         <span class="hl-c">// 增</span>
+app.put(<span class="hl-s">"/favorites/:id"</span>, handler);      <span class="hl-c">// 改</span>
+app.delete(<span class="hl-s">"/favorites/:id"</span>, handler);   <span class="hl-c">// 删</span></code></pre></article><article class="sx-item"><h3><code>路径参数 / 查询参数 / 请求体 / 请求头</code></h3><p class="sx-what">四个地方取前端传来的东西。</p><pre class="code"><code><span class="hl-c">// DELETE /favorites/12</span>
+req.params.id            <span class="hl-c">// "12"（永远是字符串，要自己转数字）</span>
+
+<span class="hl-c">// GET /favorites?site=jlpt</span>
+req.query.site           <span class="hl-c">// "jlpt"</span>
+
+<span class="hl-c">// POST /favorites  body: {"word":"abandon"}</span>
+req.body.word            <span class="hl-c">// "abandon"（要先挂 express.json() 中间件）</span>
+
+req.headers.authorization  <span class="hl-c">// "Bearer eyJ..."</span></code></pre></article><article class="sx-item"><h3><code>Router：一组路由</code></h3><p class="sx-what">把相关的接口放进一个 Router，再挂到 app 上。相当于 Spring 的一个 @RestController 类。</p><pre class="code"><code><span class="hl-k">export</span> <span class="hl-k">function</span> createFavoritesRouter(deps: <span class="hl-t">Deps</span>) {
+  <span class="hl-k">const</span> router = express.<span class="hl-t">Router</span>();
+  router.use(<span class="hl-s">"/favorites"</span>, requireAuth(deps.jwt));   <span class="hl-c">// 这组接口都要先过门卫</span>
+  router.get(<span class="hl-s">"/favorites"</span>, <span class="hl-k">async</span> (req, res) =&gt; { ... });
+  router.post(<span class="hl-s">"/favorites"</span>, <span class="hl-k">async</span> (req, res) =&gt; { ... });
+  <span class="hl-k">return</span> router;
+}</code></pre></article></div></section><section class="sx-sec" id="ex-mw"><h2>中间件</h2><p class="sx-desc">Express 的灵魂：请求从上到下经过一个个函数，每个都可以「放行」或「拦下」。</p><div class="sx-grid"><figure class="sx-fig"><svg viewBox="0 0 640 96" role="img" aria-label="中间件流水线：app.use 的顺序就是请求经过的顺序；任何一个不调用 next()，请求就停在那里"><g filter="url(#sxwob)"><rect x="10.0" y="16" width="106.4" height="64" rx="10" class="sx-s" fill="var(--card)"/><path d="M119.4 48.0 h14" class="sx-s" marker-end="url(#sxah)"/><rect x="138.4" y="16" width="106.4" height="64" rx="10" class="sx-s" fill="var(--blue)"/><path d="M247.8 48.0 h14" class="sx-s" marker-end="url(#sxah)"/><rect x="266.8" y="16" width="106.4" height="64" rx="10" class="sx-s" fill="var(--yellow)"/><path d="M376.2 48.0 h14" class="sx-s" marker-end="url(#sxah)"/><rect x="395.2" y="16" width="106.4" height="64" rx="10" class="sx-s" fill="var(--pink)"/><path d="M504.6 48.0 h14" class="sx-s" marker-end="url(#sxah)"/><rect x="523.6" y="16" width="106.4" height="64" rx="10" class="sx-s" fill="var(--mint)"/></g><text x="63.2" y="52.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">请求进来</text><text x="191.60000000000002" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">cors</text><text x="191.60000000000002" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">检查来源</text><text x="320.0" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">express.json</text><text x="320.0" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">解析请求体</text><text x="448.40000000000003" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">requireAuth</text><text x="448.40000000000003" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">验 token</text><text x="576.8000000000001" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">路由处理函数</text><text x="576.8000000000001" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">查库、返回</text></svg><figcaption>中间件流水线：app.use 的顺序就是请求经过的顺序；任何一个不调用 next()，请求就停在那里</figcaption></figure><article class="sx-item"><h3><code>(req, res, next)</code></h3><p class="sx-what">中间件就是一个多了 next 参数的函数。调用 <b>next()</b> 交给下一个；不调用、直接 res.xxx()，就在这里结束。</p><pre class="code"><code><span class="hl-c">// 我们的门卫（简化）</span>
+<span class="hl-k">export</span> <span class="hl-k">const</span> requireAuth = (jwt: <span class="hl-t">JwtService</span>) =&gt; <span class="hl-k">async</span> (req, res, next) =&gt; {
+  <span class="hl-k">const</span> header = req.headers.authorization ?? <span class="hl-s">""</span>;
+  <span class="hl-k">const</span> token = header.startsWith(<span class="hl-s">"Bearer "</span>) ? header.slice(7) : <span class="hl-s">""</span>;
+  <span class="hl-k">const</span> userId = <span class="hl-k">await</span> jwt.verify(token);
+  <span class="hl-k">if</span> (userId === <span class="hl-k">null</span>) {
+    res.status(401).json({ error: <span class="hl-s">"unauthorized"</span> });   <span class="hl-c">// 拦下：不调用 next</span>
+    <span class="hl-k">return</span>;
+  }
+  res.locals.userId = userId;   <span class="hl-c">// 把验过的身份放进这次请求的"小口袋"</span>
+  next();                        <span class="hl-c">// 放行，交给下一个</span>
+};</code></pre><p class="sx-tip"><b>记住</b>res.locals 只活在这一次请求里，适合放「当前用户是谁」。</p></article><article class="sx-item"><h3><code>错误处理中间件</code></h3><p class="sx-what">参数是 <b>4 个</b>（err, req, res, next），Express 认得它，前面任何地方出错都会跳到这里。要挂在最后。</p><pre class="code"><code>app.use((err, _req, res, _next) =&gt; {
+  console.error(err);                                  <span class="hl-c">// 日志里留下详细信息</span>
+  res.status(500).json({ error: <span class="hl-s">"internal_error"</span> });   <span class="hl-c">// 给前端的不暴露内部细节</span>
+});</code></pre></article></div></section><section class="sx-sec" id="ex-res"><h2>返回响应</h2><p class="sx-desc">res 对象上的方法决定回什么。</p><div class="sx-grid"><article class="sx-item"><h3><code>res.json / res.status / res.send</code></h3><p class="sx-what"><b>res.json(对象)</b>：回 JSON（最常用）；<b>res.status(码)</b>：设状态码，可以链式；<b>res.sendStatus(204)</b>：只回状态码。</p><pre class="code"><code>res.json(rows);                                    <span class="hl-c">// 200 + JSON</span>
+res.status(400).json({ error: <span class="hl-s">"bad_request"</span> });    <span class="hl-c">// 400 + 错误说明</span>
+res.status(404).json({ error: <span class="hl-s">"not_found"</span> });
+res.sendStatus(204);                               <span class="hl-c">// 204 No Content，没有内容</span></code></pre></article><article class="sx-item"><h3><code>一个请求只能回一次</code></h3><p class="sx-what">回完以后再 res.json 会报错「Cannot set headers after they are sent」。所以拦下请求后要 <b>return</b>。</p><pre class="code"><code><span class="hl-k">if</span> (!isKind(kind)) {
+  res.status(400).json({ error: <span class="hl-s">"bad_request"</span> });
+  <span class="hl-k">return</span>;                <span class="hl-c">// ← 不写 return，下面还会继续执行，再回一次就报错</span>
+}
+res.json(saved);</code></pre></article></div></section><section class="sx-sec" id="ex-test"><h2>测试 Express</h2><p class="sx-desc">不用真的开端口，用 supertest 直接对 app 发请求。</p><div class="sx-grid"><article class="sx-item"><h3><code>supertest + vitest</code></h3><p class="sx-what">request(app) 模拟一次 HTTP 请求，拿到状态码和返回体来断言。</p><pre class="code"><code><span class="hl-k">import</span> request <span class="hl-k">from</span> <span class="hl-s">"supertest"</span>;
+it(<span class="hl-s">"没带 token 返回 401"</span>, <span class="hl-k">async</span> () =&gt; {
+  <span class="hl-k">const</span> { app } = <span class="hl-k">await</span> makeApp();                 <span class="hl-c">// 内存数据库的 app</span>
+  <span class="hl-k">const</span> r = <span class="hl-k">await</span> request(app).get(<span class="hl-s">"/favorites"</span>);  <span class="hl-c">// 不带 Authorization</span>
+  expect(r.status).toBe(401);
+});</code></pre></article></div></section></div>
+</div>
+</template>
+<template id="tpl-sx-java">
+<div class="sx" v-pre>
+<div class="sx-wrap"><div class="sx-chips"><span class="sx-chip">Spring Boot 的语言</span><span class="sx-chip">日本公司后端最常见</span><span class="sx-chip">强类型 + 编译</span></div><h1 class="sx-h1">Java 语法</h1><p class="sx-intro">Java 和 JavaScript 名字像，其实差别很大：Java 先<b>编译</b>再运行、每个变量都必须写明<b>类型</b>、一切代码都写在<b>类</b>里。这一篇按「从一行代码到一个程序」的顺序讲，对照你熟悉的 JavaScript。</p><nav class="sx-nav" aria-label="章节"><a href="#java-run">程序怎么跑起来</a><a href="#java-type">变量与类型</a><a href="#java-flow">流程控制与异常</a><a href="#java-oop">类、对象、方法</a><a href="#java-inter">继承、接口、泛型</a><a href="#java-coll">集合、Optional、Lambda</a></nav><section class="sx-sec" id="java-run"><h2>程序怎么跑起来</h2><p class="sx-desc">理解编译和 JVM，很多报错就知道是在哪一步出的。</p><div class="sx-grid"><figure class="sx-fig"><svg viewBox="0 0 640 96" role="img" aria-label="Java 要先编译：类型写错、少了分号，在「运行之前」就会被编译器拦下"><g filter="url(#sxwob)"><rect x="10.0" y="16" width="138.5" height="64" rx="10" class="sx-s" fill="var(--blue)"/><path d="M151.5 48.0 h14" class="sx-s" marker-end="url(#sxah)"/><rect x="170.5" y="16" width="138.5" height="64" rx="10" class="sx-s" fill="var(--yellow)"/><path d="M312.0 48.0 h14" class="sx-s" marker-end="url(#sxah)"/><rect x="331.0" y="16" width="138.5" height="64" rx="10" class="sx-s" fill="var(--lilac)"/><path d="M472.5 48.0 h14" class="sx-s" marker-end="url(#sxah)"/><rect x="491.5" y="16" width="138.5" height="64" rx="10" class="sx-s" fill="var(--mint)"/></g><text x="79.25" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">Hello.java</text><text x="79.25" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">你写的源码</text><text x="239.75" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">javac 编译</text><text x="239.75" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">检查类型、语法</text><text x="400.25" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">Hello.class</text><text x="400.25" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">字节码</text><text x="560.75" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">JVM 执行</text><text x="560.75" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">java -jar app.jar</text></svg><figcaption>Java 要先编译：类型写错、少了分号，在「运行之前」就会被编译器拦下</figcaption></figure><article class="sx-item"><h3><code>main 方法：程序入口</code></h3><p class="sx-what">JVM 启动后找到 main 方法开始执行。Spring Boot 项目的 main 里只有一行，把整个框架点着。</p><pre class="code"><code><span class="hl-a">@SpringBootApplication</span>
+<span class="hl-k">public</span> <span class="hl-k">class</span> <span class="hl-t">IeltsBackendApplication</span> {
+    <span class="hl-k">public</span> <span class="hl-k">static</span> <span class="hl-k">void</span> main(<span class="hl-t">String</span>[] args) {          <span class="hl-c">// 固定写法</span>
+        <span class="hl-t">SpringApplication</span>.run(<span class="hl-t">IeltsBackendApplication</span>.<span class="hl-k">class</span>, args);
+    }
+}</code></pre></article><article class="sx-item"><h3><code>package / import</code></h3><p class="sx-what"><b>package</b>：这个文件属于哪个包（必须和文件夹路径一致）。<b>import</b>：用别的包里的类。同一个包里的类不用 import。</p><pre class="code"><code><span class="hl-k">package</span> com.goenkon.ielts;                       <span class="hl-c">// 文件在 src/main/java/com/goenkon/ielts/</span>
+
+<span class="hl-k">import</span> java.util.<span class="hl-t">List</span>;                           <span class="hl-c">// 用 JDK 里的 List</span>
+<span class="hl-k">import</span> org.springframework.web.bind.annotation.<span class="hl-t">GetMapping</span>;
+<span class="hl-k">import</span> jakarta.persistence.*;                    <span class="hl-c">// * 表示这个包里的全部</span></code></pre></article></div></section><section class="sx-sec" id="java-type"><h2>变量与类型</h2><p class="sx-desc">Java 最大的特点：每个变量都要写类型，而且写好就不能变。</p><div class="sx-grid"><article class="sx-item"><h3><code>声明变量</code></h3><p class="sx-what">顺序是 <b>类型 名字 = 值;</b>，和 TypeScript 正好相反。<b>var</b> 可以让编译器推断（只能用在局部变量）。</p><pre class="code"><code>int page = 1;                 <span class="hl-c">// 整数</span>
+long userId = 5<span class="hl-t">L</span>;             <span class="hl-c">// 大整数，数据库 id 常用</span>
+double price = 9.9;
+boolean ok = <span class="hl-k">true</span>;
+char c = <span class="hl-s">'a'</span>;                 <span class="hl-c">// 单个字符：单引号</span>
+<span class="hl-t">String</span> word = <span class="hl-s">"abandon"</span>;      <span class="hl-c">// 字符串：双引号，是对象</span>
+<span class="hl-k">var</span> list = <span class="hl-k">new</span> <span class="hl-t">ArrayList</span>&lt;<span class="hl-t">String</span>&gt;();   <span class="hl-c">// var：让编译器推断类型</span>
+<span class="hl-k">final</span> int <span class="hl-t">MAX</span> = 200;          <span class="hl-c">// final：之后不能再改（像 JS 的 const）</span></code></pre></article><article class="sx-item"><h3><code>基本类型 vs 包装类型</code></h3><p class="sx-what"><b>int、long、boolean</b> 是值本身，不能是 null；<b>Integer、Long、Boolean</b> 是对象，可以是 null。数据库主键用 <b>Long</b>，因为保存前还没有值（null）。</p><pre class="code"><code>long a = 5;        <span class="hl-c">// 值，永远有值</span>
+<span class="hl-t">Long</span> b = <span class="hl-k">null</span>;     <span class="hl-c">// 对象，可以是 null</span>
+<span class="hl-t">Long</span> id = user.getId();     <span class="hl-c">// 刚 new 出来还没存数据库时是 null</span>
+<span class="hl-k">if</span> (id.equals(otherId)) {}  <span class="hl-c">// 两个 Long 比较用 equals，不要用 ==</span></code></pre><p class="sx-tip"><b>记住</b>对象比较用 equals，== 比的是「是不是同一个对象」（地址）。</p></article><figure class="sx-fig"><svg viewBox="0 0 640 196" role="img" aria-label="和 JavaScript 一样：对象变量里存的是地址。方法结束，栈上的变量消失；堆上没人指着的对象由垃圾回收（GC）清掉"><g filter="url(#sxwob)"><rect x="20" y="14" width="260" height="168" rx="12" class="sx-s" fill="var(--blue)" fill-opacity=".35"/><rect x="360" y="14" width="260" height="168" rx="12" class="sx-s" fill="var(--mint)" fill-opacity=".35"/><rect x="36" y="52" width="228" height="30" rx="7" class="sx-s" fill="var(--card)"/><rect x="36" y="92" width="228" height="30" rx="7" class="sx-s" fill="var(--card)"/><rect x="36" y="132" width="228" height="30" rx="7" class="sx-s" fill="var(--card)"/><rect x="376" y="52" width="228" height="30" rx="7" class="sx-s" fill="var(--yellow)"/><rect x="376" y="92" width="228" height="30" rx="7" class="sx-s" fill="var(--yellow)"/><path d="M264 107 C 320 107, 320 107, 376 107" class="sx-s sx-dash" marker-end="url(#sxah)"/><path d="M264 147 C 320 147, 320 107, 376 107" class="sx-s sx-dash" marker-end="url(#sxah)"/></g><text x="150.0" y="36" text-anchor="middle" font-size="13.5" font-weight="700" class="">栈：方法里的变量</text><text x="490.0" y="36" text-anchor="middle" font-size="13.5" font-weight="700" class="">堆：new 出来的对象</text><text x="150.0" y="72" text-anchor="middle" font-size="12" class="">page = 1（值）</text><text x="150.0" y="112" text-anchor="middle" font-size="12" class="">user ─→（地址）</text><text x="150.0" y="152" text-anchor="middle" font-size="12" class="">copy ─→（同一个地址）</text><text x="490.0" y="72" text-anchor="middle" font-size="12" class=""></text><text x="490.0" y="112" text-anchor="middle" font-size="12" class="">AppUser{ id=1, name=Goen }</text></svg><figcaption>和 JavaScript 一样：对象变量里存的是地址。方法结束，栈上的变量消失；堆上没人指着的对象由垃圾回收（GC）清掉</figcaption></figure><article class="sx-item"><h3><code>String 常用</code></h3><p class="sx-what">字符串不可变：trim()、substring() 都返回新字符串。</p><pre class="code"><code><span class="hl-t">String</span> s = <span class="hl-s">"  Bearer xyz "</span>;
+s.trim();                     <span class="hl-c">// "Bearer xyz"</span>
+s.trim().startsWith(<span class="hl-s">"Bearer "</span>);   <span class="hl-c">// true</span>
+s.trim().substring(7);        <span class="hl-c">// "xyz"</span>
+s.isBlank();                  <span class="hl-c">// 是否为空或全是空格</span>
+<span class="hl-s">"a"</span>.equals(b);                <span class="hl-c">// 比较内容</span>
+<span class="hl-t">String</span>.valueOf(5);            <span class="hl-c">// "5"</span>
+<span class="hl-t">Long</span>.valueOf(<span class="hl-s">"12"</span>);           <span class="hl-c">// 12L</span></code></pre></article></div></section><section class="sx-sec" id="java-flow"><h2>流程控制与异常</h2><p class="sx-desc">if、循环、try/catch 和 JS 基本一样，多了「受检异常」。</p><div class="sx-grid"><article class="sx-item"><h3><code>if / switch / 三元</code></h3><p class="sx-what">条件必须是 boolean，不能像 JS 那样用 0 或空字符串。</p><pre class="code"><code><span class="hl-k">if</span> (word == <span class="hl-k">null</span> || word.isBlank()) <span class="hl-k">return</span> <span class="hl-t">ResponseEntity</span>.badRequest().build();
+<span class="hl-t">String</span> label = kind.equals(<span class="hl-s">"w"</span>) ? <span class="hl-s">"单词"</span> : <span class="hl-s">"短语"</span>;
+<span class="hl-k">switch</span> (kind) {
+    <span class="hl-k">case</span> <span class="hl-s">"w"</span> -&gt; <span class="hl-t">System</span>.out.println(<span class="hl-s">"单词"</span>);     <span class="hl-c">// Java 14+ 的箭头写法，不用 break</span>
+    <span class="hl-k">case</span> <span class="hl-s">"p"</span> -&gt; <span class="hl-t">System</span>.out.println(<span class="hl-s">"短语"</span>);
+    <span class="hl-k">default</span> -&gt; <span class="hl-t">System</span>.out.println(<span class="hl-s">"未知"</span>);
+}</code></pre></article><article class="sx-item"><h3><code>循环</code></h3><p class="sx-what">增强 for（for-each）最常用，相当于 JS 的 for...of。</p><pre class="code"><code><span class="hl-k">for</span> (<span class="hl-t">FavoriteWord</span> f : favorites) {
+    <span class="hl-t">System</span>.out.println(f.getWord());
+}
+<span class="hl-k">for</span> (int i = 0; i &lt; 3; i++) { }
+<span class="hl-k">while</span> (cond) { }</code></pre></article><article class="sx-item"><h3><code>try / catch / finally / throw</code></h3><p class="sx-what">和 JS 一样，但 catch 要写<b>捕获哪一种异常</b>。可以写多个 catch。</p><pre class="code"><code><span class="hl-c">// 我们的 JwtService.verify：任何验证失败都返回 null</span>
+<span class="hl-k">public</span> <span class="hl-t">Long</span> verify(<span class="hl-t">String</span> token) {
+    <span class="hl-k">try</span> {
+        <span class="hl-t">String</span> sub = <span class="hl-t">JWT</span>.require(algo).build().verify(token).getSubject();
+        <span class="hl-k">return</span> <span class="hl-t">Long</span>.valueOf(sub);
+    } <span class="hl-k">catch</span> (<span class="hl-t">JWTVerificationException</span> e) {   <span class="hl-c">// 只接住"验证失败"这一种</span>
+        <span class="hl-k">return</span> <span class="hl-k">null</span>;
+    } <span class="hl-k">catch</span> (<span class="hl-t">NumberFormatException</span> e) {      <span class="hl-c">// subject 不是数字</span>
+        <span class="hl-k">return</span> <span class="hl-k">null</span>;
+    }
+}
+<span class="hl-k">throw</span> <span class="hl-k">new</span> <span class="hl-t">IllegalArgumentException</span>(<span class="hl-s">"bad kind"</span>);   <span class="hl-c">// 自己抛一个</span></code></pre></article><figure class="sx-fig"><svg viewBox="0 0 640 200" role="img" aria-label="异常会沿着「谁调用了我」一层层往外找 catch，一直没人接，这个请求就以 500 结束，控制台打印堆栈"><g filter="url(#sxwob)"><rect x="14" y="74" width="150" height="52" rx="10" class="sx-s" fill="var(--blue)"/><rect x="245" y="16" width="170" height="52" rx="10" class="sx-s" fill="var(--mint)"/><rect x="245" y="132" width="170" height="52" rx="10" class="sx-s" fill="var(--pink)"/><rect x="490" y="74" width="136" height="52" rx="10" class="sx-s" fill="var(--yellow)"/><path d="M164 92 C 200 92, 210 42, 243 42" class="sx-s" marker-end="url(#sxah)"/><path d="M164 112 C 200 112, 210 158, 243 158" class="sx-s sx-dash" marker-end="url(#sxah)"/><path d="M415 42 C 450 42, 460 92, 488 92" class="sx-s" marker-end="url(#sxah)"/><path d="M415 158 C 450 158, 460 112, 488 112" class="sx-s sx-dash" marker-end="url(#sxah)"/></g><text x="89.0" y="96" text-anchor="middle" font-size="13" font-weight="700" class="">方法里出了异常</text><text x="89.0" y="114" text-anchor="middle" font-size="10.5" class="sx-sub">throw</text><text x="330.0" y="38" text-anchor="middle" font-size="13" font-weight="700" class="">有 catch 接住</text><text x="330.0" y="56" text-anchor="middle" font-size="10.5" class="sx-sub">在这里处理</text><text x="330.0" y="154" text-anchor="middle" font-size="13" font-weight="700" class="">没人接住</text><text x="330.0" y="172" text-anchor="middle" font-size="10.5" class="sx-sub">一层层往外抛</text><text x="558.0" y="96" text-anchor="middle" font-size="13" font-weight="700" class="">最外层</text><text x="558.0" y="114" text-anchor="middle" font-size="10.5" class="sx-sub">Spring 回 500</text><text x="200" y="58" text-anchor="middle" font-size="11" class="sx-good">正常</text><text x="200" y="150" text-anchor="middle" font-size="11" class="sx-bad">出错</text></svg><figcaption>异常会沿着「谁调用了我」一层层往外找 catch，一直没人接，这个请求就以 500 结束，控制台打印堆栈</figcaption></figure><article class="sx-item"><h3><code>受检异常 throws</code></h3><p class="sx-what">有些异常（如 IOException）编译器强制你处理：要么 catch，要么在方法上写 <b>throws</b> 交给调用者。RuntimeException（空指针等）不强制。</p><pre class="code"><code><span class="hl-k">public</span> boolean preHandle(<span class="hl-t">HttpServletRequest</span> req, <span class="hl-t">HttpServletResponse</span> res, <span class="hl-t">Object</span> handler)
+        <span class="hl-k">throws</span> <span class="hl-t">Exception</span> {          <span class="hl-c">// 声明：我可能抛异常，调用我的人（Spring）来处理</span>
+    ...
+}</code></pre></article></div></section><section class="sx-sec" id="java-oop"><h2>类、对象、方法</h2><p class="sx-desc">Java 里一切代码都写在类里。</p><div class="sx-grid"><article class="sx-item"><h3><code>class / 字段 / 构造器 / 方法</code></h3><p class="sx-what">类是图纸，new 出对象。构造器和类同名、没有返回类型，在 new 的时候执行。</p><pre class="code"><code><span class="hl-k">public</span> <span class="hl-k">class</span> <span class="hl-t">Greeting</span> {
+    <span class="hl-k">private</span> <span class="hl-k">final</span> <span class="hl-t">String</span> message;      <span class="hl-c">// 字段：对象身上的数据</span>
+    <span class="hl-k">private</span> <span class="hl-k">final</span> int version;
+
+    <span class="hl-k">public</span> <span class="hl-t">Greeting</span>(<span class="hl-t">String</span> message, int version) {   <span class="hl-c">// 构造器</span>
+        <span class="hl-k">this</span>.message = message;        <span class="hl-c">// this.字段 = 参数</span>
+        <span class="hl-k">this</span>.version = version;
+    }
+
+    <span class="hl-k">public</span> <span class="hl-t">String</span> getMessage() { <span class="hl-k">return</span> message; }   <span class="hl-c">// 方法（getter）</span>
+}
+<span class="hl-t">Greeting</span> g = <span class="hl-k">new</span> <span class="hl-t">Greeting</span>(<span class="hl-s">"Hello"</span>, 1);</code></pre></article><article class="sx-item"><h3><code>访问修饰符</code></h3><p class="sx-what"><b>public</b> 谁都能用；<b>private</b> 只有本类；<b>protected</b> 本包和子类；不写 = 本包。字段一般 private，通过 getter / setter 访问。</p><pre class="code"><code><span class="hl-k">public</span> <span class="hl-k">class</span> <span class="hl-t">FavoriteWord</span> {
+    <span class="hl-k">private</span> <span class="hl-t">Long</span> id;            <span class="hl-c">// 外面不能直接改</span>
+    <span class="hl-k">private</span> <span class="hl-t">String</span> word;
+    <span class="hl-k">public</span> <span class="hl-t">String</span> getWord() { <span class="hl-k">return</span> word; }
+    <span class="hl-k">public</span> <span class="hl-k">void</span> setWord(<span class="hl-t">String</span> word) { <span class="hl-k">this</span>.word = word; }   <span class="hl-c">// 只给该改的字段写 setter</span>
+    <span class="hl-c">// 不写 getUserId()：Spring 转 JSON 靠 getter，没有 getter 就不会把 userId 发给前端</span>
+}</code></pre></article><article class="sx-item"><h3><code>static</code></h3><p class="sx-what">属于类本身，不属于某个对象，不用 new 就能用。常用于常量和工具方法。</p><pre class="code"><code><span class="hl-k">public</span> <span class="hl-k">class</span> <span class="hl-t">AuthInterceptor</span> {
+    <span class="hl-k">public</span> <span class="hl-k">static</span> <span class="hl-k">final</span> <span class="hl-t">String</span> <span class="hl-t">USER_ID</span> = <span class="hl-s">"userId"</span>;   <span class="hl-c">// 常量：AuthInterceptor.USER_ID</span>
+}
+<span class="hl-t">Math</span>.max(3, 9);             <span class="hl-c">// 静态方法，直接用类名调用</span></code></pre></article><article class="sx-item"><h3><code>record</code></h3><p class="sx-what">Java 16+ 的「数据盒子」：一行声明字段，自动生成构造器、取值方法、equals、toString。字段不能改。</p><pre class="code"><code><span class="hl-k">public</span> <span class="hl-k">record</span> <span class="hl-t">NewFavoriteWord</span>(<span class="hl-t">String</span> kind, <span class="hl-t">String</span> word, <span class="hl-t">String</span> status) {}
+
+<span class="hl-t">NewFavoriteWord</span> n = <span class="hl-k">new</span> <span class="hl-t">NewFavoriteWord</span>(<span class="hl-s">"w"</span>, <span class="hl-s">"abandon"</span>, <span class="hl-k">null</span>);
+n.word();       <span class="hl-c">// "abandon"（取值方法名就是字段名，不带 get）</span></code></pre><p class="sx-tip"><b>记住</b>接收前端 JSON（DTO）首选 record：只放允许前端决定的字段。</p></article></div></section><section class="sx-sec" id="java-inter"><h2>继承、接口、泛型</h2><p class="sx-desc">看懂 Spring 代码离不开这三样。</p><div class="sx-grid"><article class="sx-item"><h3><code>interface / implements</code></h3><p class="sx-what">接口只规定「要有哪些方法」，不写实现；类用 implements 承诺实现它们。Spring 靠接口「插入」你的代码。</p><pre class="code"><code><span class="hl-k">public</span> <span class="hl-k">class</span> <span class="hl-t">CorsConfig</span> <span class="hl-k">implements</span> <span class="hl-t">WebMvcConfigurer</span> {   <span class="hl-c">// 按 Spring 规定的接口来写</span>
+    <span class="hl-a">@Override</span>                                            <span class="hl-c">// 重写接口里的方法</span>
+    <span class="hl-k">public</span> <span class="hl-k">void</span> addCorsMappings(<span class="hl-t">CorsRegistry</span> registry) {
+        registry.addMapping(<span class="hl-s">"/**"</span>).allowedOrigins(<span class="hl-s">"https://ielts.goenkon.com"</span>);
+    }
+}</code></pre></article><article class="sx-item"><h3><code>extends</code></h3><p class="sx-what">继承父类（或接口继承接口），拿到父类全部能力。Java 类只能单继承，但可以实现多个接口。</p><pre class="code"><code><span class="hl-k">public</span> <span class="hl-k">interface</span> <span class="hl-t">AppUserRepository</span> <span class="hl-k">extends</span> <span class="hl-t">JpaRepository</span>&lt;<span class="hl-t">AppUser</span>, <span class="hl-t">Long</span>&gt; {
+    <span class="hl-c">// 继承后自动拥有 save、findById、findAll、delete……</span>
+    <span class="hl-t">Optional</span>&lt;<span class="hl-t">AppUser</span>&gt; findByGoogleSub(<span class="hl-t">String</span> googleSub);   <span class="hl-c">// 再加一个自己的</span>
+}</code></pre></article><article class="sx-item"><h3><code>泛型 &lt;T&gt;</code></h3><p class="sx-what">尖括号里写「装的是什么类型」，和 TypeScript 的泛型一样。</p><pre class="code"><code><span class="hl-t">List</span>&lt;<span class="hl-t">String</span>&gt; words = <span class="hl-k">new</span> <span class="hl-t">ArrayList</span>&lt;&gt;();      <span class="hl-c">// 只能装 String</span>
+<span class="hl-t">Map</span>&lt;<span class="hl-t">String</span>, <span class="hl-t">Integer</span>&gt; counts = <span class="hl-k">new</span> <span class="hl-t">HashMap</span>&lt;&gt;();
+<span class="hl-t">JpaRepository</span>&lt;<span class="hl-t">AppUser</span>, <span class="hl-t">Long</span>&gt;                 <span class="hl-c">// 操作 AppUser，主键是 Long</span>
+<span class="hl-t">ResponseEntity</span>&lt;?&gt;                            <span class="hl-c">// ? = 什么类型都行</span></code></pre></article></div></section><section class="sx-sec" id="java-coll"><h2>集合、Optional、Lambda</h2><p class="sx-desc">处理数据时天天用。</p><div class="sx-grid"><article class="sx-item"><h3><code>List / Map / Set</code></h3><p class="sx-what"><b>List</b> 有序列表（像 JS 数组）；<b>Map</b> 键值对；<b>Set</b> 不重复集合。</p><pre class="code"><code><span class="hl-t">List</span>&lt;<span class="hl-t">String</span>&gt; list = <span class="hl-k">new</span> <span class="hl-t">ArrayList</span>&lt;&gt;(<span class="hl-t">List</span>.of(<span class="hl-s">"a"</span>, <span class="hl-s">"b"</span>));
+list.add(<span class="hl-s">"c"</span>); list.get(0); list.size();
+<span class="hl-t">Map</span>&lt;<span class="hl-t">String</span>, <span class="hl-t">Object</span>&gt; m = <span class="hl-t">Map</span>.of(<span class="hl-s">"error"</span>, <span class="hl-s">"unauthorized"</span>);   <span class="hl-c">// 只读 Map，会被转成 JSON</span>
+<span class="hl-t">Set</span>&lt;<span class="hl-t">String</span>&gt; kinds = <span class="hl-t">Set</span>.of(<span class="hl-s">"w"</span>, <span class="hl-s">"p"</span>);
+kinds.contains(<span class="hl-s">"g"</span>);    <span class="hl-c">// false</span></code></pre></article><article class="sx-item"><h3><code>Optional</code></h3><p class="sx-what">「可能有、可能没有」的盒子。查数据库可能查不到，用它逼你处理「没找到」的情况，避免空指针。</p><pre class="code"><code><span class="hl-t">Optional</span>&lt;<span class="hl-t">AppUser</span>&gt; found = userRepository.findByGoogleSub(sub);
+found.isPresent();                        <span class="hl-c">// 有没有</span>
+<span class="hl-t">AppUser</span> u = found.orElse(<span class="hl-k">null</span>);           <span class="hl-c">// 没有就给 null</span>
+<span class="hl-t">AppUser</span> user = found.orElseGet(() -&gt; userRepository.save(<span class="hl-k">new</span> <span class="hl-t">AppUser</span>(sub)));  <span class="hl-c">// 没有就新建</span>
+found.ifPresent(repo::delete);            <span class="hl-c">// 有才执行</span></code></pre></article><article class="sx-item"><h3><code>Lambda 与方法引用</code></h3><p class="sx-what"><code>参数 -&gt; 表达式</code> 是一小段函数，像 JS 的箭头函数。<code>类::方法</code> 是更短的写法。</p><pre class="code"><code>words.forEach(w -&gt; <span class="hl-t">System</span>.out.println(w));
+words.forEach(<span class="hl-t">System</span>.out::println);          <span class="hl-c">// 方法引用：同上</span>
+.orElseGet(<span class="hl-k">this</span>::unauthorized)               <span class="hl-c">// 调用本对象的 unauthorized()</span></code></pre></article><article class="sx-item"><h3><code>Stream</code></h3><p class="sx-what">对集合做 map / filter / collect，像 JS 的数组方法链。</p><pre class="code"><code><span class="hl-t">List</span>&lt;<span class="hl-t">String</span>&gt; wordsOnly = favorites.stream()
+    .filter(f -&gt; f.getKind().equals(<span class="hl-s">"w"</span>))   <span class="hl-c">// 留下单词</span>
+    .map(<span class="hl-t">FavoriteWord</span>::getWord)             <span class="hl-c">// 只要文字</span>
+    .toList();                              <span class="hl-c">// 收集成新的 List</span></code></pre></article></div></section></div>
+</div>
+</template>
+<template id="tpl-sx-spring">
+<div class="sx" v-pre>
+<div class="sx-wrap"><div class="sx-chips"><span class="sx-chip">Java 的 Web 框架</span><span class="sx-chip">@ 开头的都是给框架看的标签</span><span class="sx-chip">IoC 容器 + 依赖注入</span></div><h1 class="sx-h1">Spring Boot 与 @ 注解</h1><p class="sx-intro">Spring 最让人困惑的就是满屏的 <b>@</b>。记住一句话：<b>注解自己什么都不做，它只是贴在类、方法、字段、参数上的一张标签；是 Spring 在启动时（或请求到来时）读到标签，再替你干活。</b>下面先讲 Spring 在干什么，再把每个 @ 按「贴在哪儿」分类讲清楚。</p><nav class="sx-nav" aria-label="章节"><a href="#sp-ioc">Spring 在干什么：IoC 与依赖注入</a><a href="#sp-class">贴在类上的注解</a><a href="#sp-method">贴在方法上的注解</a><a href="#sp-param">贴在参数上的注解</a><a href="#sp-jpa">数据库相关的注解（JPA）</a><a href="#sp-req">一个请求在 Spring 里怎么走</a></nav><section class="sx-sec" id="sp-ioc"><h2>Spring 在干什么：IoC 与依赖注入</h2><p class="sx-desc">先懂这个，@ 注解就都有了着落。</p><div class="sx-grid"><figure class="sx-fig"><svg viewBox="0 0 640 96" role="img" aria-label="SpringApplication.run 那一行在启动的几秒里做了这五件事；之后每个请求用的都是这批已经造好的对象"><g filter="url(#sxwob)"><rect x="10.0" y="16" width="106.4" height="64" rx="10" class="sx-s" fill="var(--blue)"/><path d="M119.4 48.0 h14" class="sx-s" marker-end="url(#sxah)"/><rect x="138.4" y="16" width="106.4" height="64" rx="10" class="sx-s" fill="var(--yellow)"/><path d="M247.8 48.0 h14" class="sx-s" marker-end="url(#sxah)"/><rect x="266.8" y="16" width="106.4" height="64" rx="10" class="sx-s" fill="var(--mint)"/><path d="M376.2 48.0 h14" class="sx-s" marker-end="url(#sxah)"/><rect x="395.2" y="16" width="106.4" height="64" rx="10" class="sx-s" fill="var(--lilac)"/><path d="M504.6 48.0 h14" class="sx-s" marker-end="url(#sxah)"/><rect x="523.6" y="16" width="106.4" height="64" rx="10" class="sx-s" fill="var(--pink)"/></g><text x="63.2" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">扫描</text><text x="63.2" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">找贴了 @Component 等标签的类</text><text x="191.60000000000002" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">造对象</text><text x="191.60000000000002" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">每个类 new 一个，叫 Bean</text><text x="320.0" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">注入</text><text x="320.0" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">按构造器需要，把 Bean 递过去</text><text x="448.40000000000003" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">登记网址</text><text x="448.40000000000003" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">@GetMapping 等记进路由表</text><text x="576.8000000000001" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">开门</text><text x="576.8000000000001" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">监听 8080，等请求</text></svg><figcaption>SpringApplication.run 那一行在启动的几秒里做了这五件事；之后每个请求用的都是这批已经造好的对象</figcaption></figure><article class="sx-item"><h3><code>控制反转（IoC）</code></h3><p class="sx-what">本来是你自己 new 对象、自己调用；现在是<b>Spring 帮你 new、在合适的时机调用你的方法</b>。控制权从你手里交给了框架，所以叫「反转」。</p><pre class="code"><code><span class="hl-c">// 没有 Spring：自己创建、自己传</span>
+<span class="hl-k">var</span> repo = <span class="hl-k">new</span> <span class="hl-t">FavoriteWordRepositoryImpl</span>(dataSource);
+<span class="hl-k">var</span> controller = <span class="hl-k">new</span> <span class="hl-t">FavoriteWordController</span>(repo);
+
+<span class="hl-c">// 有 Spring：只声明"我需要什么"，谁来 new、什么时候 new，都不用管</span>
+<span class="hl-a">@RestController</span>
+<span class="hl-k">public</span> <span class="hl-k">class</span> <span class="hl-t">FavoriteWordController</span> {
+    <span class="hl-k">private</span> <span class="hl-k">final</span> <span class="hl-t">FavoriteWordRepository</span> repository;
+    <span class="hl-k">public</span> <span class="hl-t">FavoriteWordController</span>(<span class="hl-t">FavoriteWordRepository</span> repository) {   <span class="hl-c">// 构造器注入</span>
+        <span class="hl-k">this</span>.repository = repository;   <span class="hl-c">// Spring 启动时把造好的 Repository 传进来</span>
+    }
+}</code></pre><p class="sx-tip"><b>记住</b>我们全部用「构造器注入」：依赖写成 private final 字段 + 构造器参数，不需要 @Autowired。</p></article><article class="sx-item"><h3><code>Bean 是单例</code></h3><p class="sx-what">每个 Bean 默认整个程序只有一个，所有请求共用。所以 Bean 的字段里<b>不能存某个用户的数据</b>，那会串到别人的请求里。</p><pre class="code"><code><span class="hl-a">@RestController</span>
+<span class="hl-k">public</span> <span class="hl-k">class</span> <span class="hl-t">BadController</span> {
+    <span class="hl-k">private</span> <span class="hl-t">Long</span> currentUserId;   <span class="hl-c">// ❌ 两个用户同时请求，会互相覆盖</span>
+}
+<span class="hl-c">// ✅ 每个请求自己的数据放在方法参数 / 局部变量里（在各自线程的栈上）</span></code></pre></article></div></section><section class="sx-sec" id="sp-class"><h2>贴在类上的注解</h2><p class="sx-desc">告诉 Spring：「这个类是什么角色」。</p><div class="sx-grid"><figure class="sx-fig"><svg viewBox="0 0 640 210" role="img" aria-label="分层：上层只调用下层。每一层用不同的类注解标出身份"><g filter="url(#sxwob)"><rect x="20" y="12" width="600" height="40" rx="9" class="sx-s" fill="var(--blue)"/><rect x="38" y="60" width="564" height="40" rx="9" class="sx-s" fill="var(--yellow)"/><rect x="56" y="108" width="528" height="40" rx="9" class="sx-s" fill="var(--mint)"/><rect x="74" y="156" width="492" height="40" rx="9" class="sx-s" fill="var(--lilac)"/></g><text x="36" y="37" text-anchor="start" font-size="13" font-weight="700" class="">@RestController</text><text x="604" y="37" text-anchor="end" font-size="11" class="sx-sub">接请求，返回 JSON</text><text x="54" y="85" text-anchor="start" font-size="13" font-weight="700" class="">@Service</text><text x="586" y="85" text-anchor="end" font-size="11" class="sx-sub">业务规则、工具</text><text x="72" y="133" text-anchor="start" font-size="13" font-weight="700" class="">@Repository / JpaRepository</text><text x="568" y="133" text-anchor="end" font-size="11" class="sx-sub">访问数据库</text><text x="90" y="181" text-anchor="start" font-size="13" font-weight="700" class="">@Entity</text><text x="550" y="181" text-anchor="end" font-size="11" class="sx-sub">对应一张表</text></svg><figcaption>分层：上层只调用下层。每一层用不同的类注解标出身份</figcaption></figure><article class="sx-item"><h3><code>@SpringBootApplication</code></h3><p class="sx-what">放在入口类上。等于三个注解合体：开启自动配置、开启组件扫描（从这个类所在的包往下找）、这个类本身也是配置类。</p><pre class="code"><code><span class="hl-a">@SpringBootApplication</span>           <span class="hl-c">// 所有其他类都必须在 com.goenkon.ielts 或它的子包里，才扫描得到</span>
+<span class="hl-k">public</span> <span class="hl-k">class</span> <span class="hl-t">IeltsBackendApplication</span> { ... }</code></pre></article><article class="sx-item"><h3><code>@Component / @Service / @Repository</code></h3><p class="sx-what">「请 Spring 帮我造这个类的对象并管理它」。三个作用基本一样，名字表达角色：@Service 业务层，@Repository 数据层，@Component 通用。</p><pre class="code"><code><span class="hl-a">@Component</span>
+<span class="hl-k">public</span> <span class="hl-k">class</span> <span class="hl-t">GoogleTokenVerifier</span> { ... }   <span class="hl-c">// 通用工具</span>
+
+<span class="hl-a">@Service</span>
+<span class="hl-k">public</span> <span class="hl-k">class</span> <span class="hl-t">JwtService</span> { ... }             <span class="hl-c">// 业务工具</span></code></pre></article><article class="sx-item"><h3><code>@RestController</code></h3><p class="sx-what">这个类里的方法都是接口，返回值直接转成 JSON 写进响应。等于 @Controller + @ResponseBody。</p><pre class="code"><code><span class="hl-a">@RestController</span>
+<span class="hl-k">public</span> <span class="hl-k">class</span> <span class="hl-t">HelloController</span> {
+    <span class="hl-a">@GetMapping</span>(<span class="hl-s">"/hello"</span>)
+    <span class="hl-k">public</span> <span class="hl-t">Greeting</span> hello() { <span class="hl-k">return</span> <span class="hl-k">new</span> <span class="hl-t">Greeting</span>(<span class="hl-s">"Hello"</span>, 1); }   <span class="hl-c">// 返回对象 → 自动变 JSON</span>
+}</code></pre></article><article class="sx-item"><h3><code>@Configuration + @Bean</code></h3><p class="sx-what">配置类。里面带 @Bean 的方法，返回值会被放进容器（用来手动创建第三方库的对象）。</p><pre class="code"><code><span class="hl-a">@Configuration</span>
+<span class="hl-k">public</span> <span class="hl-k">class</span> <span class="hl-t">AppConfig</span> {
+    <span class="hl-a">@Bean</span>
+    <span class="hl-k">public</span> <span class="hl-t">Clock</span> clock() { <span class="hl-k">return</span> <span class="hl-t">Clock</span>.systemUTC(); }   <span class="hl-c">// 别的类就能注入 Clock 了</span>
+}</code></pre></article><article class="sx-item"><h3><code>@RequestMapping（类上）</code></h3><p class="sx-what">给这个类所有接口加一个路径前缀。</p><pre class="code"><code><span class="hl-a">@RestController</span>
+<span class="hl-a">@RequestMapping</span>(<span class="hl-s">"/favorites"</span>)      <span class="hl-c">// 下面的 @GetMapping 都以 /favorites 开头</span>
+<span class="hl-k">public</span> <span class="hl-k">class</span> <span class="hl-t">FavoriteWordController</span> {
+    <span class="hl-a">@GetMapping</span>            <span class="hl-c">// GET /favorites</span>
+    <span class="hl-k">public</span> <span class="hl-t">List</span>&lt;<span class="hl-t">FavoriteWord</span>&gt; list(...) { ... }
+    <span class="hl-a">@DeleteMapping</span>(<span class="hl-s">"/{id}"</span>)  <span class="hl-c">// DELETE /favorites/{id}</span>
+    <span class="hl-k">public</span> <span class="hl-k">void</span> delete(...) { ... }
+}</code></pre></article></div></section><section class="sx-sec" id="sp-method"><h2>贴在方法上的注解</h2><p class="sx-desc">告诉 Spring：「什么请求来了调用这个方法」。</p><div class="sx-grid"><article class="sx-item"><h3><code>@GetMapping / @PostMapping / @PutMapping / @DeleteMapping</code></h3><p class="sx-what">对应 HTTP 的四种方法，括号里写路径。启动时被登记进「网址 → 方法」表。</p><pre class="code"><code><span class="hl-a">@GetMapping</span>(<span class="hl-s">"/me"</span>)                 <span class="hl-c">// GET  /me</span>
+<span class="hl-a">@PostMapping</span>(<span class="hl-s">"/auth/google"</span>)       <span class="hl-c">// POST /auth/google</span>
+<span class="hl-a">@PutMapping</span>(<span class="hl-s">"/favorites/{id}"</span>)     <span class="hl-c">// PUT  /favorites/12</span>
+<span class="hl-a">@DeleteMapping</span>(<span class="hl-s">"/favorites/{id}"</span>)  <span class="hl-c">// DELETE /favorites/12</span></code></pre></article><article class="sx-item"><h3><code>@Override</code></h3><p class="sx-what">Java 编译器的注解（不是 Spring 的）：声明「我在重写父类 / 接口的方法」。方法名写错，编译就报错。</p><pre class="code"><code><span class="hl-a">@Override</span>
+<span class="hl-k">public</span> <span class="hl-k">void</span> addInterceptors(<span class="hl-t">InterceptorRegistry</span> registry) { ... }</code></pre></article><article class="sx-item"><h3><code>@Transactional</code></h3><p class="sx-what">方法里的所有数据库操作要么全成功、要么全回滚。一次业务要写多张表时用。</p><pre class="code"><code><span class="hl-a">@Transactional</span>
+<span class="hl-k">public</span> <span class="hl-k">void</span> transfer(<span class="hl-t">Long</span> from, <span class="hl-t">Long</span> to, int amount) {
+    accountRepo.decrease(from, amount);
+    accountRepo.increase(to, amount);    <span class="hl-c">// 这里出错，上面那步也会被撤销</span>
+}</code></pre></article><article class="sx-item"><h3><code>@ExceptionHandler + @RestControllerAdvice</code></h3><p class="sx-what">全局统一处理异常，把各种异常变成格式一致的错误响应。</p><pre class="code"><code><span class="hl-a">@RestControllerAdvice</span>
+<span class="hl-k">public</span> <span class="hl-k">class</span> <span class="hl-t">GlobalErrors</span> {
+    <span class="hl-a">@ExceptionHandler</span>(<span class="hl-t">IllegalArgumentException</span>.<span class="hl-k">class</span>)
+    <span class="hl-k">public</span> <span class="hl-t">ResponseEntity</span>&lt;?&gt; bad(<span class="hl-t">IllegalArgumentException</span> e) {
+        <span class="hl-k">return</span> <span class="hl-t">ResponseEntity</span>.badRequest().body(<span class="hl-t">Map</span>.of(<span class="hl-s">"error"</span>, e.getMessage()));
+    }
+}</code></pre></article></div></section><section class="sx-sec" id="sp-param"><h2>贴在参数上的注解</h2><p class="sx-desc">告诉 Spring：「这个参数的值从哪里取」。看懂这一节，就不会再问「这个参数是谁传的」。</p><div class="sx-grid"><figure class="sx-fig"><svg viewBox="0 0 640 276" role="img" aria-label="每个参数注解，对应请求里的一个位置：Spring 按注解去对应的地方取值，转成参数的类型再调用你的方法"><g filter="url(#sxwob)"><rect x="20" y="14" width="260" height="248" rx="12" class="sx-s" fill="var(--blue)" fill-opacity=".35"/><rect x="360" y="14" width="260" height="248" rx="12" class="sx-s" fill="var(--mint)" fill-opacity=".35"/><rect x="36" y="52" width="228" height="30" rx="7" class="sx-s" fill="var(--card)"/><rect x="36" y="92" width="228" height="30" rx="7" class="sx-s" fill="var(--card)"/><rect x="36" y="132" width="228" height="30" rx="7" class="sx-s" fill="var(--card)"/><rect x="36" y="172" width="228" height="30" rx="7" class="sx-s" fill="var(--card)"/><rect x="36" y="212" width="228" height="30" rx="7" class="sx-s" fill="var(--card)"/><rect x="376" y="52" width="228" height="30" rx="7" class="sx-s" fill="var(--yellow)"/><rect x="376" y="92" width="228" height="30" rx="7" class="sx-s" fill="var(--yellow)"/><rect x="376" y="132" width="228" height="30" rx="7" class="sx-s" fill="var(--yellow)"/><rect x="376" y="172" width="228" height="30" rx="7" class="sx-s" fill="var(--yellow)"/><rect x="376" y="212" width="228" height="30" rx="7" class="sx-s" fill="var(--yellow)"/><path d="M264 67 C 320 67, 320 67, 376 67" class="sx-s sx-dash" marker-end="url(#sxah)"/><path d="M264 107 C 320 107, 320 107, 376 107" class="sx-s sx-dash" marker-end="url(#sxah)"/><path d="M264 147 C 320 147, 320 147, 376 147" class="sx-s sx-dash" marker-end="url(#sxah)"/><path d="M264 187 C 320 187, 320 187, 376 187" class="sx-s sx-dash" marker-end="url(#sxah)"/><path d="M264 227 C 320 227, 320 227, 376 227" class="sx-s sx-dash" marker-end="url(#sxah)"/></g><text x="150.0" y="36" text-anchor="middle" font-size="13.5" font-weight="700" class="">一次 HTTP 请求里的东西</text><text x="490.0" y="36" text-anchor="middle" font-size="13.5" font-weight="700" class="">方法参数上的注解</text><text x="150.0" y="72" text-anchor="middle" font-size="12" class="">网址里的 {id}</text><text x="150.0" y="112" text-anchor="middle" font-size="12" class="">?site=jlpt</text><text x="150.0" y="152" text-anchor="middle" font-size="12" class="">请求体 JSON</text><text x="150.0" y="192" text-anchor="middle" font-size="12" class="">请求头 Authorization</text><text x="150.0" y="232" text-anchor="middle" font-size="12" class="">门卫放进的 userId</text><text x="490.0" y="72" text-anchor="middle" font-size="12" class="">@PathVariable</text><text x="490.0" y="112" text-anchor="middle" font-size="12" class="">@RequestParam</text><text x="490.0" y="152" text-anchor="middle" font-size="12" class="">@RequestBody</text><text x="490.0" y="192" text-anchor="middle" font-size="12" class="">@RequestHeader</text><text x="490.0" y="232" text-anchor="middle" font-size="12" class="">@RequestAttribute</text></svg><figcaption>每个参数注解，对应请求里的一个位置：Spring 按注解去对应的地方取值，转成参数的类型再调用你的方法</figcaption></figure><article class="sx-item"><h3><code>@PathVariable</code></h3><p class="sx-what">取路径里 {id} 那一段，自动转成 Long。</p><pre class="code"><code><span class="hl-a">@DeleteMapping</span>(<span class="hl-s">"/favorites/{id}"</span>)
+<span class="hl-k">public</span> <span class="hl-k">void</span> delete(<span class="hl-a">@PathVariable</span> <span class="hl-t">Long</span> id, ...) { }   <span class="hl-c">// DELETE /favorites/12 → id = 12</span></code></pre></article><article class="sx-item"><h3><code>@RequestParam</code></h3><p class="sx-what">取问号后面的查询参数。可以设默认值、设为非必需。</p><pre class="code"><code><span class="hl-a">@GetMapping</span>(<span class="hl-s">"/favorites"</span>)
+<span class="hl-k">public</span> <span class="hl-t">List</span>&lt;<span class="hl-t">FavoriteWord</span>&gt; list(<span class="hl-a">@RequestParam</span>(defaultValue = <span class="hl-s">"ielts"</span>) <span class="hl-t">String</span> site) { }
+<span class="hl-c">// GET /favorites?site=jlpt → site = "jlpt"；不传 → "ielts"</span></code></pre></article><article class="sx-item"><h3><code>@RequestBody</code></h3><p class="sx-what">把请求体里的 JSON 转成对象（Jackson 按字段名对应）。多出来的字段被丢掉。</p><pre class="code"><code><span class="hl-a">@PostMapping</span>(<span class="hl-s">"/favorites"</span>)
+<span class="hl-k">public</span> <span class="hl-t">ResponseEntity</span>&lt;?&gt; add(<span class="hl-a">@RequestBody</span> <span class="hl-t">NewFavoriteWord</span> body, ...) {
+    body.word();   <span class="hl-c">// 前端发来的 {"word":"abandon"} 里的 word</span>
+}</code></pre></article><article class="sx-item"><h3><code>@RequestHeader</code></h3><p class="sx-what">取请求头的某一行。<code>required = false</code>：没有这个头时给 null，而不是自动回 400。</p><pre class="code"><code><span class="hl-a">@GetMapping</span>(<span class="hl-s">"/me"</span>)
+<span class="hl-k">public</span> <span class="hl-t">ResponseEntity</span>&lt;?&gt; me(<span class="hl-a">@RequestHeader</span>(value = <span class="hl-s">"Authorization"</span>, required = <span class="hl-k">false</span>) <span class="hl-t">String</span> auth) { }</code></pre></article><article class="sx-item"><h3><code>@RequestAttribute</code></h3><p class="sx-what">取「服务器内部放进这次请求的值」，比如门卫验完 token 放进去的 userId。前端改不了它，所以可信。</p><pre class="code"><code><span class="hl-k">public</span> <span class="hl-t">List</span>&lt;<span class="hl-t">FavoriteWord</span>&gt; list(<span class="hl-a">@RequestAttribute</span>(<span class="hl-t">AuthInterceptor</span>.<span class="hl-t">USER_ID</span>) <span class="hl-t">Long</span> userId) {
+    <span class="hl-k">return</span> repository.findByUserId(userId);   <span class="hl-c">// 身份只从这里来，绝不信前端传的 userId</span>
+}</code></pre></article><article class="sx-item"><h3><code>@Value</code></h3><p class="sx-what">从 application.properties 或环境变量读配置，启动时填一次。</p><pre class="code"><code><span class="hl-k">public</span> <span class="hl-t">JwtService</span>(<span class="hl-a">@Value</span>(<span class="hl-s">"${app.jwt-secret}"</span>) <span class="hl-t">String</span> secret) { ... }
+<span class="hl-c">// application.properties:  app.jwt-secret=${APP_JWT_SECRET:本地默认值}</span></code></pre></article></div></section><section class="sx-sec" id="sp-jpa"><h2>数据库相关的注解（JPA）</h2><p class="sx-desc">贴在实体类和字段上，告诉 Hibernate「这个类怎么变成表」。</p><div class="sx-grid"><figure class="sx-fig"><svg viewBox="0 0 640 162" role="img" aria-label="@Entity 让类对应一张表：每个字段对应一列，驼峰名自动变下划线（googleSub → google_sub）"><g filter="url(#sxwob)"><rect x="16" y="14" width="250" height="138" rx="8" class="sx-s" fill="var(--card)"/><rect x="16" y="14" width="250" height="28" rx="8" class="sx-s" fill="var(--blue)"/><rect x="374" y="14" width="250" height="138" rx="8" class="sx-s" fill="var(--card)"/><rect x="374" y="14" width="250" height="28" rx="8" class="sx-s" fill="var(--mint)"/><path d="M266 82 C 320 82, 320 82, 374 82" class="sx-s sx-dash" marker-end="url(#sxah)"/><path d="M266 108 C 320 108, 320 108, 374 108" class="sx-s sx-dash" marker-end="url(#sxah)"/><path d="M266 134 C 320 134, 320 134, 374 134" class="sx-s sx-dash" marker-end="url(#sxah)"/></g><text x="141.0" y="33" text-anchor="middle" font-size="13" font-weight="700" class="">Java 类 AppUser</text><text x="78.5" y="60" text-anchor="middle" font-size="11" font-weight="700" class="sx-sub">字段</text><text x="203.5" y="60" text-anchor="middle" font-size="11" font-weight="700" class="sx-sub">注解</text><text x="78.5" y="86" text-anchor="middle" font-size="11.5" class="">id</text><text x="203.5" y="86" text-anchor="middle" font-size="11.5" class="">@Id</text><text x="78.5" y="112" text-anchor="middle" font-size="11.5" class="">googleSub</text><text x="203.5" y="112" text-anchor="middle" font-size="11.5" class="">@Column(unique)</text><text x="78.5" y="138" text-anchor="middle" font-size="11.5" class="">email</text><text x="203.5" y="138" text-anchor="middle" font-size="11.5" class="">（普通列）</text><text x="499.0" y="33" text-anchor="middle" font-size="13" font-weight="700" class="">表 app_user</text><text x="436.5" y="60" text-anchor="middle" font-size="11" font-weight="700" class="sx-sub">列</text><text x="561.5" y="60" text-anchor="middle" font-size="11" font-weight="700" class="sx-sub">约束</text><text x="436.5" y="86" text-anchor="middle" font-size="11.5" class="">id</text><text x="561.5" y="86" text-anchor="middle" font-size="11.5" class="">主键 自增</text><text x="436.5" y="112" text-anchor="middle" font-size="11.5" class="">google_sub</text><text x="561.5" y="112" text-anchor="middle" font-size="11.5" class="">唯一 非空</text><text x="436.5" y="138" text-anchor="middle" font-size="11.5" class="">email</text><text x="561.5" y="138" text-anchor="middle" font-size="11.5" class=""></text></svg><figcaption>@Entity 让类对应一张表：每个字段对应一列，驼峰名自动变下划线（googleSub → google_sub）</figcaption></figure><article class="sx-item"><h3><code>@Entity / @Table</code></h3><p class="sx-what">@Entity：这个类对应一张表。@Table：指定表名、加联合唯一约束。</p><pre class="code"><code><span class="hl-a">@Entity</span>
+<span class="hl-a">@Table</span>(name = <span class="hl-s">"app_user"</span>)      <span class="hl-c">// user 是数据库保留字，所以换个名字</span>
+<span class="hl-k">public</span> <span class="hl-k">class</span> <span class="hl-t">AppUser</span> { ... }
+
+<span class="hl-a">@Table</span>(name = <span class="hl-s">"favorite_word"</span>,
+       uniqueConstraints = <span class="hl-a">@UniqueConstraint</span>(columnNames = {<span class="hl-s">"user_id"</span>, <span class="hl-s">"kind"</span>, <span class="hl-s">"word"</span>}))</code></pre></article><article class="sx-item"><h3><code>@Id / @GeneratedValue / @Column</code></h3><p class="sx-what">@Id 主键；@GeneratedValue 由数据库自动生成（IDENTITY = 自增）；@Column 设置列的约束。</p><pre class="code"><code><span class="hl-a">@Id</span>
+<span class="hl-a">@GeneratedValue</span>(strategy = <span class="hl-t">GenerationType</span>.<span class="hl-t">IDENTITY</span>)
+<span class="hl-k">private</span> <span class="hl-t">Long</span> id;                                  <span class="hl-c">// save 之前是 null，之后才有值</span>
+
+<span class="hl-a">@Column</span>(unique = <span class="hl-k">true</span>, nullable = <span class="hl-k">false</span>)
+<span class="hl-k">private</span> <span class="hl-t">String</span> googleSub;</code></pre></article><article class="sx-item"><h3><code>Repository 方法名查询</code></h3><p class="sx-what">继承 JpaRepository 后，按规则起方法名，Spring 自动生成 SQL，不用写实现。</p><pre class="code"><code><span class="hl-k">public</span> <span class="hl-k">interface</span> <span class="hl-t">FavoriteWordRepository</span> <span class="hl-k">extends</span> <span class="hl-t">JpaRepository</span>&lt;<span class="hl-t">FavoriteWord</span>, <span class="hl-t">Long</span>&gt; {
+    <span class="hl-t">List</span>&lt;<span class="hl-t">FavoriteWord</span>&gt; findByUserId(<span class="hl-t">Long</span> userId);
+    <span class="hl-c">// → SELECT * FROM favorite_word WHERE user_id = ?</span>
+    <span class="hl-t">Optional</span>&lt;<span class="hl-t">FavoriteWord</span>&gt; findByIdAndUserId(<span class="hl-t">Long</span> id, <span class="hl-t">Long</span> userId);
+    <span class="hl-c">// → ... WHERE id = ? AND user_id = ?   （删改时防越权）</span>
+}</code></pre><p class="sx-tip"><b>记住</b>字段名拼错，启动时就报错，比运行时才发现好。</p></article><article class="sx-item"><h3><code>@ManyToOne / @OneToMany</code></h3><p class="sx-what">表和表之间的关系（外键）。我们的项目用一个普通的 userId 字段代替，比较简单。</p><pre class="code"><code><span class="hl-a">@ManyToOne</span>
+<span class="hl-a">@JoinColumn</span>(name = <span class="hl-s">"user_id"</span>)
+<span class="hl-k">private</span> <span class="hl-t">AppUser</span> user;      <span class="hl-c">// 一条收藏属于一个用户</span></code></pre></article></div></section><section class="sx-sec" id="sp-req"><h2>一个请求在 Spring 里怎么走</h2><p class="sx-desc">把上面所有注解串起来。</p><div class="sx-grid"><figure class="sx-fig"><svg viewBox="0 0 640 306" role="img" aria-label="从外到内一层层经过，到你的方法时，参数已经全部按注解准备好了"><g filter="url(#sxwob)"><rect x="20" y="12" width="600" height="40" rx="9" class="sx-s" fill="var(--blue)"/><rect x="38" y="60" width="564" height="40" rx="9" class="sx-s" fill="var(--yellow)"/><rect x="56" y="108" width="528" height="40" rx="9" class="sx-s" fill="var(--mint)"/><rect x="74" y="156" width="492" height="40" rx="9" class="sx-s" fill="var(--pink)"/><rect x="92" y="204" width="456" height="40" rx="9" class="sx-s" fill="var(--lilac)"/><rect x="110" y="252" width="420" height="40" rx="9" class="sx-s" fill="var(--card)"/></g><text x="36" y="37" text-anchor="start" font-size="13" font-weight="700" class="">Tomcat（端口 8080）</text><text x="604" y="37" text-anchor="end" font-size="11" class="sx-sub">收到字节，解析成 HTTP 请求，分一个线程</text><text x="54" y="85" text-anchor="start" font-size="13" font-weight="700" class="">CorsConfig</text><text x="586" y="85" text-anchor="end" font-size="11" class="sx-sub">跨域放行条</text><text x="72" y="133" text-anchor="start" font-size="13" font-weight="700" class="">DispatcherServlet</text><text x="568" y="133" text-anchor="end" font-size="11" class="sx-sub">查「网址 → 方法」表</text><text x="90" y="181" text-anchor="start" font-size="13" font-weight="700" class="">AuthInterceptor</text><text x="550" y="181" text-anchor="end" font-size="11" class="sx-sub">验 token，放进 userId</text><text x="108" y="229" text-anchor="start" font-size="13" font-weight="700" class="">你的 @GetMapping 方法</text><text x="532" y="229" text-anchor="end" font-size="11" class="sx-sub">参数按注解填好</text><text x="126" y="277" text-anchor="start" font-size="13" font-weight="700" class="">Jackson</text><text x="514" y="277" text-anchor="end" font-size="11" class="sx-sub">返回值转 JSON 发回去</text></svg><figcaption>从外到内一层层经过，到你的方法时，参数已经全部按注解准备好了</figcaption></figure><article class="sx-item"><h3><code>ResponseEntity</code></h3><p class="sx-what">需要自己控制状态码时用它把「状态码 + 头 + 内容」打包返回。</p><pre class="code"><code><span class="hl-k">return</span> <span class="hl-t">ResponseEntity</span>.ok(user);                                  <span class="hl-c">// 200</span>
+<span class="hl-k">return</span> <span class="hl-t">ResponseEntity</span>.status(401).body(<span class="hl-t">Map</span>.of(<span class="hl-s">"error"</span>, <span class="hl-s">"unauthorized"</span>));
+<span class="hl-k">return</span> <span class="hl-t">ResponseEntity</span>.badRequest().build();                      <span class="hl-c">// 400，没有内容</span></code></pre></article></div></section></div>
+</div>
+</template>
+<template id="tpl-sx-sql">
+<div class="sx" v-pre>
+<div class="sx-wrap"><div class="sx-chips"><span class="sx-chip">和数据库说话的语言</span><span class="sx-chip">Neon = 云上的 PostgreSQL</span><span class="sx-chip">增删改查 + 约束</span></div><h1 class="sx-h1">SQL 语法（PostgreSQL）</h1><p class="sx-intro">不管后端用 Java 还是 Node，最后都是在对数据库说 SQL。ORM（JPA、Drizzle）只是帮你把方法翻译成 SQL。读得懂 SQL，就看得懂日志、也能自己去 Neon 后台查数据。</p><nav class="sx-nav" aria-label="章节"><a href="#sql-table">表、行、列、约束</a><a href="#sql-crud">增删改查</a><a href="#sql-query">筛选、分组、连表</a><a href="#sql-tx">事务与索引</a></nav><section class="sx-sec" id="sql-table"><h2>表、行、列、约束</h2><p class="sx-desc">先把「表长什么样」想清楚。</p><div class="sx-grid"><article class="sx-item"><h3><code>CREATE TABLE</code></h3><p class="sx-what">建表：每列写名字、类型、约束。这是我们收藏表的样子（drizzle 生成的 0000_init.sql 简化版）。</p><pre class="code"><code><span class="hl-k">CREATE</span> <span class="hl-k">TABLE</span> favorite_word (
+  id         <span class="hl-k">BIGSERIAL</span> <span class="hl-k">PRIMARY</span> <span class="hl-k">KEY</span>,                <span class="hl-c">-- 主键，自动递增</span>
+  user_id    <span class="hl-k">BIGINT</span> <span class="hl-k">NOT</span> <span class="hl-k">NULL</span> <span class="hl-k">REFERENCES</span> app_user(id) <span class="hl-k">ON</span> <span class="hl-k">DELETE</span> <span class="hl-k">CASCADE</span>,  <span class="hl-c">-- 外键：属于哪个用户</span>
+  site       <span class="hl-k">TEXT</span> <span class="hl-k">NOT</span> <span class="hl-k">NULL</span> <span class="hl-k">DEFAULT</span> <span class="hl-s">'ielts'</span>,
+  kind       <span class="hl-k">TEXT</span> <span class="hl-k">NOT</span> <span class="hl-k">NULL</span>,
+  word       <span class="hl-k">TEXT</span> <span class="hl-k">NOT</span> <span class="hl-k">NULL</span>,
+  status     <span class="hl-k">TEXT</span> <span class="hl-k">NOT</span> <span class="hl-k">NULL</span> <span class="hl-k">DEFAULT</span> <span class="hl-s">'unknown'</span>,
+  created_at <span class="hl-k">TIMESTAMPTZ</span> <span class="hl-k">NOT</span> <span class="hl-k">NULL</span> <span class="hl-k">DEFAULT</span> now()
+);
+<span class="hl-k">CREATE</span> <span class="hl-k">UNIQUE</span> <span class="hl-k">INDEX</span> favorite_word_uq <span class="hl-k">ON</span> favorite_word (user_id, site, kind, word);  <span class="hl-c">-- 联合唯一</span></code></pre></article><article class="sx-item"><h3><code>约束</code></h3><p class="sx-what"><b>PRIMARY KEY</b> 主键（唯一 + 非空）；<b>NOT NULL</b> 必须有值；<b>UNIQUE</b> 不能重复；<b>DEFAULT</b> 不填时的默认值；<b>REFERENCES</b> 外键（值必须在另一张表里存在）。</p><p class="sx-tip"><b>记住</b>约束是数据库帮你守的最后一道门：代码有漏洞，约束也能挡住坏数据。</p></article></div></section><section class="sx-sec" id="sql-crud"><h2>增删改查</h2><p class="sx-desc">四句话覆盖 90% 的日常。</p><div class="sx-grid"><article class="sx-item"><h3><code>SELECT 查</code></h3><p class="sx-what">选哪些列、从哪张表、满足什么条件、怎么排序、取几条。</p><pre class="code"><code><span class="hl-k">SELECT</span> id, word, status <span class="hl-k">FROM</span> favorite_word
+<span class="hl-k">WHERE</span> user_id = 1 <span class="hl-k">AND</span> site = <span class="hl-s">'jlpt'</span>     <span class="hl-c">-- 字符串用单引号</span>
+<span class="hl-k">ORDER</span> <span class="hl-k">BY</span> id <span class="hl-k">DESC</span>                        <span class="hl-c">-- 最新的在前</span>
+<span class="hl-k">LIMIT</span> 10 <span class="hl-k">OFFSET</span> 0;                      <span class="hl-c">-- 分页：第一页 10 条</span></code></pre></article><article class="sx-item"><h3><code>INSERT 增</code></h3><p class="sx-what">插入一行。PostgreSQL 的 <b>RETURNING</b> 能把刚插入的行（带自动生成的 id）直接返回。</p><pre class="code"><code><span class="hl-k">INSERT</span> <span class="hl-k">INTO</span> favorite_word (user_id, site, kind, word)
+<span class="hl-k">VALUES</span> (1, <span class="hl-s">'jlpt'</span>, <span class="hl-s">'w'</span>, <span class="hl-s">'慰める'</span>)
+<span class="hl-k">ON</span> <span class="hl-k">CONFLICT</span> <span class="hl-k">DO</span> <span class="hl-k">NOTHING</span>        <span class="hl-c">-- 撞上唯一约束就跳过（我们防重复靠它）</span>
+<span class="hl-k">RETURNING</span> id, word;</code></pre></article><article class="sx-item"><h3><code>UPDATE 改</code></h3><p class="sx-what">改哪张表、改成什么、改哪些行。<b>一定要写 WHERE</b>。</p><pre class="code"><code><span class="hl-k">UPDATE</span> favorite_word <span class="hl-k">SET</span> status = <span class="hl-s">'known'</span>
+<span class="hl-k">WHERE</span> id = 3 <span class="hl-k">AND</span> user_id = 1;   <span class="hl-c">-- 带上 user_id：只能改自己的</span></code></pre></article><article class="sx-item"><h3><code>DELETE 删</code></h3><p class="sx-what">删哪些行。<b>一定要写 WHERE</b>，不写就是删整张表。</p><pre class="code"><code><span class="hl-k">DELETE</span> <span class="hl-k">FROM</span> favorite_word <span class="hl-k">WHERE</span> id = 3 <span class="hl-k">AND</span> user_id = 1;</code></pre><p class="sx-tip"><b>记住</b>改和删之前，先用同样的 WHERE 跑一次 SELECT，看看会影响哪几行。</p></article></div></section><section class="sx-sec" id="sql-query"><h2>筛选、分组、连表</h2><p class="sx-desc">进阶查询。</p><div class="sx-grid"><article class="sx-item"><h3><code>WHERE 常用条件</code></h3><p class="sx-what">比较、范围、模糊匹配、空值判断。</p><pre class="code"><code><span class="hl-k">WHERE</span> kind <span class="hl-k">IN</span> (<span class="hl-s">'w'</span>, <span class="hl-s">'p'</span>)
+<span class="hl-k">WHERE</span> word <span class="hl-k">LIKE</span> <span class="hl-s">'ab%'</span>          <span class="hl-c">-- 以 ab 开头</span>
+<span class="hl-k">WHERE</span> status <span class="hl-k">IS</span> <span class="hl-k">NULL</span>           <span class="hl-c">-- 判断空值不能用 = NULL</span>
+<span class="hl-k">WHERE</span> created_at &gt; now() - interval <span class="hl-s">'7 days'</span></code></pre></article><article class="sx-item"><h3><code>GROUP BY + COUNT</code></h3><p class="sx-what">分组统计。HAVING 是「分组以后再筛选」。</p><pre class="code"><code><span class="hl-c">-- 每个站点、每种类型各有多少条收藏</span>
+<span class="hl-k">SELECT</span> site, kind, <span class="hl-k">COUNT</span>(*) <span class="hl-k">AS</span> n
+<span class="hl-k">FROM</span> favorite_word
+<span class="hl-k">GROUP</span> <span class="hl-k">BY</span> site, kind
+<span class="hl-k">HAVING</span> <span class="hl-k">COUNT</span>(*) &gt; 0
+<span class="hl-k">ORDER</span> <span class="hl-k">BY</span> site;</code></pre></article><figure class="sx-fig"><svg viewBox="0 0 640 162" role="img" aria-label="JOIN：用 favorite_word.user_id = app_user.id 把两张表「对上」，一次查出「谁收藏了什么」"><g filter="url(#sxwob)"><rect x="16" y="14" width="250" height="112" rx="8" class="sx-s" fill="var(--card)"/><rect x="16" y="14" width="250" height="28" rx="8" class="sx-s" fill="var(--blue)"/><rect x="374" y="14" width="250" height="138" rx="8" class="sx-s" fill="var(--card)"/><rect x="374" y="14" width="250" height="28" rx="8" class="sx-s" fill="var(--mint)"/><path d="M266 82 C 320 82, 320 82, 374 82" class="sx-s sx-dash" marker-end="url(#sxah)"/><path d="M266 82 C 320 82, 320 108, 374 108" class="sx-s sx-dash" marker-end="url(#sxah)"/><path d="M266 108 C 320 108, 320 134, 374 134" class="sx-s sx-dash" marker-end="url(#sxah)"/></g><text x="141.0" y="33" text-anchor="middle" font-size="13" font-weight="700" class="">app_user</text><text x="78.5" y="60" text-anchor="middle" font-size="11" font-weight="700" class="sx-sub">id</text><text x="203.5" y="60" text-anchor="middle" font-size="11" font-weight="700" class="sx-sub">name</text><text x="78.5" y="86" text-anchor="middle" font-size="11.5" class="">1</text><text x="203.5" y="86" text-anchor="middle" font-size="11.5" class="">Goen</text><text x="78.5" y="112" text-anchor="middle" font-size="11.5" class="">2</text><text x="203.5" y="112" text-anchor="middle" font-size="11.5" class="">Amy</text><text x="499.0" y="33" text-anchor="middle" font-size="13" font-weight="700" class="">favorite_word</text><text x="436.5" y="60" text-anchor="middle" font-size="11" font-weight="700" class="sx-sub">user_id</text><text x="561.5" y="60" text-anchor="middle" font-size="11" font-weight="700" class="sx-sub">word</text><text x="436.5" y="86" text-anchor="middle" font-size="11.5" class="">1</text><text x="561.5" y="86" text-anchor="middle" font-size="11.5" class="">abandon</text><text x="436.5" y="112" text-anchor="middle" font-size="11.5" class="">1</text><text x="561.5" y="112" text-anchor="middle" font-size="11.5" class="">reduce</text><text x="436.5" y="138" text-anchor="middle" font-size="11.5" class="">2</text><text x="561.5" y="138" text-anchor="middle" font-size="11.5" class="">hence</text></svg><figcaption>JOIN：用 favorite_word.user_id = app_user.id 把两张表「对上」，一次查出「谁收藏了什么」</figcaption></figure><article class="sx-item"><h3><code>JOIN 连表</code></h3><p class="sx-what"><b>INNER JOIN</b>：两边都对得上才要；<b>LEFT JOIN</b>：左表全要，右表对不上就填 NULL。</p><pre class="code"><code><span class="hl-k">SELECT</span> u.name, f.word
+<span class="hl-k">FROM</span> favorite_word f
+<span class="hl-k">JOIN</span> app_user u <span class="hl-k">ON</span> u.id = f.user_id      <span class="hl-c">-- 连接条件</span>
+<span class="hl-k">WHERE</span> f.site = <span class="hl-s">'ielts'</span>;
+
+<span class="hl-c">-- 每个用户有几条收藏（没有收藏的用户也列出来，显示 0）</span>
+<span class="hl-k">SELECT</span> u.name, <span class="hl-k">COUNT</span>(f.id)
+<span class="hl-k">FROM</span> app_user u <span class="hl-k">LEFT</span> <span class="hl-k">JOIN</span> favorite_word f <span class="hl-k">ON</span> f.user_id = u.id
+<span class="hl-k">GROUP</span> <span class="hl-k">BY</span> u.name;</code></pre></article></div></section><section class="sx-sec" id="sql-tx"><h2>事务与索引</h2><p class="sx-desc">数据正确和查询速度。</p><div class="sx-grid"><figure class="sx-fig"><svg viewBox="0 0 640 200" role="img" aria-label="事务：几步操作捆成一个整体，不会出现「扣了钱但没到账」这种一半的状态"><g filter="url(#sxwob)"><rect x="14" y="74" width="150" height="52" rx="10" class="sx-s" fill="var(--blue)"/><rect x="245" y="16" width="170" height="52" rx="10" class="sx-s" fill="var(--mint)"/><rect x="245" y="132" width="170" height="52" rx="10" class="sx-s" fill="var(--pink)"/><rect x="490" y="74" width="136" height="52" rx="10" class="sx-s" fill="var(--yellow)"/><path d="M164 92 C 200 92, 210 42, 243 42" class="sx-s" marker-end="url(#sxah)"/><path d="M164 112 C 200 112, 210 158, 243 158" class="sx-s sx-dash" marker-end="url(#sxah)"/><path d="M415 42 C 450 42, 460 92, 488 92" class="sx-s" marker-end="url(#sxah)"/><path d="M415 158 C 450 158, 460 112, 488 112" class="sx-s sx-dash" marker-end="url(#sxah)"/></g><text x="89.0" y="96" text-anchor="middle" font-size="13" font-weight="700" class="">BEGIN</text><text x="89.0" y="114" text-anchor="middle" font-size="10.5" class="sx-sub">开始一组操作</text><text x="330.0" y="38" text-anchor="middle" font-size="13" font-weight="700" class="">全部成功</text><text x="330.0" y="56" text-anchor="middle" font-size="10.5" class="sx-sub">COMMIT 一起生效</text><text x="330.0" y="154" text-anchor="middle" font-size="13" font-weight="700" class="">中途出错</text><text x="330.0" y="172" text-anchor="middle" font-size="10.5" class="sx-sub">ROLLBACK 全部撤销</text><text x="558.0" y="96" text-anchor="middle" font-size="13" font-weight="700" class="">数据库</text><text x="558.0" y="114" text-anchor="middle" font-size="10.5" class="sx-sub">要么全变、要么全不变</text><text x="200" y="58" text-anchor="middle" font-size="11" class="sx-good">正常</text><text x="200" y="150" text-anchor="middle" font-size="11" class="sx-bad">出错</text></svg><figcaption>事务：几步操作捆成一个整体，不会出现「扣了钱但没到账」这种一半的状态</figcaption></figure><article class="sx-item"><h3><code>BEGIN / COMMIT / ROLLBACK</code></h3><p class="sx-what">把几条语句包成一个事务。</p><pre class="code"><code><span class="hl-k">BEGIN</span>;
+<span class="hl-k">UPDATE</span> account <span class="hl-k">SET</span> balance = balance - 100 <span class="hl-k">WHERE</span> id = 1;
+<span class="hl-k">UPDATE</span> account <span class="hl-k">SET</span> balance = balance + 100 <span class="hl-k">WHERE</span> id = 2;
+<span class="hl-k">COMMIT</span>;      <span class="hl-c">-- 两条一起生效；中途出错就 ROLLBACK，两条都不生效</span></code></pre></article><article class="sx-item"><h3><code>索引</code></h3><p class="sx-what">像书的目录，让「按某列查」变快。主键和 UNIQUE 自带索引；经常出现在 WHERE 里的列（比如 user_id）应该加索引。代价是写入稍慢、占空间。</p><pre class="code"><code><span class="hl-k">CREATE</span> <span class="hl-k">INDEX</span> favorite_word_user_idx <span class="hl-k">ON</span> favorite_word (user_id);</code></pre></article></div></section></div>
+</div>
+</template>
+<template id="tpl-sx-vue">
+<div class="sx" v-pre>
+<div class="sx-wrap"><div class="sx-chips"><span class="sx-chip">我们三个网站的前端框架</span><span class="sx-chip">响应式：数据变，页面自动变</span><span class="sx-chip">CDN 全局版 + Vue Router</span></div><h1 class="sx-h1">Vue 3 语法</h1><p class="sx-intro">你做过前端，Vue 应该不陌生，这里把我们网站里用到的写法集中整理一下，方便对照后端：模板语法、响应式、计算属性、组件、路由、和后端通信。</p><nav class="sx-nav" aria-label="章节"><a href="#vue-reactive">响应式：数据驱动页面</a><a href="#vue-tpl">模板语法</a><a href="#vue-comp">组件与路由</a><a href="#vue-api">和后端通信</a></nav><section class="sx-sec" id="vue-reactive"><h2>响应式：数据驱动页面</h2><p class="sx-desc">Vue 的核心：你只改数据，页面由 Vue 去更新。</p><div class="sx-grid"><figure class="sx-fig"><svg viewBox="0 0 640 96" role="img" aria-label="响应式：Vue 在你读数据时记下依赖，在你改数据时通知这些地方更新"><g filter="url(#sxwob)"><rect x="10.0" y="16" width="138.5" height="64" rx="10" class="sx-s" fill="var(--blue)"/><path d="M151.5 48.0 h14" class="sx-s" marker-end="url(#sxah)"/><rect x="170.5" y="16" width="138.5" height="64" rx="10" class="sx-s" fill="var(--yellow)"/><path d="M312.0 48.0 h14" class="sx-s" marker-end="url(#sxah)"/><rect x="331.0" y="16" width="138.5" height="64" rx="10" class="sx-s" fill="var(--pink)"/><path d="M472.5 48.0 h14" class="sx-s" marker-end="url(#sxah)"/><rect x="491.5" y="16" width="138.5" height="64" rx="10" class="sx-s" fill="var(--mint)"/></g><text x="79.25" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">ref / reactive</text><text x="79.25" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">包一层「会被追踪」的数据</text><text x="239.75" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">模板里用到它</text><text x="239.75" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">Vue 记下「谁依赖它」</text><text x="400.25" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">数据被改</text><text x="400.25" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">count.value++</text><text x="560.75" y="44.0" text-anchor="middle" font-size="13.5" font-weight="700" class="">自动重新渲染</text><text x="560.75" y="62.0" text-anchor="middle" font-size="11" class="sx-sub">只更新用到它的地方</text></svg><figcaption>响应式：Vue 在你读数据时记下依赖，在你改数据时通知这些地方更新</figcaption></figure><article class="sx-item"><h3><code>ref / reactive</code></h3><p class="sx-what"><b>ref</b> 包任何值，在 JS 里要用 <code>.value</code> 读写（模板里不用）；<b>reactive</b> 只能包对象，直接读写属性。</p><pre class="code"><code><span class="hl-k">const</span> { createApp, ref, reactive } = <span class="hl-t">Vue</span>;
+createApp({
+  setup() {
+    <span class="hl-k">const</span> page = ref(1);                 <span class="hl-c">// JS 里：page.value</span>
+    <span class="hl-k">const</span> user = reactive({ name: <span class="hl-s">"Goen"</span> });
+    <span class="hl-k">const</span> next = () =&gt; page.value++;
+    <span class="hl-k">return</span> { page, user, next };         <span class="hl-c">// 返回的东西模板里能用</span>
+  },
+}).mount(<span class="hl-s">"#app"</span>);</code></pre></article><article class="sx-item"><h3><code>computed</code></h3><p class="sx-what">根据别的数据算出来的值，依赖不变就不会重算（有缓存）。</p><pre class="code"><code><span class="hl-k">const</span> favs = ref([]);
+<span class="hl-k">const</span> favCount = computed(() =&gt; favs.value.length);   <span class="hl-c">// favs 变了它才重新算</span>
+<span class="hl-k">const</span> today = computed(() =&gt; { <span class="hl-k">const</span> d = now.value; <span class="hl-k">return</span> d.getDate(); });</code></pre></article><article class="sx-item"><h3><code>watch / 生命周期</code></h3><p class="sx-what"><b>watch</b>：某个数据变了就执行一段代码；<b>onMounted</b>：组件画到页面上之后执行；<b>onUnmounted</b>：组件被移除时执行（清定时器）。</p><pre class="code"><code>watch(() =&gt; route.path, (to, <span class="hl-k">from</span>) =&gt; { window.scrollTo(0, 0); });
+onMounted(() =&gt; { timer = setInterval(tick, 30000); });
+onUnmounted(() =&gt; clearInterval(timer));   <span class="hl-c">// 不清掉，离开页面后定时器还在跑</span></code></pre></article></div></section><section class="sx-sec" id="vue-tpl"><h2>模板语法</h2><p class="sx-desc">写在 HTML 里的指令。</p><div class="sx-grid"><article class="sx-item"><h3><code>插值 {{ }} 与 v-bind（:）</code></h3><p class="sx-what"><code>{{ }}</code> 显示数据（会自动转义，安全）；<code>:属性</code> 把属性绑到数据上。</p><pre class="code"><code>&lt;p&gt;第 {{ page }} 页&lt;/p&gt;
+&lt;img :src=<span class="hl-s">"user.picture"</span> :alt=<span class="hl-s">"user.name"</span>&gt;
+&lt;div :<span class="hl-k">class</span>=<span class="hl-s">"{ on: isFav }"</span> :style=<span class="hl-s">"{ '--c': color }"</span>&gt;&lt;/div&gt;</code></pre></article><article class="sx-item"><h3><code>v-on（@）事件</code></h3><p class="sx-what">监听事件。修饰符：<b>.stop</b> 阻止冒泡、<b>.prevent</b> 阻止默认行为、<b>.self</b> 只在点到自己时触发。</p><pre class="code"><code>&lt;button @click=<span class="hl-s">"next"</span>&gt;下一页&lt;/button&gt;
+&lt;button @click.stop=<span class="hl-s">"toggleFav('w', w.k)"</span>&gt;收藏&lt;/button&gt;
+&lt;div <span class="hl-k">class</span>=<span class="hl-s">"mask"</span> @click.self=<span class="hl-s">"close"</span>&gt;...&lt;/div&gt;</code></pre></article><article class="sx-item"><h3><code>v-if / v-show / v-for</code></h3><p class="sx-what"><b>v-if</b> 条件为假时根本不渲染；<b>v-show</b> 只是隐藏（频繁切换用它）；<b>v-for</b> 循环，一定要配 <b>:key</b>。</p><pre class="code"><code>&lt;p v-<span class="hl-k">if</span>=<span class="hl-s">"!authUser"</span>&gt;请先登录&lt;/p&gt;
+&lt;aside v-show=<span class="hl-s">"open"</span>&gt;抽屉&lt;/aside&gt;
+&lt;div v-<span class="hl-k">for</span>=<span class="hl-s">"f in favs"</span> :key=<span class="hl-s">"f.id"</span>&gt;{{ f.word }}&lt;/div&gt;</code></pre></article><article class="sx-item"><h3><code>v-model / v-html / v-pre</code></h3><p class="sx-what"><b>v-model</b> 表单双向绑定；<b>v-html</b> 按 HTML 渲染（只能用于自己可控的内容，否则有 XSS 风险）；<b>v-pre</b> 让 Vue 跳过这一块，原样显示。</p><pre class="code"><code>&lt;input v-model=<span class="hl-s">"keyword"</span> placeholder=<span class="hl-s">"搜索"</span>&gt;
+&lt;code v-html=<span class="hl-s">"viewer.html"</span>&gt;&lt;/code&gt;      <span class="hl-c">&lt;!-- 我们代码库里，代码是自己构建时上色的，可控 --&gt;</span>
+&lt;div v-pre&gt;{{ 这里不会被当成插值 }}&lt;/div&gt;</code></pre></article></div></section><section class="sx-sec" id="vue-comp"><h2>组件与路由</h2><p class="sx-desc">把页面拆成一块块，再用路由切换。</p><div class="sx-grid"><article class="sx-item"><h3><code>组件 + props / emit</code></h3><p class="sx-what">组件是可复用的一块界面。父组件通过 <b>props</b> 往下传数据，子组件通过 <b>emit</b> 往上发事件。</p><pre class="code"><code><span class="hl-k">const</span> <span class="hl-t">FavButton</span> = {
+  props: { on: <span class="hl-t">Boolean</span> },
+  emits: [<span class="hl-s">"toggle"</span>],
+  template: <span class="hl-s">`&lt;button :class="{ on }" @click="$emit('toggle')"&gt;★&lt;/button&gt;`</span>,
+};
+<span class="hl-c">// 父组件里：&lt;fav-button :on="isFav(w)" @toggle="toggleFav(w)"&gt;&lt;/fav-button&gt;</span></code></pre></article><article class="sx-item"><h3><code>Vue Router</code></h3><p class="sx-what"><b>routes</b> 表写「网址 → 组件」；<b>router-view</b> 是占位框；<b>router-link</b> 是不刷新页面的链接；<b>children</b> 是嵌套路由。秘密基地的后端笔记就是这样做的。</p><pre class="code"><code><span class="hl-k">const</span> router = createRouter({
+  history: createWebHashHistory(),          <span class="hl-c">// 网址里带 #，静态托管刷新也不会 404</span>
+  routes: [
+    { path: <span class="hl-s">"/"</span>, component: <span class="hl-t">Home</span> },
+    { path: <span class="hl-s">"/backend"</span>, component: <span class="hl-t">BackendLayout</span>, children: [
+        { path: <span class="hl-s">""</span>, component: <span class="hl-t">BkIndex</span> },     <span class="hl-c">// /backend</span>
+        { path: <span class="hl-s">"java"</span>, component: <span class="hl-t">BkJava</span> },  <span class="hl-c">// /backend/java</span>
+    ] },
+  ],
+});
+createApp({}).use(router).mount(<span class="hl-s">"#app"</span>);
+<span class="hl-c">// 模板里：&lt;router-link to="/backend/java"&gt;Java&lt;/router-link&gt;  &lt;router-view&gt;&lt;/router-view&gt;</span></code></pre></article></div></section><section class="sx-sec" id="vue-api"><h2>和后端通信</h2><p class="sx-desc">前端这一侧的「登录 + 收藏」。</p><div class="sx-grid"><article class="sx-item"><h3><code>带 token 的请求</code></h3><p class="sx-what">登录拿到 token 存进 localStorage，之后每个请求带上 Authorization 头；遇到 401 就清掉登录状态。</p><pre class="code"><code><span class="hl-k">async</span> <span class="hl-k">function</span> authFetch(path, opt = {}) {
+  <span class="hl-k">const</span> headers = { <span class="hl-t">Authorization</span>: <span class="hl-s">"Bearer "</span> + localStorage.getItem(<span class="hl-s">"jlpt_token"</span>), ...opt.headers };
+  <span class="hl-k">if</span> (opt.body) headers[<span class="hl-s">"Content-Type"</span>] = <span class="hl-s">"application/json"</span>;
+  <span class="hl-k">const</span> r = <span class="hl-k">await</span> fetch(<span class="hl-t">API_BASE</span> + path, { ...opt, headers });
+  <span class="hl-k">if</span> (r.status === 401) { logout(); <span class="hl-k">return</span> <span class="hl-k">null</span>; }   <span class="hl-c">// 登录失效</span>
+  <span class="hl-k">return</span> r;
+}
+<span class="hl-k">await</span> authFetch(<span class="hl-s">"/favorites"</span>, { method: <span class="hl-s">"POST"</span>, body: <span class="hl-t">JSON</span>.stringify({ site: <span class="hl-s">"jlpt"</span>, kind: <span class="hl-s">"w"</span>, word }) });</code></pre></article><article class="sx-item"><h3><code>乐观更新</code></h3><p class="sx-what">先在页面上改，再发请求；失败了再改回去并提示。用户感觉快，又不会骗人。</p><pre class="code"><code>favs.value = [{ word, id: <span class="hl-k">null</span> }, ...favs.value];   <span class="hl-c">// 先显示"已收藏"</span>
+<span class="hl-k">const</span> r = <span class="hl-k">await</span> authFetch(<span class="hl-s">"/favorites"</span>, { method: <span class="hl-s">"POST"</span>, body: ... });
+<span class="hl-k">if</span> (!r || !r.ok) {
+  favs.value = favs.value.filter(f =&gt; f.word !== word);   <span class="hl-c">// 失败：改回来</span>
+  toast(<span class="hl-s">"收藏失败，请重试"</span>);
+}</code></pre></article></div></section></div>
+</div>
+</template>
+
 <!-- 真正挂载 Vue 的地方：router-view 是个"占位框"，当前网址对应哪个页面，就把哪个页面放进来 -->
 <div id="app"><router-view></router-view></div>
+<!-- 语法速查里手绘小图共用的滤镜（线条微微抖动）和箭头，放在 #app 外面，所有页面都能引用 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <filter id="sxwob" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="5"/><feDisplacementMap in="SourceGraphic" scale="2.4"/></filter>
+  <marker id="sxah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L9 5L1 9" fill="none" stroke="context-stroke" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>
+</defs></svg>
+
 
 <!-- ===== 代码库：从 ~/Downloads/Developer 读来的真实后端源码（已在构建时上色）。
      放在 #app 外面的 <template> 里：浏览器不渲染、Vue 不解析，用到时再用 JS 复制出来 ===== -->
@@ -7201,8 +7904,8 @@ const { createApp, ref, computed, watch, onMounted, onUnmounted, nextTick } = Vu
 // ===================== 版本号 =====================
 // 每次改完准备发布，就改这两行：VERSION 往上加一，UPDATED 写当时的时间。
 // 首页左上角 GK 旁边会显示它们，这样打开网站一眼就知道是不是最新版
-const VERSION = "v1.6";
-const UPDATED = "2026-10-30 21:40";
+const VERSION = "v1.7";
+const UPDATED = "2026-10-31 09:30";
 const { createRouter, createWebHashHistory, createMemoryHistory } = VueRouter;
 
 // 激励语录：按"今年第几天"轮换，每天一句（都是自己写的短句）
@@ -7374,6 +8077,28 @@ const BK_GROUPS = [
         level: "key", why: "一个很好的表设计案例：设计对了，加功能只改一行", keys: [] },
     ],
   },
+  {
+    id: "syntax", name: "语法速查", short: "语法", color: "mint",
+    desc: "我们项目里用到的每一门语言和框架：每个语法点是干嘛的、怎么写、举例说明，配手绘图。",
+    notes: [
+      { to: "/backend/sx-js", label: "JavaScript", title: "JavaScript 语法", desc: "变量、函数、对象数组、解构展开、模块、类、Promise / async、try / catch",
+        level: "must", why: "前端和 Node 后端共用的底子；异步和错误处理是后端天天要用的", keys: ["js-async", "js-err", "js-obj"] },
+      { to: "/backend/sx-ts", label: "TypeScript", title: "TypeScript 语法", desc: "类型标注、type / interface、联合类型与收窄、泛型、工具类型",
+        level: "must", why: "我们线上后端就是 TypeScript 写的；面试前端、全栈都会问", keys: ["ts-why", "ts-union", "ts-shape"] },
+      { to: "/backend/sx-node", label: "Node.js", title: "Node.js 语法与核心概念", desc: "进程、npm 与 package.json、环境变量、单线程与事件循环、内置模块",
+        level: "must", why: "后端运行环境本身：端口、进程、环境变量这些是你之前缺的那一层", keys: ["node-loop", "node-env"] },
+      { to: "/backend/sx-express", label: "Express", title: "Express 语法", desc: "app 与启动、路由、中间件 (req, res, next)、返回响应、测试",
+        level: "must", why: "线上后端的框架；中间件这个概念在所有后端框架里都通用", keys: ["ex-mw", "ex-route"] },
+      { to: "/backend/sx-java", label: "Java", title: "Java 语法", desc: "编译与 JVM、类型、流程与异常、类与对象、接口与泛型、集合与 Optional",
+        level: "key", why: "日本公司后端最常见的语言，看懂 Spring 代码的前提", keys: ["java-type", "java-oop", "java-coll"] },
+      { to: "/backend/sx-spring", label: "Spring", title: "Spring Boot 与 @ 注解", desc: "IoC 与依赖注入，贴在类 / 方法 / 参数 / 字段上的每个 @ 是干嘛的",
+        level: "key", why: "满屏的 @ 一次讲清：贴在哪、谁在读、让框架做了什么", keys: ["sp-ioc", "sp-param", "sp-class"] },
+      { to: "/backend/sx-sql", label: "SQL", title: "SQL 语法（PostgreSQL）", desc: "建表与约束、增删改查、筛选分组、JOIN、事务与索引",
+        level: "must", why: "不管 Java 还是 Node，最后都是 SQL；能自己去 Neon 后台查数据", keys: ["sql-crud", "sql-query"] },
+      { to: "/backend/sx-vue", label: "Vue 3", title: "Vue 3 语法", desc: "响应式 ref / computed、模板指令、组件与路由、带 token 请求后端",
+        level: "ref", why: "你熟悉的前端，这里对照我们网站的写法整理，用到再查", keys: ["vue-reactive"] },
+    ],
+  }
 ];
 
 // ===================== 真实代码：从 <template id="code-lib"> 里读出来 =====================
@@ -7511,7 +8236,7 @@ const BackendLayout = {
     // 用"事件委托"——只在最外层监听一次点击，再看点到的是什么
     function onClick(e) {
       // ① 章节导航 <a href="#flow">：不能让它改网址（会被路由当成新页面），改成直接滚动过去
-      const a = e.target.closest('.nb a[href^="#"], .bk a[href^="#"]');
+      const a = e.target.closest('.nb a[href^="#"], .bk a[href^="#"], .sx a[href^="#"]');
       if (a && !a.getAttribute("href").startsWith("#/")) {
         e.preventDefault();
         const el = root.value.querySelector(a.getAttribute("href"));
@@ -7601,6 +8326,17 @@ const BkCode = {
     return { projects, project, list, cur, pick, open, countOf, snapshot: CODE_SNAPSHOT() };
   },
 };
+
+
+// ===================== 语法速查：8 篇共用一个组件工厂 =====================
+// 每篇只是一段静态模板（构建时生成），所以组件本身什么逻辑都不用；里面有 SVG 动画，减少动效时停掉
+const makeSx = (id) => ({ template: `#tpl-sx-${id}`, setup() { onMounted(() => {
+  try { if (matchMedia("(prefers-reduced-motion: reduce)").matches) document.querySelectorAll(".sx svg").forEach((el) => el.pauseAnimations && el.pauseAnimations()); } catch (e) {}
+}); return {}; } });
+const SX_PAGES = [
+  ["js", "JavaScript 语法"], ["ts", "TypeScript 语法"], ["node", "Node.js 语法"], ["express", "Express 语法"],
+  ["java", "Java 语法"], ["spring", "Spring Boot 与 @ 注解"], ["sql", "SQL 语法"], ["vue", "Vue 3 语法"],
+];
 
 const LV = { must: "必读", key: "重要", ref: "查阅" };   // 徽章上显示的中文
 const BkIndex = { template: "#tpl-bk-index", setup() { return { groups: BK_GROUPS, LV }; } };
@@ -7711,6 +8447,8 @@ const router = createRouter({
         { path: "jlpt", component: BkJlptLog, meta: { title: "日语站接入后端" } },
         { path: "fullstack", component: BkFullstack, meta: { title: "全栈基础笔记" } },
         { path: "code", component: BkCode, meta: { title: "我们的代码" } },
+        // 语法速查 8 篇：/backend/sx-js、/backend/sx-ts ……
+        ...SX_PAGES.map(([id, title]) => ({ path: `sx-${id}`, component: makeSx(id), meta: { title } })),
       ],
     },
     { path: "/:any(.*)", redirect: "/" },   // 乱输的网址一律回首页
