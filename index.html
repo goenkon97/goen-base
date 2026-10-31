@@ -115,9 +115,9 @@ html{background-color:var(--paper)}
    电脑：贴纸 两张在日历左边，两张在插画右边
    手机：四张贴纸围在日历左右两边，插画在下面整行 */
 .art{display:grid;grid-template-columns:auto 200px minmax(0,1fr) auto;
-  grid-template-areas:"s0 cal scene s2" "s1 cal scene s3";gap:14px 22px;align-items:center;justify-items:center}
+  grid-template-areas:"s0 cal scene s2" "s1 cal scene s3" "s4 cal scene .";gap:14px 22px;align-items:center;justify-items:center}
 @media (max-width:620px){.art{grid-template-columns:minmax(0,1fr) 136px minmax(0,1fr);
-  grid-template-areas:"s0 cal s2" "s1 cal s3" "scene scene scene";gap:10px 12px}}
+  grid-template-areas:"s0 cal s2" "s1 cal s3" "s4 cal ." "scene scene scene";gap:10px 12px}}
 
 /* 小贴纸：小小一张，像随手贴在日历旁边的标签 */
 .sticker{display:flex;flex-direction:column;align-items:center;gap:1px;width:86px;max-width:100%;box-sizing:border-box;
@@ -127,6 +127,7 @@ html{background-color:var(--paper)}
 .s1{grid-area:s1;transform:rotate(4deg)}
 .s2{grid-area:s2;transform:rotate(5deg)}
 .s3{grid-area:s3;transform:rotate(-4deg) translateX(-6px)}
+.s4{grid-area:s4;transform:rotate(3deg) translateX(4px)}
 a.sticker:hover,a.sticker:focus-visible{transform:translateY(-3px) rotate(0)}
 a.sticker:focus-visible{outline:2px dashed var(--ink);outline-offset:3px}
 .sticker svg{width:28px;height:28px}
@@ -256,7 +257,7 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
 @media (min-width:621px) and (max-aspect-ratio:1/1){
   .stage{gap:clamp(24px,4vh,56px)}
   .art{grid-template-columns:minmax(0,1fr) clamp(180px,27vw,270px) minmax(0,1fr);
-    grid-template-areas:"s0 cal s2" "s1 cal s3" "scene scene scene";gap:clamp(18px,3vh,32px) clamp(20px,4vw,44px)}
+    grid-template-areas:"s0 cal s2" "s1 cal s3" "s4 cal ." "scene scene scene";gap:clamp(18px,3vh,32px) clamp(20px,4vw,44px)}
   .scene{max-width:760px;max-height:38vh}
   .cal-head{font-size:clamp(20px,3vw,30px)}
   .cal-day{font-size:clamp(84px,13vw,140px)}
@@ -1683,11 +1684,11 @@ a.sx-go:hover{background:var(--yellow)}
     <router-link v-if="!group" to="/" class="bl-back" aria-label="回秘密基地">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 L5 8 L10 13"/></svg>基地
     </router-link>
-    <router-link v-else to="/backend" class="bl-back" aria-label="回笔记目录">
+    <router-link v-else :to="home" class="bl-back" aria-label="回目录">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 L5 8 L10 13"/></svg>目录
     </router-link>
     <!-- 目录页：显示标题 -->
-    <span v-if="!group" class="bl-title">全栈</span>
+    <span v-if="!group" class="bl-title">{{ route.path === "/backend/jp" ? "日本 IT 现场" : "全栈" }}</span>
     <!-- 笔记页：只显示"这一组"里的几篇，不再把所有笔记挤在一行 -->
     <nav v-else class="bl-tabs" :aria-label="group.name">
       <span class="bl-group" :style="{ '--c': `var(--${group.color})` }">{{ group.short }}</span>
@@ -1741,8 +1742,8 @@ a.sx-go:hover{background:var(--yellow)}
 <template id="tpl-bk-index">
 <div class="bi">
   <div class="bi-wrap">
-    <h1 class="bi-h1">全栈</h1>
-    <p class="bi-lead">目标是全栈工程师：前端、后端、数据库、部署都要会。先读「基础概念」打地基；「语法速查」「工作速查」平时写代码时查；「项目实战」看我自己的收藏后端是怎么一步步做出来的。</p>
+    <h1 class="bi-h1">{{ title }}</h1>
+    <p class="bi-lead">{{ lead }}</p>
     <!-- 优先级说明：按"前端转全栈"排的，不是按难度 -->
     <div class="bi-legend">
       <span class="lv lv-must">必读</span>现在就看
@@ -13887,8 +13888,8 @@ const ToTop = {
 // ===================== 版本号 =====================
 // 每次改完准备发布，就改这两行：VERSION 往上加一，UPDATED 写当时的时间。
 // 首页左上角 GK 旁边会显示它们，这样打开网站一眼就知道是不是最新版
-const VERSION = "v2.8";
-const UPDATED = "2026-10-31 15:25";
+const VERSION = "v2.9";
+const UPDATED = "2026-10-31 15:29";
 const { createRouter, createWebHashHistory, createMemoryHistory } = VueRouter;
 
 // 激励语录：按"今年第几天"轮换，每天一句（都是自己写的短句）
@@ -13916,6 +13917,9 @@ const MODULES = [
     icon: '<rect x="12" y="10" width="34" height="40" rx="4" fill="var(--mint)"/><path d="M18 22 l3 3 6-6 M18 34 l3 3 6-6 M32 22 h8 M32 34 h8"/>' },
   { id: "backend", title: "全栈", short: "Full-stack", tagline: "全栈", desc: "前端 · 后端 · 数据库 · 速查 · 实战", url: "", to: "/backend", color: "lilac",
     icon: '<rect x="10" y="14" width="38" height="12" rx="3" fill="var(--lilac)"/><rect x="10" y="32" width="38" height="12" rx="3" fill="var(--lilac)"/><path d="M16 20 h.1 M16 38 h.1 M36 20 h6 M36 38 h6" stroke-width="3"/>' },
+  // 日本 IT 现场：和「全栈」并列的独立入口（页面内容复用全栈模块的速查页外壳）
+  { id: "jpit", title: "日本 IT 现场", short: "日本IT", tagline: "现场 · 日语", desc: "流程 · 设计书 · IT 日语 · 面试", url: "", to: "/backend/jp", color: "yellow",
+    icon: '<rect x="8" y="12" width="42" height="7" rx="2" fill="var(--yellow)"/><path d="M13 24 h32"/><path d="M18 19 v29 M40 19 v29"/><path d="M24 34 l-4 4 4 4 M34 34 l4 4 -4 4"/>' },
 ];
 
 // ===================== 页面组件 1：首页 =====================
@@ -14344,7 +14348,8 @@ const BackendLayout = {
     // 网址一变（换了一篇），等新内容渲染完再处理；immediate 让第一次进来也执行
     watch(() => route.path, () => { viewer.value = null; nextTick(decorate); }, { immediate: true });
     onMounted(() => nextTick(decorate));
-    return { root, group, onClick, viewer };
+    const home = computed(() => (group.value && group.value.id === "jp" ? "/backend/jp" : "/backend"));   // 「目录」按钮回到哪个目录
+    return { root, group, onClick, viewer, home, route };
   },
 };
 
@@ -14491,7 +14496,16 @@ const SX_PAGES = [
 ];
 
 const LV = { must: "必读", key: "重要", ref: "查阅" };   // 徽章上显示的中文
-const BkIndex = { template: "#tpl-bk-index", setup() { return { groups: BK_GROUPS, LV }; } };
+// 全栈目录：除了「日本 IT 现场」以外的所有分组
+const BkIndex = { template: "#tpl-bk-index", setup() { return {
+  groups: BK_GROUPS.filter((g) => g.id !== "jp"), LV, title: "全栈",
+  lead: "目标是全栈工程师：前端、后端、数据库、部署都要会。先读「基础概念」打地基；「语法速查」「工作速查」平时写代码时查；「项目实战」看我自己的收藏后端是怎么一步步做出来的。",
+}; } };
+// 日本 IT 现场的目录：首页上独立的入口，只显示 jp 这一组（页面本身还是速查页，搜索、跳转、缩略导航都通用）
+const JpIndex = { template: "#tpl-bk-index", setup() { return {
+  groups: BK_GROUPS.filter((g) => g.id === "jp"), LV, title: "日本 IT 现场",
+  lead: "在日本当工程师需要知道的：开发流程和各种设计书、测试规格书、IT 日语词汇、報連相和日语沟通模板、面试。从「流程与文档」开始看。",
+}; } };
 
 // ===================== 后端笔记里的四篇（都只是一段静态模板）=====================
 const BkDiagram = {
@@ -14590,6 +14604,7 @@ const router = createRouter({
       component: BackendLayout,
       children: [
         { path: "", component: BkIndex, meta: { title: "全栈" } },   // 进 /backend 先看目录
+        { path: "jp", component: JpIndex, meta: { title: "日本 IT 现场" } },   // 首页「日本 IT 现场」入口
         { path: "diagram", component: BkDiagram, meta: { title: "后端图解" } },
         { path: "map", component: BkMap, meta: { title: "后端代码地图" } },
         { path: "java", component: BkJava, meta: { title: "Java 与 Spring 速查" } },
