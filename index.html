@@ -308,6 +308,7 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
 .bi-star{margin-left:6px;color:#E0A100;font-size:15px}
 .bi-path{margin:2px 0 0;font-size:13px;color:var(--ink-soft);padding:8px 12px;border:1.5px dashed var(--dot);border-radius:10px;background:var(--card)}
 .bi-path b{color:var(--ink)}
+.bl-exit{border-style:dashed!important;color:var(--ink-soft)!important}
 .bi-route{display:flex;flex-direction:column;gap:8px;margin-top:14px}
 .br-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
 .br-item{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:var(--card);border:2px solid var(--ink);border-radius:12px;box-shadow:3px 3px 0 var(--yellow)}
@@ -1728,6 +1729,13 @@ a.sx-go:hover{background:var(--yellow)}
     </router-link>
     <!-- 目录页：显示标题 -->
     <span v-if="!group" class="bl-title">{{ route.path === "/jp" ? "日本 IT 现场" : "全栈" }}</span>
+    <!-- 从「全栈学习路线」点进来（网址带 ?route=1）：顶部显示路线的 10 站，可以一站一站往下走 -->
+    <nav v-else-if="routeStep" class="bl-tabs" aria-label="全栈学习路线">
+      <span class="bl-group" style="--c: var(--yellow)">路线</span>
+      <!-- 「退出路线」放在最前面：10 站一行放不下时也一直看得见 -->
+      <router-link :to="route.path" class="bl-tab bl-exit" title="回到这篇笔记原来的分组导航">退出路线</router-link>
+      <router-link v-for="r in routeList" :key="r.n" :to="{ path: r.to, query: { route: '1' } }" class="bl-tab" :class="{ 'is-on': r.n === routeStep }">{{ r.n }} {{ r.short }}</router-link>
+    </nav>
     <!-- 笔记页：只显示"这一组"里的几篇，不再把所有笔记挤在一行 -->
     <nav v-else class="bl-tabs" :aria-label="group.name">
       <span class="bl-group" :style="{ '--c': `var(--${group.color})` }">{{ group.short }}</span>
@@ -1794,17 +1802,17 @@ a.sx-go:hover{background:var(--yellow)}
     <!-- 学习路线：只在「全栈」目录显示（日本 IT 现场那页 route 是空数组） -->
     <section v-if="route.length" class="bi-route sxr">
       <h2 class="bi-h2" style="--c: var(--yellow)">全栈学习路线 · 按我现在最缺的排</h2>
-      <p class="bi-desc">按顺序看，每一站只看列出来的重点（点小标签直接跳到那一条），不用把整篇读完。卡片上的「第 N 站」就是这里的位置；没标站的是查阅用的，用到再查。</p>
+      <p class="bi-desc">按顺序看，每一站只看列出来的重点（点小标签直接跳到那一条），不用把整篇读完。从这里点进去，顶部导航会变成路线的 10 站，可以一站一站往下走。卡片上的「第 N 站」就是这里的位置；没标站的是查阅用的，用到再查。</p>
       <ol class="br-list">
         <template v-for="(r, i) in route" :key="r.n">
           <li v-if="i === 0 || route[i - 1].stage !== r.stage" class="br-stage">{{ r.stage }}</li>
           <li class="br-item">
             <span class="br-n">{{ r.n }}</span>
             <div class="br-body">
-              <router-link :to="r.to" class="br-title">{{ r.title }}</router-link><span class="br-time">{{ r.time }}</span>
+              <router-link :to="{ path: r.to, query: { route: '1' } }" class="br-title">{{ r.title }}</router-link><span class="br-time">{{ r.time }}</span>
               <p class="br-why">{{ r.why }}</p>
-              <p v-if="r.more.length" class="br-more">一起看：<router-link v-for="m in r.more" :key="m[0]" :to="m[0]">{{ m[1] }}</router-link></p>
-              <p v-if="r.links.length" class="br-links"><a v-for="l in r.links" :key="l[0] + l[1]" class="sx-go" href="#sxgo" :data-p="l[0]" :data-n="l[1]">{{ l[1] }}</a></p>
+              <p v-if="r.more.length" class="br-more">一起看：<router-link v-for="m in r.more" :key="m[0]" :to="{ path: m[0], query: { route: '1' } }">{{ m[1] }}</router-link></p>
+              <p v-if="r.links.length" class="br-links"><a v-for="l in r.links" :key="l[0] + l[1]" class="sx-go" href="#sxgo" :data-p="l[0]" :data-n="l[1]" data-route="1">{{ l[1] }}</a></p>
             </div>
           </li>
         </template>
@@ -15619,8 +15627,8 @@ const ToTop = {
 // ===================== 版本号 =====================
 // 每次改完准备发布，就改这两行：VERSION 往上加一，UPDATED 写当时的时间。
 // 首页左上角 GK 旁边会显示它们，这样打开网站一眼就知道是不是最新版
-const VERSION = "v3.11";
-const UPDATED = "2026-11-03 08:35";
+const VERSION = "v3.12";
+const UPDATED = "2026-11-03 08:40";
 const { createRouter, createWebHashHistory, createMemoryHistory } = VueRouter;
 
 // 激励语录：按"今年第几天"轮换，每天一句（都是自己写的短句）
@@ -16036,8 +16044,14 @@ const BackendLayout = {
         e.preventDefault();
         const hit = sxIndex().find((r) => r.p === go.dataset.p && r.n === go.dataset.n);
         if (!hit) return;
-        if (route.path === pagePath(hit.p)) flashTo(hit.id);
-        else { SX_PENDING = hit.id; router.push(pagePath(hit.p)); }
+        // 从路线点进来的（data-route），或者现在就在路线模式里：跳过去以后网址继续带 ?route=1
+        const keepRoute = go.dataset.route === "1" || route.query.route === "1";
+        const target = keepRoute ? { path: pagePath(hit.p), query: { route: "1" } } : pagePath(hit.p);
+        if (route.path === pagePath(hit.p)) {
+          if (keepRoute && route.query.route !== "1") router.replace(target);
+          flashTo(hit.id);
+        }
+        else { SX_PENDING = hit.id; router.push(target); }
         return;
       }
       // ① 章节导航 <a href="#flow">：不能让它改网址（会被路由当成新页面），改成直接滚动过去
@@ -16093,7 +16107,15 @@ const BackendLayout = {
     watch(() => route.path, () => { viewer.value = null; nextTick(decorate); }, { immediate: true });
     onMounted(() => nextTick(decorate));
     const home = computed(() => (route.path.startsWith("/jp") ? "/jp" : "/fullstack"));   // 「目录」按钮回到哪个目录
-    return { root, group, onClick, viewer, home, route };
+    // 路线模式：网址带 ?route=1，而且这篇笔记在路线里（主笔记或「一起看」的笔记）→ 返回第几站，否则 0
+    const inRoute = computed(() => route.query.route === "1");
+    const routeStep = computed(() => (inRoute.value ? BK_STEP[route.path] || 0 : 0));
+    // 路线模式下换到当前这一站时，顶部的标签要滚到看得见的位置（手机上 10 站一行放不下）
+    watch(routeStep, (n) => nextTick(() => {
+      const on = root.value && root.value.querySelector(".bl-tabs .is-on");
+      if (on) on.scrollIntoView({ block: "nearest", inline: "center" });
+    }), { immediate: true });
+    return { root, group, onClick, viewer, home, route, routeStep, routeList: BK_ROUTE };
   },
 };
 
@@ -16249,6 +16271,7 @@ const SX_PAGES = [
 const BK_ROUTE = [
   {
     "n": 1,
+    "short": "原理·网络",
     "stage": "地基：先懂机器和网络",
     "to": "/fullstack/basics",
     "title": "计算机原理 · 网络 · HTTP · 安全",
@@ -16281,6 +16304,7 @@ const BK_ROUTE = [
   },
   {
     "n": 2,
+    "short": "内存",
     "stage": "地基：先懂机器和网络",
     "to": "/fullstack/sx-cs",
     "title": "计算机基础：只看「内存」一章",
@@ -16308,6 +16332,7 @@ const BK_ROUTE = [
   },
   {
     "n": 3,
+    "short": "后端全貌",
     "stage": "后端主线：排班系统后端边写边看",
     "to": "/fullstack/diagram",
     "title": "后端全貌：图解 + 写代码的思路",
@@ -16323,6 +16348,7 @@ const BK_ROUTE = [
   },
   {
     "n": 4,
+    "short": "OOP",
     "stage": "后端主线：排班系统后端边写边看",
     "to": "/fullstack/sx-oop",
     "title": "代码为什么这样组织（OOP）",
@@ -16350,6 +16376,7 @@ const BK_ROUTE = [
   },
   {
     "n": 5,
+    "short": "Spring",
     "stage": "后端主线：排班系统后端边写边看",
     "to": "/fullstack/sx-zero-java",
     "title": "Spring Boot：从零搭项目 + @ 注解",
@@ -16390,6 +16417,7 @@ const BK_ROUTE = [
   },
   {
     "n": 6,
+    "short": "数据库",
     "stage": "后端主线：排班系统后端边写边看",
     "to": "/fullstack/sx-dbd",
     "title": "数据库：设计表 + 会写 SQL",
@@ -16438,6 +16466,7 @@ const BK_ROUTE = [
   },
   {
     "n": 7,
+    "short": "登录",
     "stage": "后端主线：排班系统后端边写边看",
     "to": "/fullstack/java-log",
     "title": "登录与权限：看我们做过的一遍",
@@ -16457,6 +16486,7 @@ const BK_ROUTE = [
   },
   {
     "n": 8,
+    "short": "前端工程",
     "stage": "前后端连起来",
     "to": "/fullstack/sx-fe",
     "title": "前端工程化：读懂一个项目",
@@ -16467,6 +16497,7 @@ const BK_ROUTE = [
   },
   {
     "n": 9,
+    "short": "React·TS",
     "stage": "前后端连起来",
     "to": "/fullstack/sx-react",
     "title": "React 规则 + 读得懂类型",
@@ -16503,6 +16534,7 @@ const BK_ROUTE = [
   },
   {
     "n": 10,
+    "short": "上线",
     "stage": "上线：让招聘的人能打开",
     "to": "/fullstack/sx-zero-deploy",
     "title": "部署上线 + 工程化规范",
@@ -16537,12 +16569,12 @@ const BK_STEP = Object.fromEntries(BK_ROUTE.flatMap((r) => [[r.to, r.n], ...r.mo
 const LV = { must: "必读", key: "重要", ref: "查阅" };   // 徽章上显示的中文
 // 全栈目录：除了「日本 IT 现场」以外的所有分组
 const BkIndex = { template: "#tpl-bk-index", setup() { return {
-  groups: BK_GROUPS.filter((g) => g.id !== "jp"), LV, title: "全栈", route: BK_ROUTE, later: BK_ROUTE_LATER, step: BK_STEP, route: BK_ROUTE, later: BK_ROUTE_LATER, step: BK_STEP, route: BK_ROUTE, later: BK_ROUTE_LATER, step: BK_STEP, route: BK_ROUTE, later: BK_ROUTE_LATER, step: BK_STEP,
+  groups: BK_GROUPS.filter((g) => g.id !== "jp"), LV, title: "全栈", route: BK_ROUTE, later: BK_ROUTE_LATER, step: BK_STEP, route: BK_ROUTE, later: BK_ROUTE_LATER, step: BK_STEP, route: BK_ROUTE, later: BK_ROUTE_LATER, step: BK_STEP, route: BK_ROUTE, later: BK_ROUTE_LATER, step: BK_STEP, route: BK_ROUTE, later: BK_ROUTE_LATER, step: BK_STEP,
   lead: "目标是全栈工程师：前端、后端、数据库、部署都要会。先读「基础概念」打地基；「语法速查」「工作速查」平时写代码时查；「项目实战」看我自己的收藏后端是怎么一步步做出来的。",
 }; } };
 // 日本 IT 现场的目录：首页上独立的入口，只显示 jp 这一组（页面本身还是速查页，搜索、跳转、缩略导航都通用）
 const JpIndex = { template: "#tpl-bk-index", setup() { return {
-  groups: BK_GROUPS.filter((g) => g.id === "jp"), LV, title: "日本 IT 现场", route: [], later: "", step: {}, route: [], later: "", step: {}, route: [], later: "", step: {}, route: [], later: "", step: {},
+  groups: BK_GROUPS.filter((g) => g.id === "jp"), LV, title: "日本 IT 现场", route: [], later: "", step: {}, route: [], later: "", step: {}, route: [], later: "", step: {}, route: [], later: "", step: {}, route: [], later: "", step: {},
   lead: "在日本当工程师需要知道的：开发流程和各种设计书、测试规格书、IT 日语词汇、報連相和日语沟通模板、面试。从「流程与文档」开始看。",
 }; } };
 
