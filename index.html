@@ -319,6 +319,9 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
 .br-why{margin:4px 0 0;font-size:13.5px;line-height:1.65;color:var(--ink)}
 .br-links{margin:6px 0 0;display:flex;flex-wrap:wrap;gap:5px}
 .br-links a.sx-go{white-space:normal;font-size:11.5px}
+.br-stage{list-style:none;margin:8px 0 -2px;font-family:var(--hand);font-size:20px;color:var(--ink)}
+.br-more{margin:5px 0 0;font-size:12.5px;color:var(--ink-soft)}
+.br-more a{color:var(--ink);margin-right:10px;border-bottom:1.5px dashed var(--ink-soft);text-decoration:none}
 .br-step{display:inline-block;vertical-align:2px;margin-left:5px;font-family:var(--sans);font-size:11px;font-weight:700;line-height:1;padding:3px 6px;border:1.5px solid var(--ink);border-radius:6px;background:var(--yellow);color:var(--ink);white-space:nowrap}
 .bi-why{margin-top:3px;color:var(--ink)!important;opacity:.8}
 .bi-why::before{content:"→ ";color:var(--ink-soft)}
@@ -1790,19 +1793,23 @@ a.sx-go:hover{background:var(--yellow)}
     <p class="bi-path" v-if="route.length"><b>推荐顺序：</b>按下面的「学习路线」一站一站看；卡片上的「第 N 站」就是路线里的位置。没标站的：必读的有空就看，重要的看完路线再看，查阅的用到再查。</p>
     <!-- 学习路线：只在「全栈」目录显示（日本 IT 现场那页 route 是空数组） -->
     <section v-if="route.length" class="bi-route sxr">
-      <h2 class="bi-h2" style="--c: var(--yellow)">学习路线 · 先能读懂代码，再写后端</h2>
-      <p class="bi-desc">按顺序看，每一站只看列出来的重点条目（点小标签直接跳到那一条），不用把整篇读完。看完前 6 站，再看 AI 写的前端代码就不会「每个词都认识、合起来不懂」。</p>
+      <h2 class="bi-h2" style="--c: var(--yellow)">全栈学习路线 · 按我现在最缺的排</h2>
+      <p class="bi-desc">按顺序看，每一站只看列出来的重点（点小标签直接跳到那一条），不用把整篇读完。卡片上的「第 N 站」就是这里的位置；没标站的是查阅用的，用到再查。</p>
       <ol class="br-list">
-        <li v-for="r in route" :key="r.n" class="br-item">
-          <span class="br-n">{{ r.n }}</span>
-          <div class="br-body">
-            <router-link :to="r.to" class="br-title">{{ r.title }}</router-link><span class="br-time">{{ r.time }}</span>
-            <p class="br-why">{{ r.why }}</p>
-            <p v-if="r.links.length" class="br-links"><a v-for="l in r.links" :key="l[1]" class="sx-go" href="#sxgo" :data-p="l[0]" :data-n="l[1]">{{ l[1] }}</a></p>
-          </div>
-        </li>
+        <template v-for="(r, i) in route" :key="r.n">
+          <li v-if="i === 0 || route[i - 1].stage !== r.stage" class="br-stage">{{ r.stage }}</li>
+          <li class="br-item">
+            <span class="br-n">{{ r.n }}</span>
+            <div class="br-body">
+              <router-link :to="r.to" class="br-title">{{ r.title }}</router-link><span class="br-time">{{ r.time }}</span>
+              <p class="br-why">{{ r.why }}</p>
+              <p v-if="r.more.length" class="br-more">一起看：<router-link v-for="m in r.more" :key="m[0]" :to="m[0]">{{ m[1] }}</router-link></p>
+              <p v-if="r.links.length" class="br-links"><a v-for="l in r.links" :key="l[0] + l[1]" class="sx-go" href="#sxgo" :data-p="l[0]" :data-n="l[1]">{{ l[1] }}</a></p>
+            </div>
+          </li>
+        </template>
       </ol>
-      <p class="bi-path"><b>先不用急：</b>{{ later.replace("先不用急的：", "") }}</p>
+      <p class="bi-path"><b>先不用急：</b>{{ later.replace("先不用急：", "") }}</p>
     </section>
     <section v-for="g in groups" :key="g.id" class="bi-group">
       <h2 class="bi-h2" :style="{ '--c': `var(--${g.color})` }">{{ g.name }}</h2>
@@ -15612,8 +15619,8 @@ const ToTop = {
 // ===================== 版本号 =====================
 // 每次改完准备发布，就改这两行：VERSION 往上加一，UPDATED 写当时的时间。
 // 首页左上角 GK 旁边会显示它们，这样打开网站一眼就知道是不是最新版
-const VERSION = "v3.10";
-const UPDATED = "2026-11-03 08:31";
+const VERSION = "v3.11";
+const UPDATED = "2026-11-03 08:35";
 const { createRouter, createWebHashHistory, createMemoryHistory } = VueRouter;
 
 // 激励语录：按"今年第几天"轮换，每天一句（都是自己写的短句）
@@ -16237,23 +16244,48 @@ const SX_PAGES = [
   ["drizzle", "Drizzle ORM"],
 ];
 
-// ===================== 学习路线：先能读懂代码，再写后端（v3.10）=====================
-// 按「前端转全栈、先读懂 AI 写的代码」排的顺序；links 是篇内重点条目，点了直接跳过去
+// ===================== 全栈学习路线（v3.11）=====================
+// 按「前端转全栈、现在最缺什么」排的顺序：地基 → 后端主线 → 前后端连起来 → 上线；links 是篇内重点条目，more 是同一站一起看的笔记
 const BK_ROUTE = [
   {
     "n": 1,
-    "to": "/fullstack/sx-fe",
-    "title": "前端工程化：读懂一个项目",
-    "time": "2～3 小时",
-    "why": "直接解决「看不懂 AI 写的代码」：项目由什么组成、代码怎么跑起来、每种代码放哪层、怎么读陌生项目。",
-    "links": []
+    "stage": "地基：先懂机器和网络",
+    "to": "/fullstack/basics",
+    "title": "计算机原理 · 网络 · HTTP · 安全",
+    "time": "3 小时",
+    "why": "全栈最缺的一层。后端就是「一个一直在运行的程序（进程），占着一个端口，等 HTTP 请求进来」，这几个词不懂，后端代码就只能背。只看「全栈基础」里的计算机原理、网络、HTTP、安全四类。",
+    "links": [
+      [
+        "http",
+        "HTTP 方法"
+      ],
+      [
+        "http",
+        "状态码"
+      ],
+      [
+        "http",
+        "Authorization"
+      ],
+      [
+        "http",
+        "跨域与预检请求"
+      ]
+    ],
+    "more": [
+      [
+        "/fullstack/sx-http",
+        "HTTP 基础"
+      ]
+    ]
   },
   {
     "n": 2,
+    "stage": "地基：先懂机器和网络",
     "to": "/fullstack/sx-cs",
-    "title": "值和引用、栈和堆、闭包、异步",
-    "time": "1.5 小时",
-    "why": "计算机原理里对前端最有用的一块：React 为什么不能直接改 state、为什么要 ...展开、为什么 await。只看列出来的几条，并发、IO 那些先跳过。",
+    "title": "计算机基础：只看「内存」一章",
+    "time": "1 小时",
+    "why": "栈和堆、值和引用、进程和线程。前端（React 为什么不能直接改 state）和后端（对象、Bean 是单例）都靠它。并发、IO、编码那几章先跳过。",
     "links": [
       [
         "cs",
@@ -16264,111 +16296,42 @@ const BK_ROUTE = [
         "值类型和引用类型：赋值到底复制了什么"
       ],
       [
-        "js",
-        "值 vs 引用"
+        "cs",
+        "进程和线程的区别？"
       ],
       [
-        "js",
-        "闭包"
-      ],
-      [
-        "js",
-        "Promise"
-      ],
-      [
-        "js",
-        "async / await"
-      ],
-      [
-        "js",
-        "宏任务 vs 微任务"
+        "cs",
+        "垃圾回收 GC：没人用的对象谁来清"
       ]
-    ]
+    ],
+    "more": []
   },
   {
     "n": 3,
-    "to": "/fullstack/sx-react",
-    "title": "React 的规则（不是 API，是规则）",
-    "time": "2 小时",
-    "why": "AI 写的 React 代码看不懂，大多是不知道这几条规则：组件会反复执行、state 不可变、effect 什么时候跑、Context 从哪来。",
-    "links": [
+    "stage": "后端主线：排班系统后端边写边看",
+    "to": "/fullstack/diagram",
+    "title": "后端全貌：图解 + 写代码的思路",
+    "time": "1 小时",
+    "why": "先有地图再看细节：一个请求进来经过哪几层、数据库在哪、先想数据和规则再写代码。",
+    "links": [],
+    "more": [
       [
-        "react",
-        "useState"
-      ],
-      [
-        "react",
-        "更新对象和数组：不可变"
-      ],
-      [
-        "react",
-        "函数式更新"
-      ],
-      [
-        "react",
-        "useEffect 基本用法"
-      ],
-      [
-        "react",
-        "你可能不需要 useEffect"
-      ],
-      [
-        "react",
-        "Hooks 的规则"
-      ],
-      [
-        "react",
-        "Context：跨很多层传数据"
-      ],
-      [
-        "react",
-        "父子组件传数据（完整示例）"
+        "/fullstack/mindset",
+        "后端写代码的思路"
       ]
     ]
   },
   {
     "n": 4,
-    "to": "/fullstack/sx-ts",
-    "title": "读得懂类型",
-    "time": "1.5 小时",
-    "why": "不用会写复杂类型，但要看得懂：AI 代码里一半是类型。会这几个，鼠标悬停就能看懂其余的。",
-    "links": [
-      [
-        "ts",
-        "type 和 interface"
-      ],
-      [
-        "ts",
-        "联合类型 |"
-      ],
-      [
-        "ts",
-        "null / undefined 与可选"
-      ],
-      [
-        "ts",
-        "泛型函数"
-      ],
-      [
-        "ts",
-        "工具类型"
-      ],
-      [
-        "ts",
-        "import type"
-      ]
-    ]
-  },
-  {
-    "n": 5,
+    "stage": "后端主线：排班系统后端边写边看",
     "to": "/fullstack/sx-oop",
-    "title": "代码为什么这样组织",
+    "title": "代码为什么这样组织（OOP）",
     "time": "2 小时",
-    "why": "判断 AI 代码「写得好不好」的标准：分层、耦合、接口、依赖注入。前端分层和 Spring 的三层是同一个道理，明天写后端马上用到。",
+    "why": "Spring 项目为什么分 Controller / Service / Repository、对象为什么不用自己 new，全在这一篇。判断 AI 写的后端代码好不好也靠它。",
     "links": [
       [
         "oop",
-        "耦合：A 知道 B 的细节越多，越危险"
+        "三层各自负责什么、不该做什么"
       ],
       [
         "oop",
@@ -16376,57 +16339,210 @@ const BK_ROUTE = [
       ],
       [
         "oop",
-        "三层各自负责什么、不该做什么"
+        "构造器注入：把依赖从外面递进来"
       ],
       [
         "oop",
-        "前端也要分层：页面 / 状态 / 请求"
+        "单例 Bean 被所有请求共用：Service 不能有「状态」"
+      ]
+    ],
+    "more": []
+  },
+  {
+    "n": 5,
+    "stage": "后端主线：排班系统后端边写边看",
+    "to": "/fullstack/sx-zero-java",
+    "title": "Spring Boot：从零搭项目 + @ 注解",
+    "time": "边写边看",
+    "why": "今天写排班系统后端就是按这个顺序：生成项目 → 启动时发生了什么 → Entity → Repository → Service → Controller → 异常 / 跨域。看到不认识的 @ 去「Spring Boot 与 @ 注解」查。",
+    "links": [
+      [
+        "zero-java",
+        "启动类：一切从这里开始"
+      ],
+      [
+        "zero-java",
+        "① Entity：一张表对应一个类"
+      ],
+      [
+        "zero-java",
+        "④ Service：业务逻辑和事务"
+      ],
+      [
+        "spring",
+        "控制反转（IoC）"
+      ],
+      [
+        "spring",
+        "@RestController"
+      ],
+      [
+        "spring",
+        "@Transactional"
+      ]
+    ],
+    "more": [
+      [
+        "/fullstack/sx-spring",
+        "Spring Boot 与 @ 注解"
       ]
     ]
   },
   {
     "n": 6,
-    "to": "/fullstack/basics",
-    "title": "计算机、网络和 HTTP 的地基",
-    "time": "2 小时",
-    "why": "进程、端口、内存、一次请求经过了什么、HTTP 和跨域：前后端接起来以后，排错全靠这些。只看「计算机原理」「网络」「HTTP」三类。",
+    "stage": "后端主线：排班系统后端边写边看",
+    "to": "/fullstack/sx-dbd",
+    "title": "数据库：设计表 + 会写 SQL",
+    "time": "3 小时",
+    "why": "后端的核心是数据。表设计错了后面很难改；排班系统的员工、班表、申请 4 张表就按这篇设计。SQL 至少要会增删改查、JOIN、事务。",
     "links": [
       [
-        "http",
-        "状态码"
+        "dbd",
+        "从需求里找实体和属性"
       ],
       [
-        "http",
-        "跨域与预检请求"
+        "dbd",
+        "一对多（最常见）"
       ],
       [
-        "http",
-        "我想判断是前端的问题还是后端的问题"
+        "dbd",
+        "多对多：用中间表"
+      ],
+      [
+        "dbd",
+        "约束：让数据库保证数据正确"
+      ],
+      [
+        "sql",
+        "JOIN 连表"
+      ],
+      [
+        "sql",
+        "BEGIN / COMMIT / ROLLBACK"
+      ],
+      [
+        "sql",
+        "索引"
+      ]
+    ],
+    "more": [
+      [
+        "/fullstack/sx-sql",
+        "SQL 语法"
+      ],
+      [
+        "/fullstack/sx-zero-db",
+        "本地数据库与迁移"
       ]
     ]
   },
   {
     "n": 7,
-    "to": "/fullstack/sx-zero-java",
-    "title": "开始写后端：Spring Boot → @ 注解 → 数据库设计",
-    "time": "边写边看",
-    "why": "排班系统的后端从这里开始。配合「Spring Boot 与 @ 注解」「数据库设计」两篇，遇到什么查什么。",
-    "links": []
+    "stage": "后端主线：排班系统后端边写边看",
+    "to": "/fullstack/java-log",
+    "title": "登录与权限：看我们做过的一遍",
+    "time": "2 小时",
+    "why": "密码加密、token（JWT）、拦截器、只有店长能调的接口。收藏后端做过 Google 登录 + JWT，排班系统的登录是同一套思路。",
+    "links": [
+      [
+        "spring",
+        "HandlerInterceptor 拦截器"
+      ],
+      [
+        "http",
+        "Authorization"
+      ]
+    ],
+    "more": []
+  },
+  {
+    "n": 8,
+    "stage": "前后端连起来",
+    "to": "/fullstack/sx-fe",
+    "title": "前端工程化：读懂一个项目",
+    "time": "2 小时",
+    "why": "前端接后端时要懂：环境变量、开发代理、数据层（employeeApi 换成 fetch）、项目分层。也解决「看不懂 AI 写的前端代码」。",
+    "links": [],
+    "more": []
+  },
+  {
+    "n": 9,
+    "stage": "前后端连起来",
+    "to": "/fullstack/sx-react",
+    "title": "React 规则 + 读得懂类型",
+    "time": "2 小时",
+    "why": "前端这边的底子：组件会反复执行、state 不可变、effect 什么时候跑；TypeScript 的类型看得懂就行，不用会写复杂的。",
+    "links": [
+      [
+        "react",
+        "更新对象和数组：不可变"
+      ],
+      [
+        "react",
+        "你可能不需要 useEffect"
+      ],
+      [
+        "react",
+        "TanStack Query：请求数据的标准做法"
+      ],
+      [
+        "ts",
+        "type 和 interface"
+      ],
+      [
+        "ts",
+        "泛型函数"
+      ]
+    ],
+    "more": [
+      [
+        "/fullstack/sx-ts",
+        "TypeScript 语法"
+      ]
+    ]
+  },
+  {
+    "n": 10,
+    "stage": "上线：让招聘的人能打开",
+    "to": "/fullstack/sx-zero-deploy",
+    "title": "部署上线 + 工程化规范",
+    "time": "2 小时",
+    "why": "作品集要能在线打开。Dockerfile、线上环境变量和密钥、上线检查清单；再加上 Git 规范和 CI，项目看起来才像公司里的。",
+    "links": [
+      [
+        "zero-deploy",
+        "Spring Boot 的 Dockerfile"
+      ],
+      [
+        "zero-deploy",
+        "线上的环境变量和密钥"
+      ],
+      [
+        "zero-deploy",
+        "上线前检查清单"
+      ]
+    ],
+    "more": [
+      [
+        "/fullstack/sx-zero-eng",
+        "工程化：Git、规范与自动检查"
+      ]
+    ]
   }
 ];
-const BK_ROUTE_LATER = "先不用急的：数据结构与算法（笔试前再看）、架构与运维（中级面试前）、CS 进阶里的并发 / IO / 编码（写后端遇到时再看）。";
+const BK_ROUTE_LATER = "先不用急：数据结构与算法（日本企业笔试前再看）、架构与运维（Redis、消息队列，中级面试前）、CS 进阶里的并发 / IO / 编码（写后端碰到时再查）、Node 后端和 Vue（已经做过，复习用）。";
 // 每篇笔记是路线的第几站（目录卡片上显示「第 N 站」）
-const BK_STEP = Object.fromEntries(BK_ROUTE.map((r) => [r.to, r.n]));
+const BK_STEP = Object.fromEntries(BK_ROUTE.flatMap((r) => [[r.to, r.n], ...r.more.map((m) => [m[0], r.n])]));
 
 const LV = { must: "必读", key: "重要", ref: "查阅" };   // 徽章上显示的中文
 // 全栈目录：除了「日本 IT 现场」以外的所有分组
 const BkIndex = { template: "#tpl-bk-index", setup() { return {
-  groups: BK_GROUPS.filter((g) => g.id !== "jp"), LV, title: "全栈", route: BK_ROUTE, later: BK_ROUTE_LATER, step: BK_STEP, route: BK_ROUTE, later: BK_ROUTE_LATER, step: BK_STEP, route: BK_ROUTE, later: BK_ROUTE_LATER, step: BK_STEP,
+  groups: BK_GROUPS.filter((g) => g.id !== "jp"), LV, title: "全栈", route: BK_ROUTE, later: BK_ROUTE_LATER, step: BK_STEP, route: BK_ROUTE, later: BK_ROUTE_LATER, step: BK_STEP, route: BK_ROUTE, later: BK_ROUTE_LATER, step: BK_STEP, route: BK_ROUTE, later: BK_ROUTE_LATER, step: BK_STEP,
   lead: "目标是全栈工程师：前端、后端、数据库、部署都要会。先读「基础概念」打地基；「语法速查」「工作速查」平时写代码时查；「项目实战」看我自己的收藏后端是怎么一步步做出来的。",
 }; } };
 // 日本 IT 现场的目录：首页上独立的入口，只显示 jp 这一组（页面本身还是速查页，搜索、跳转、缩略导航都通用）
 const JpIndex = { template: "#tpl-bk-index", setup() { return {
-  groups: BK_GROUPS.filter((g) => g.id === "jp"), LV, title: "日本 IT 现场", route: [], later: "", step: {}, route: [], later: "", step: {}, route: [], later: "", step: {},
+  groups: BK_GROUPS.filter((g) => g.id === "jp"), LV, title: "日本 IT 现场", route: [], later: "", step: {}, route: [], later: "", step: {}, route: [], later: "", step: {}, route: [], later: "", step: {},
   lead: "在日本当工程师需要知道的：开发流程和各种设计书、测试规格书、IT 日语词汇、報連相和日语沟通模板、面试。从「流程与文档」开始看。",
 }; } };
 
