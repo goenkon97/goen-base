@@ -5626,12 +5626,57 @@ o <span class="hl-k">instanceof</span> <span class="hl-t">User</span>;          
     <span class="hl-k">private</span> <span class="hl-t">Config</span>() {}                        <span class="hl-c">// 构造器私有，外面不能 new</span>
     <span class="hl-k">private</span> <span class="hl-k">static</span> <span class="hl-k">class</span> <span class="hl-t">Holder</span> { <span class="hl-k">static</span> <span class="hl-k">final</span> <span class="hl-t">Config</span> <span class="hl-t">INSTANCE</span> = <span class="hl-k">new</span> <span class="hl-t">Config</span>(); }
     <span class="hl-k">public</span> <span class="hl-k">static</span> <span class="hl-t">Config</span> getInstance() { <span class="hl-k">return</span> <span class="hl-t">Holder</span>.<span class="hl-t">INSTANCE</span>; }
-}</code></pre></article></div></section><section class="sx-sec" id="java-inter"><h2>继承、接口、泛型</h2><p class="sx-desc">看懂 Spring 代码离不开这三样。</p><p class="sx-docs"><b>官方文档</b><a href="https://dev.java/learn/interfaces/" target="_blank" rel="noopener">接口 ↗</a> · <a href="https://dev.java/learn/generics/" target="_blank" rel="noopener">泛型 ↗</a></p><div class="sx-grid"><article class="sx-item lv4" id="java-inter-1"><h3><code>interface / implements</code><span class="sx-lv sx-lv4">天天用</span></h3><p class="sx-what">接口只规定「要有哪些方法」，不写实现；类用 implements 承诺实现它们。Spring 靠接口「插入」你的代码。</p><p class="sx-use"><b>有什么用</b>让调用方只依赖「能做什么」而不依赖「具体怎么做」：Service 依赖 Repository 接口，换数据库、写测试时塞一个假实现，Service 一行都不用改。</p><p class="sx-when"><b>什么时候用</b>Spring 项目里面向接口编程：Repository 接口、Service 接口 + Impl 实现类、各种回调接口。</p><pre class="code"><code><span class="hl-k">public</span> <span class="hl-k">class</span> <span class="hl-t">CorsConfig</span> <span class="hl-k">implements</span> <span class="hl-t">WebMvcConfigurer</span> {   <span class="hl-c">// 按 Spring 规定的接口来写</span>
-    <span class="hl-a">@Override</span>                                            <span class="hl-c">// 重写接口里的方法</span>
-    <span class="hl-k">public</span> <span class="hl-k">void</span> addCorsMappings(<span class="hl-t">CorsRegistry</span> registry) {
-        registry.addMapping(<span class="hl-s">"/**"</span>).allowedOrigins(<span class="hl-s">"https://ielts.goenkon.com"</span>);
+}</code></pre></article></div></section><section class="sx-sec" id="java-inter"><h2>继承、接口、泛型</h2><p class="sx-desc">看懂 Spring 代码离不开这三样。</p><p class="sx-docs"><b>官方文档</b><a href="https://dev.java/learn/interfaces/" target="_blank" rel="noopener">接口 ↗</a> · <a href="https://dev.java/learn/generics/" target="_blank" rel="noopener">泛型 ↗</a></p><div class="sx-grid"><article class="sx-item sx-wide lv4" id="java-inter-1" style="grid-column:1/-1"><h3><code>interface / implements</code><span class="sx-lv sx-lv4">天天用</span></h3><p class="sx-what"><b>接口（interface）</b>是一份「能力清单」：只规定<b>要有哪些方法</b>（名字、参数、返回值），不写这些方法具体怎么做。类用 <code>implements</code> 签下这份清单，承诺把里面每个方法都写出来；少写一个，编译就报错。</p><p class="sx-use"><b>有什么用</b>让调用的一方只依赖「能做什么」，不依赖「具体是谁、怎么做」。换实现（LINE 换成邮件）、写测试时塞一个假的实现，调用的代码都不用改。Spring 的依赖注入、Repository、各种配置回调，全都建立在接口上。</p><p class="sx-when"><b>什么时候用</b>一件事有好几种做法（通知方式、支付方式、存储方式）；想让上层代码和具体实现分开；看 Spring 代码时 —— Repository、WebMvcConfigurer、CommandLineRunner 全是接口。</p><div class="sx-block"><span class="sx-block-h">定义接口 → 写实现类 → 用接口类型的变量</span><pre class="code"><code><span class="hl-c">// ① 定义接口：只写「要有哪些方法」—— 方法名、参数、返回值，没有大括号里的实现</span>
+<span class="hl-k">public</span> <span class="hl-k">interface</span> <span class="hl-t">Notifier</span> {
+    <span class="hl-k">void</span> send(<span class="hl-t">String</span> to, <span class="hl-t">String</span> message);       <span class="hl-c">// 接口里的方法默认就是 public abstract，不用写</span>
+}
+
+<span class="hl-c">// ② 写实现类：implements Notifier = 承诺「Notifier 规定的方法我全都写了」</span>
+<span class="hl-k">public</span> <span class="hl-k">class</span> <span class="hl-t">LineNotifier</span> <span class="hl-k">implements</span> <span class="hl-t">Notifier</span> {
+    <span class="hl-a">@Override</span>                                   <span class="hl-c">// 标明「这是在实现接口里的方法」，名字写错编译器会报错</span>
+    <span class="hl-k">public</span> <span class="hl-k">void</span> send(<span class="hl-t">String</span> to, <span class="hl-t">String</span> message) {
+        <span class="hl-t">System</span>.out.println(<span class="hl-s">"LINE → "</span> + to + <span class="hl-s">"："</span> + message);
     }
-}</code></pre></article><article class="sx-item lv3" id="java-inter-2"><h3><code>extends</code><span class="sx-lv sx-lv3">常用</span></h3><p class="sx-what">继承父类（或接口继承接口），拿到父类全部能力。Java 类只能单继承，但可以实现多个接口。</p><p class="sx-use"><b>有什么用</b>复用父类已有的代码和能力。业务里最常见的是 extends RuntimeException 写自定义异常；其他地方多用接口和组合，少用继承。</p><p class="sx-when"><b>什么时候用</b>继承框架提供的基类（OncePerRequestFilter、自定义异常继承 RuntimeException）时最常见；业务类之间少用继承。</p><pre class="code"><code><span class="hl-k">public</span> <span class="hl-k">interface</span> <span class="hl-t">AppUserRepository</span> <span class="hl-k">extends</span> <span class="hl-t">JpaRepository</span>&lt;<span class="hl-t">AppUser</span>, <span class="hl-t">Long</span>&gt; {
+}
+
+<span class="hl-k">public</span> <span class="hl-k">class</span> <span class="hl-t">MailNotifier</span> <span class="hl-k">implements</span> <span class="hl-t">Notifier</span> {
+    <span class="hl-a">@Override</span>
+    <span class="hl-k">public</span> <span class="hl-k">void</span> send(<span class="hl-t">String</span> to, <span class="hl-t">String</span> message) {
+        <span class="hl-t">System</span>.out.println(<span class="hl-s">"メール → "</span> + to + <span class="hl-s">"："</span> + message);
+    }
+}
+
+<span class="hl-c">// ③ 使用：变量的类型写接口，new 的是具体的类</span>
+<span class="hl-t">Notifier</span> n = <span class="hl-k">new</span> <span class="hl-t">LineNotifier</span>();                <span class="hl-c">// 左边是「能做什么」，右边是「具体谁来做」</span>
+n.send(<span class="hl-s">"Alice"</span>, <span class="hl-s">"明天的班表出来了"</span>);              <span class="hl-c">// 输出：LINE → Alice：明天的班表出来了</span>
+n = <span class="hl-k">new</span> <span class="hl-t">MailNotifier</span>();                         <span class="hl-c">// 换一个实现，调用的那一行不用改</span>
+n.send(<span class="hl-s">"Alice"</span>, <span class="hl-s">"明天的班表出来了"</span>);              <span class="hl-c">// 输出：メール → Alice：明天的班表出来了</span>
+
+<span class="hl-c">// Notifier x = new Notifier();                 // ❌ 编译错误：接口没有实现，不能 new</span></code></pre></div><div class="sx-block"><span class="sx-block-h">为什么要这样：调用方只认接口</span><pre class="code"><code><span class="hl-c">// ④ 真正的用处：调用方只依赖接口（这就是 Spring 天天在做的事）</span>
+<span class="hl-k">public</span> <span class="hl-k">class</span> <span class="hl-t">ScheduleService</span> {
+    <span class="hl-k">private</span> <span class="hl-k">final</span> <span class="hl-t">Notifier</span> notifier;            <span class="hl-c">// 只知道「它能 send」，不知道是 LINE 还是邮件</span>
+
+    <span class="hl-k">public</span> <span class="hl-t">ScheduleService</span>(<span class="hl-t">Notifier</span> notifier) { <span class="hl-c">// 从外面传进来（Spring 里就是构造方法注入）</span>
+        <span class="hl-k">this</span>.notifier = notifier;
+    }
+
+    <span class="hl-k">public</span> <span class="hl-k">void</span> publish(<span class="hl-t">String</span> employee) {
+        notifier.send(employee, <span class="hl-s">"新的班表已经发布"</span>);   <span class="hl-c">// 以后换成 Slack，这个类一行都不用改</span>
+    }
+}
+
+<span class="hl-c">// 写测试时塞一个「假的」实现，不用真的发 LINE</span>
+<span class="hl-t">Notifier</span> fake = (to, msg) -&gt; <span class="hl-t">System</span>.out.println(<span class="hl-s">"假的："</span> + to);   <span class="hl-c">// 只有一个方法的接口，可以用 Lambda 当实现</span>
+<span class="hl-k">new</span> <span class="hl-t">ScheduleService</span>(fake).publish(<span class="hl-s">"Alice"</span>);     <span class="hl-c">// 输出：假的：Alice</span></code></pre></div><div class="sx-block"><span class="sx-block-h">多个接口 / Spring 里的接口</span><pre class="code"><code><span class="hl-c">// ⑤ 一个类可以实现多个接口（但只能 extends 一个父类）</span>
+<span class="hl-k">public</span> <span class="hl-k">class</span> <span class="hl-t">SmsNotifier</span> <span class="hl-k">implements</span> <span class="hl-t">Notifier</span>, <span class="hl-t">AutoCloseable</span> {
+    <span class="hl-a">@Override</span> <span class="hl-k">public</span> <span class="hl-k">void</span> send(<span class="hl-t">String</span> to, <span class="hl-t">String</span> message) { /* 发短信 */ }
+    <span class="hl-a">@Override</span> <span class="hl-k">public</span> <span class="hl-k">void</span> close() { /* 断开短信服务 */ }
+}
+
+<span class="hl-c">// ⑥ Spring 里每天看到的接口：Repository —— 你只写接口，实现类是 Spring 启动时自动生成的</span>
+<span class="hl-k">public</span> <span class="hl-k">interface</span> <span class="hl-t">EmployeeRepository</span> <span class="hl-k">extends</span> <span class="hl-t">JpaRepository</span>&lt;<span class="hl-t">Employee</span>, <span class="hl-t">Long</span>&gt; {   <span class="hl-c">// 接口继承接口用 extends</span>
+    <span class="hl-t">List</span>&lt;<span class="hl-t">Employee</span>&gt; findAllByDeletedFalseOrderByIdAsc();
+}</code></pre></div><ul class="sx-ul"><li><b>底下发生了什么</b>：<code>Notifier n = new LineNotifier()</code> 时，堆内存里造出来的是一个 LineNotifier 对象，变量 n 里存的只是它的地址。调用 <code>n.send()</code> 时，JVM 在<b>运行时</b>看 n 指向的对象到底是哪个类，再去执行那个类的 send —— 这叫「动态分派」，也是多态的原理。</li><li><b>接口里能写什么</b>：抽象方法（最常见）、<code>default</code> 方法（带默认实现）、<code>static</code> 方法、常量（自动是 <code>public static final</code>）。<b>不能有普通字段</b>，也没有构造方法。</li><li><b>常见错误</b>：① 实现类少写了一个方法 → 「is not abstract and does not override abstract method ...」；② 实现的方法没写 public → 「attempting to assign weaker access privileges」；③ 想 new 一个接口 → 「is abstract; cannot be instantiated」。</li><li><b>前端类比</b>：TypeScript 的 <code>interface</code> + <code>class X implements Y</code> 几乎一样；区别是 Java 的接口编译后真的存在（运行时能判断 <code>instanceof</code>），TS 的接口编译后就消失了。</li></ul><div class="sx-case"><b>在我们的排班系统里</b><code>EmployeeRepository</code>、<code>AccountRepository</code> 是接口（实现由 Spring 生成）；<code>EmployeeSeeder implements CommandLineRunner</code>、<code>PasswordConfig</code> 里返回的 <code>PasswordEncoder</code> 也是接口 —— 返回值写接口类型，以后换算法不影响用它的人。</div></article><article class="sx-item lv3" id="java-inter-2"><h3><code>extends</code><span class="sx-lv sx-lv3">常用</span></h3><p class="sx-what">继承父类（或接口继承接口），拿到父类全部能力。Java 类只能单继承，但可以实现多个接口。</p><p class="sx-use"><b>有什么用</b>复用父类已有的代码和能力。业务里最常见的是 extends RuntimeException 写自定义异常；其他地方多用接口和组合，少用继承。</p><p class="sx-when"><b>什么时候用</b>继承框架提供的基类（OncePerRequestFilter、自定义异常继承 RuntimeException）时最常见；业务类之间少用继承。</p><pre class="code"><code><span class="hl-k">public</span> <span class="hl-k">interface</span> <span class="hl-t">AppUserRepository</span> <span class="hl-k">extends</span> <span class="hl-t">JpaRepository</span>&lt;<span class="hl-t">AppUser</span>, <span class="hl-t">Long</span>&gt; {
     <span class="hl-c">// 继承后自动拥有 save、findById、findAll、delete……</span>
     <span class="hl-t">Optional</span>&lt;<span class="hl-t">AppUser</span>&gt; findByGoogleSub(<span class="hl-t">String</span> googleSub);   <span class="hl-c">// 再加一个自己的</span>
 }</code></pre></article><article class="sx-item lv4" id="java-inter-3"><h3><code>泛型 &lt;T&gt;</code><span class="sx-lv sx-lv4">天天用</span></h3><p class="sx-what">尖括号里写「装的是什么类型」，和 TypeScript 的泛型一样。</p><p class="sx-use"><b>有什么用</b>让集合和工具类知道自己装的是什么类型：List&lt;User> 里取出来的直接就是 User，不用强制转换，放错类型编译就报错。</p><p class="sx-when"><b>什么时候用</b>每天都在用：List&lt;User&gt;、Map&lt;String, Integer&gt;、ResponseEntity&lt;UserDto&gt;、Optional&lt;User&gt;。</p><pre class="code"><code><span class="hl-t">List</span>&lt;<span class="hl-t">String</span>&gt; words = <span class="hl-k">new</span> <span class="hl-t">ArrayList</span>&lt;&gt;();      <span class="hl-c">// 只能装 String</span>
@@ -15866,7 +15911,7 @@ const ToTop = {
 // ===================== 版本号 =====================
 // 每次改完准备发布，就改这两行：VERSION 往上加一，UPDATED 写当时的时间。
 // 首页左上角 GK 旁边会显示它们，这样打开网站一眼就知道是不是最新版
-const VERSION = "v3.18";
+const VERSION = "v3.19";
 const UPDATED = "2026-11-04 20:22";
 const { createRouter, createWebHashHistory, createMemoryHistory } = VueRouter;
 
