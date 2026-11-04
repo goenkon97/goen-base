@@ -491,6 +491,22 @@ a.tile:focus-visible{outline:2px dashed var(--ink);outline-offset:4px}
 /* 搜索框吸在顶部"后端笔记"栏下面，往下滑到哪里都能搜 */
 .sxs{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--bar-h));z-index:8;padding:8px 0;background:var(--paper)}
 .bi .sxs{position:relative;top:auto;z-index:8;margin-bottom:4px}
+/* 全站搜索（全栈目录页顶部）：结果按模块分组，直接排在搜索框下面 */
+.bks{margin:16px 0 6px}
+.bks .sxs-bar{height:50px;box-shadow:3px 3px 0 var(--yellow)}
+.bks .sxs-input{font-size:16px}
+.bks-res{display:flex;flex-direction:column;gap:12px;margin-top:14px}
+.bks-mod{padding:10px 10px 8px;background:var(--card);border:2px solid var(--ink);border-radius:12px 6px 12px 6px;box-shadow:3px 3px 0 var(--blue)}
+.bks-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:2px 6px 6px;border-bottom:1.5px dashed var(--dot);margin-bottom:4px}
+.bks-title{font-weight:800;font-size:16px;color:var(--ink);text-decoration:none;border-bottom:2px solid var(--yellow)}
+.bks-title:hover{background:color-mix(in srgb,var(--yellow) 60%,transparent)}
+.bks-grp{font-size:12px;color:var(--ink-soft);padding:0 6px;border:1.5px solid var(--dot);border-radius:6px}
+.bks-n{margin-left:auto;font-size:12px;color:var(--ink-soft)}
+.bks-desc{margin:4px 8px;font-size:13px;color:var(--ink-soft)}
+.bks-item{width:100%}
+.bks-item:hover{background:color-mix(in srgb,var(--yellow) 55%,transparent)}
+.bks-more{margin:2px 0 0 8px;padding:3px 10px;font:600 12.5px var(--sans);color:var(--ink);background:transparent;border:1.5px dashed var(--ink);border-radius:8px;cursor:pointer}
+.bks-hit{animation:sxHit 1.2s ease-in-out 2}
 .sxs-bar{display:flex;align-items:center;gap:8px;padding:0 12px;height:44px;background:var(--card);border:2px solid var(--ink);
   border-radius:14px 6px 14px 6px;box-shadow:3px 3px 0 var(--mint)}
 .sxs-bar:focus-within{box-shadow:4px 4px 0 var(--yellow)}
@@ -1798,6 +1814,8 @@ a.sx-go:hover{background:var(--yellow)}
       <span class="lv lv-ref">查阅</span>不用通读，用到再查
       <span class="bi-star">★</span>篇内重点章节
     </div>
+    <!-- 全站搜索：输入关键字，按「模块」（每一篇笔记）分组列出相关的条目 -->
+    <bk-search></bk-search>
     <p class="bi-path" v-if="route.length"><b>推荐顺序：</b>按下面的「学习路线」一站一站看；卡片上的「第 N 站」就是路线里的位置。没标站的：必读的有空就看，重要的看完路线再看，查阅的用到再查。</p>
     <!-- 学习路线：只在「全栈」目录显示（日本 IT 现场那页 route 是空数组） -->
     <section v-if="route.length" class="bi-route sxr">
@@ -12258,6 +12276,31 @@ npm run build    # tsc 检查类型 + 打包；能通过才说明代码至少「
 </div>
 </template>
 
+<template id="tpl-bk-search">
+<div class="bks">
+  <div class="sxs-bar">
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M13 13 L17.5 17.5"/></svg>
+    <input ref="input" v-model="q" type="search" class="sxs-input" :placeholder="placeholder" aria-label="搜索全部笔记" @keydown.esc="q = ''">
+    <span class="sxs-count" v-if="q.trim()">{{ mods.length }} 个模块 · {{ total }} 条</span>
+  </div>
+  <div class="bks-res" v-if="q.trim()">
+    <p class="sxs-empty" v-if="!mods.length">没找到「{{ q }}」。换个说法试试：英文关键字（spring、docker、jwt）或中文（事务、跨域、索引）。</p>
+    <section v-for="m in mods" :key="m.to" class="bks-mod">
+      <div class="bks-head">
+        <router-link :to="m.to" class="bks-title">{{ m.title }}</router-link>
+        <span class="bks-grp">{{ m.group }}</span>
+        <span class="bks-n" v-if="m.items.length">{{ m.items.length }} 条</span>
+      </div>
+      <p class="bks-desc" v-if="!m.items.length">{{ m.desc }}</p>
+      <button v-for="r in (open[m.to] ? m.items : m.items.slice(0, SHOW))" :key="r.key" type="button" class="sxs-item bks-item" @click="go(m, r)">
+        <span class="sxs-main"><b>{{ r.n }}</b><small>{{ r.c ? r.c + ' · ' : '' }}{{ r.t }}</small></span>
+      </button>
+      <button v-if="m.items.length > SHOW" type="button" class="bks-more" @click="open[m.to] = !open[m.to]">{{ open[m.to] ? '收起' : '还有 ' + (m.items.length - SHOW) + ' 条 ▾' }}</button>
+    </section>
+  </div>
+</div>
+</template>
+
 <!-- 真正挂载 Vue 的地方：router-view 是个"占位框"，当前网址对应哪个页面，就把哪个页面放进来 -->
 <div id="app"><router-view></router-view><sec-rail></sec-rail><to-top></to-top></div>
 <!-- 语法搜索索引：每个语法点的名字、所在章节、说明，构建时生成（< 已转义，不会提前结束 script 标签） -->
@@ -15709,7 +15752,7 @@ describe(<span class="hl-s">"其他"</span>, () =&gt; {
 
 <script>
 // 从全局 Vue 对象里拿出要用的函数（CDN 版没有 import，所以这样解构）
-const { createApp, ref, computed, watch, onMounted, onUnmounted, nextTick } = Vue;
+const { createApp, ref, computed, watch, onMounted, onUnmounted, nextTick, reactive } = Vue;
 // ===================== 回到顶部按钮：所有页面左下角，往下滚过一屏左右才出现 =====================
 // ===================== 左侧缩略导航：全栈模块每一篇的左边，回到顶部按钮上方 =====================
 // 收起时是一列小横线（每条 = 页面里的一个区域，当前所在的区域那条更长、变色）；
@@ -15823,7 +15866,7 @@ const ToTop = {
 // ===================== 版本号 =====================
 // 每次改完准备发布，就改这两行：VERSION 往上加一，UPDATED 写当时的时间。
 // 首页左上角 GK 旁边会显示它们，这样打开网站一眼就知道是不是最新版
-const VERSION = "v3.16";
+const VERSION = "v3.17";
 const UPDATED = "2026-11-04 20:22";
 const { createRouter, createWebHashHistory, createMemoryHistory } = VueRouter;
 
@@ -16432,6 +16475,104 @@ const SxSearch = {
     return { q, active, focused, box, input, results, move, pick, LABEL, placeholder };
   },
 };
+// ===================== 全站搜索（全栈目录页顶部，v3.17）=====================
+// 和上面的 sx-search 不同：结果按「模块」（每一篇笔记）分组排在搜索框下面。
+// 搜的内容有两种来源：
+//   ① 语法速查这类 sx 页面：用 sx-index 里的条目（和 sx-search 同一份）
+//   ② 全栈基础、图解、思路这类长文：运行时从它们的 <template> 里读出 h2 / h3 标题和附近的文字
+const BK_TPL = { "/fullstack/basics": "tpl-bk-fullstack", "/fullstack/diagram": "tpl-bk-diagram", "/fullstack/map": "tpl-bk-map",
+  "/fullstack/java": "tpl-bk-java", "/fullstack/mindset": "tpl-bk-mindset", "/fullstack/java-log": "tpl-bk-java-log",
+  "/fullstack/node-log": "tpl-bk-node-log", "/fullstack/jlpt": "tpl-bk-jlpt-log" };
+let BK_MODS = null;
+const bkMods = () => {
+  if (BK_MODS) return BK_MODS;
+  const sxByPage = {};
+  for (const r of sxIndex()) (sxByPage[r.p] = sxByPage[r.p] || []).push(r);
+  const seen = new Set();
+  BK_MODS = [];
+  for (const g of BK_GROUPS) for (const n of g.notes) {
+    if (seen.has(n.to)) continue; seen.add(n.to);
+    const m = { to: n.to, title: n.title, group: g.name, jp: n.to.startsWith("/jp"), desc: n.desc || "", items: [] };
+    m._all = (n.title + " " + (n.label || "") + " " + m.desc + " " + (n.why || "")).toLowerCase();
+    m._n = n.title.toLowerCase();
+    // sx 页面：网址 /fullstack/sx-spring → spring；/jp/flow → jp-flow
+    const p = n.to.startsWith("/fullstack/sx-") ? n.to.slice(14) : n.to.startsWith("/jp/") ? "jp-" + n.to.slice(4) : null;
+    if (p && sxByPage[p]) m.items = sxByPage[p].map((r) => ({ key: r.id, kind: "sx", p, id: r.id, n: r.n, c: r.c, t: r.t, _n: r._n, _all: r._all }));
+    // 长文：读模板里的标题
+    const tpl = BK_TPL[n.to] && document.getElementById(BK_TPL[n.to]);
+    if (tpl) {
+      const hs = tpl.content.querySelectorAll("h2, h3");
+      hs.forEach((h, k) => {
+        const name = h.textContent.replace(/\s+/g, " ").trim();
+        if (!name || name.includes("{{")) return;
+        const card = h.closest("section, article, .card, details") || h.parentElement;
+        const body = (card ? card.textContent : "").replace(/\s+/g, " ").trim();
+        const next = h.nextElementSibling ? h.nextElementSibling.textContent.replace(/\s+/g, " ").trim() : "";
+        m.items.push({ key: "h" + k, kind: "h", n: name, c: "", t: (next || body).slice(0, 120),
+          _n: name.toLowerCase(), _all: (name + " " + body.slice(0, 1500)).toLowerCase() });
+      });
+    }
+    BK_MODS.push(m);
+  }
+  return BK_MODS;
+};
+// 跳到长文里的某个标题：页面换过去以后，等它渲染出来再按文字找到那个标题
+function flashHeading(text) {
+  let tries = 0;
+  const find = () => {
+    const el = [...document.querySelectorAll(".bl-main h2, .bl-main h3, main h2, main h3, h2, h3")].find((h) => h.textContent.replace(/\s+/g, " ").trim() === text);
+    if (!el) { if (++tries < 30) setTimeout(find, 100); return; }
+    const fold = el.closest("details"); if (fold && !fold.open) fold.open = true;
+    // 全栈基础那篇按「标签页」分类，别的类是隐藏的：先点一下对应的标签按钮，把这一类显示出来
+    const panel = el.closest("[hidden]");
+    if (panel && panel.id) { const tab = document.querySelector(`[aria-controls="${panel.id}"]`); if (tab) tab.click(); }
+    const box = el.closest("section, article, .card") || el;
+    // 换页时路由和外壳也会「滚回顶部」，可能比我们晚一步执行；所以滚过去以后隔一会儿再滚一次，保证停在这个标题上
+    const jump = () => { el.scrollIntoView({ behavior: "instant", block: "start" }); window.scrollBy(0, -70); };   // -70：让出顶部吸住的导航栏
+    setTimeout(jump, 30); setTimeout(jump, 350);
+    box.classList.remove("bks-hit"); void box.offsetWidth; box.classList.add("bks-hit");
+    setTimeout(() => box.classList.remove("bks-hit"), 2400);
+  };
+  setTimeout(find, 120);
+}
+const BkSearch = {
+  template: "#tpl-bk-search",
+  setup() {
+    const router = VueRouter.useRouter(), route = VueRouter.useRoute();
+    const q = ref(""), input = ref(null), open = reactive({});
+    const SHOW = 5;   // 每个模块先显示几条，其余点「还有 N 条」展开
+    const placeholder = "搜整个全栈：spring、事务、跨域、Docker、JWT……（空格分开 = 都要包含）";
+    // 打分：和 sx-search 一样（名字完全一样 > 名字包含 > 正文包含）。模块的分 = 最高那条的分 + 条数的一点加成
+    const mods = computed(() => {
+      const words = q.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+      if (!words.length) return [];
+      const jp = route.path.startsWith("/jp");
+      const score = (n, all) => {
+        let s = 0;
+        for (const w of words) { if (!all.includes(w)) return 0; s += n === w ? 10 : n.includes(w) ? 5 : 1; }
+        return s;
+      };
+      const out = [];
+      for (const m of bkMods()) {
+        if (m.jp !== jp) continue;
+        const items = m.items.map((r) => [score(r._n, r._all), r]).filter((x) => x[0] > 0).sort((a, b) => b[0] - a[0]);
+        const self = score(m._n, m._all);
+        if (!items.length && !self) continue;
+        const best = items.length ? items[0][0] : 0;
+        out.push({ ...m, items: items.map((x) => x[1]), _s: Math.max(best, self ? self + 2 : 0) + Math.min(items.length, 30) * 0.15 });
+      }
+      return out.sort((a, b) => b._s - a._s);
+    });
+    const total = computed(() => mods.value.reduce((k, m) => k + m.items.length, 0));
+    watch(q, () => { for (const k in open) delete open[k]; });
+    // 点一条：sx 页面用原来的 SX_PENDING 机制；长文按标题文字找
+    const go = (m, r) => {
+      if (r.kind === "sx") { SX_PENDING = r.id; router.push(pagePath(r.p)); return; }
+      router.push(m.to); flashHeading(r.n);
+    };
+    return { q, input, open, SHOW, placeholder, mods, total, go };
+  },
+};
 const SX_PAGES = [
   ["js", "JavaScript 语法"], ["ts", "TypeScript 语法"], ["node", "Node.js 语法"], ["express", "Express 语法"],
   ["java", "Java 语法"], ["spring", "Spring Boot 与 @ 注解"], ["sql", "SQL 语法"], ["vue", "Vue 3 语法"], ["react", "React 语法"],
@@ -16966,5 +17107,5 @@ if (location.search.includes("dbg")) {
 
 // 创建应用 → 装上路由 → 挂到 #app 上
 // sx-search 注册成全局组件：语法速查 8 篇和目录页都能直接用 <sx-search>
-createApp({}).component("sx-search", SxSearch).component("sec-rail", SecRail).component("to-top", ToTop).use(router).mount("#app");
+createApp({}).component("sx-search", SxSearch).component("bk-search", BkSearch).component("sec-rail", SecRail).component("to-top", ToTop).use(router).mount("#app");
 </script>
