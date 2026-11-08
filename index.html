@@ -3323,11 +3323,11 @@ GROUP BY user_id, kind, word HAVING COUNT(*) &gt; 1;</code></pre>
 <header class="hero">
   <div class="chips"><span class="chip">先想后写</span><span class="chip g">一个文件一个职责</span><span class="chip y">每一步都能单独验证</span></div>
   <h1>后端写代码的思路</h1>
-  <p>先干嘛、后干嘛；一个 Java 文件到底代表什么；@ 标签和配置什么时候写；和前端思路差在哪；刚进公司第一周做什么。例子都用你的收藏功能。</p>
+  <p>先干嘛、后干嘛；写每个接口前先问哪五个问题；一个 Java 文件到底代表什么；@ 标签和配置什么时候写；和前端思路差在哪；刚进公司第一周做什么。例子都用你的收藏功能。</p>
 </header>
 
 <nav aria-label="章节">
-  <a href="#diff">和前端的区别</a><a href="#file">一个文件是什么</a><a href="#order">新功能的顺序</a><a href="#at">@ 什么时候写</a><a href="#conf">配置什么时候写</a><a href="#demo">实战：加备注</a><a href="#job">刚进公司</a><a href="#pit">常见坑</a><a href="#one">一页纸总结</a>
+  <a href="#diff">和前端的区别</a><a href="#file">一个文件是什么</a><a href="#order">新功能的顺序</a><a href="#ask">写接口前五问</a><a href="#at">@ 什么时候写</a><a href="#conf">配置什么时候写</a><a href="#demo">实战：加备注</a><a href="#job">刚进公司</a><a href="#pit">常见坑</a><a href="#one">一页纸总结</a>
 </nav>
 <div class="tools"><button id="openAll" type="button">全部展开</button><button id="closeAll" type="button">全部收起</button></div>
 
@@ -3540,6 +3540,81 @@ GROUP BY user_id, kind, word HAVING COUNT(*) &gt; 1;</code></pre>
   </details>
 </section>
 
+<!-- ===== 写接口前的五个问题 ===== -->
+<section id="ask">
+  <h2>写每个接口前：先问五个问题</h2>
+  <div class="paper y note">写后端最怕的不是「正常情况写不出来」，而是<b>没想到会出什么岔子</b>：前端做错了，页面看起来不对，一眼就发现；后端做错了，可能悄悄存进一条坏数据，过很久才出问题。细节不用全装在脑子里，<b>每写一个接口，按顺序问这五个问题</b>，大部分情况都能覆盖。</div>
+
+  <div class="paper"><div class="scroll"><table>
+    <tr><th>按顺序问</th><th>想到的情况</th><th>回什么</th><th>在代码里怎么做</th></tr>
+    <tr><td><b>① 要不要登录？</b></td><td>没带通行证、通行证过期、被改过</td><td>401</td><td>挂门卫（Node：<code>requireAuth</code>；Java：拦截器 + <code>@ManagerOnly</code> 这类标记）</td></tr>
+    <tr><td><b>② 送来的东西对不对？</b></td><td>少了字段、类型不对、太长、编号不是数字、日期先后颠倒</td><td>400</td><td>每个字段都检查（Node：自己写 if；Java：DTO 上的 <code>@NotBlank</code>、<code>@Size</code> + <code>@Valid</code>，再加 Service 里的规则）</td></tr>
+    <tr><td><b>③ 要找的东西存在吗？</b></td><td>编号对应的那条不存在、已经被删了</td><td>404</td><td>查不到就停（Java：<code>findById(...).orElseThrow(...)</code>）</td></tr>
+    <tr><td><b>④ 他有没有资格动它？</b></td><td>删别人的收藏、员工去改班表、撤回别人的申请</td><td>403，或者干脆当作不存在</td><td>「是谁」只从通行证来；SQL 里带上 <code>user_id = 我</code>，或者在 Service 里比对主人</td></tr>
+    <tr><td><b>⑤ 会不会和已有的撞？</b></td><td>重复收藏、连点两下、两个人同时改、状态已经变了</td><td>409，或者撞了就返回原来那条</td><td>数据库唯一约束 + <code>ON CONFLICT</code>；版本号（乐观锁）；改之前先看状态</td></tr>
+  </table></div></div>
+
+  <h3>拿真实的接口走一遍</h3>
+  <details open>
+    <summary><span class="fn">学习站：DELETE /favorites/:id（删除收藏）</span><span class="one">Node</span></summary>
+    <div class="body">
+      <ol>
+        <li><b>要登录</b> → <code>/favorites</code> 整组挂了门卫。</li>
+        <li><b>编号要对</b> → <code>parseId</code>：必须全是数字、大于 0，否则 400。</li>
+        <li>和 4. <b>存在吗、是不是他的</b> → 一句 SQL 搞定：<code>DELETE … WHERE id = ? AND user_id = 我</code>。不存在、是别人的，都是删 0 行。</li>
+        <li><b>会撞吗</b> → 删除不会撞。</li>
+      </ol>
+      <p>最后不管删了几行都回 204：不告诉对方「这个编号存不存在、是不是别人的」，免得被一个个编号试出来。</p>
+    </div>
+  </details>
+  <details>
+    <summary><span class="fn">学习站：POST /favorites（收藏一个词）</span><span class="one">Node</span></summary>
+    <div class="body">
+      <ol>
+        <li>要登录 → 门卫。</li>
+        <li>检查 site、kind、word、status：白名单、不能为空、长度上限 → 不对就 400。</li>
+        <li>新建，不用找。</li>
+        <li>主人就是「我」：user_id 从门卫的口袋里拿，<b>不看前端传的</b>。</li>
+        <li><b>会撞</b>：重复收藏、连点两下 → 数据库唯一约束挡住，<code>onConflictDoNothing</code> 不报错，再把原来那条查出来返回。</li>
+      </ol>
+    </div>
+  </details>
+  <details>
+    <summary><span class="fn">排班系统：DELETE /api/requests/{id}（员工撤回申请）</span><span class="one">Java</span></summary>
+    <div class="body">
+      <ol>
+        <li>要登录 → 拦截器。员工、店长都能调，所以不贴 <code>@ManagerOnly</code>。</li>
+        <li>id 由 Spring 转成 Long，不是数字就自动 400。</li>
+        <li>申请存在吗 → <code>findById</code> 找不到 → 404。</li>
+        <li><b>是不是自己的</b> → 比对申请的员工和当前登录的人，不是 → 403。</li>
+        <li><b>状态还对吗</b> → 已经处理过的不能撤回 → 409。</li>
+      </ol>
+      <p>和 Node 那个比：这里把 ③④ 分开做，是因为要告诉员工「已经处理了，撤不回」这种明确的原因；收藏那边没必要区分，就合成了一句 SQL。</p>
+    </div>
+  </details>
+
+  <h3>再多想两件事</h3>
+  <div class="paper">
+    <ul style="margin:0;padding-left:1.3em">
+      <li><b>回给前端的东西有没有多给？</b> 只回前端需要的字段：学习站的 <code>toView</code> 不回 <code>googleSub</code>，Java 里用 Response DTO 而不是直接回 Entity。</li>
+      <li><b>我这边出错了怎么办？</b> 数据库没醒、代码异常 → 500 / 503，记日志，<b>不把错误细节回给前端</b>（细节里可能有表名、SQL）。</li>
+    </ul>
+  </div>
+
+  <h3>状态码不用背</h3>
+  <div class="paper b note">知道<b>是哪一类问题</b>就行：<b>4 开头 = 请求方的问题</b>（没登录、发错了、没资格、撞了），<b>5 开头 = 我这边的问题</b>。具体是几零几，写的时候查一下，或者照项目里已有的写法抄，同一个项目保持一致最重要。</div>
+
+  <h3>帮你少漏的四样东西</h3>
+  <div class="paper"><div class="scroll"><table>
+    <tr><th>工具</th><th>怎么用</th></tr>
+    <tr><td>这张五问表</td><td>写接口前过一遍，写完再对一遍</td></tr>
+    <tr><td>AI</td><td>写之前问一句「这个接口可能有哪些异常情况」，让它列一遍，你挑出要处理的（公司允许用 AI 的前提下）</td></tr>
+    <tr><td>测试</td><td>每个接口至少测一个「坏的」：没通行证、参数错、别人的数据、重复提交。学习站的 25 个测试就是这么写的</td></tr>
+    <tr><td>前辈的代码审查</td><td>新人漏想了，审查的人会指出来；被指出过一次的，下次就会自己想到</td></tr>
+  </table></div></div>
+  <p class="note">能意识到「要提前想好会出什么情况」，就已经是后端的思维了。剩下的，就是多写几个接口，把这五个问题变成习惯。</p>
+</section>
+
 <!-- ===== @ 什么时候写 ===== -->
 <section id="at">
   <h2>@ 标签：一开始就写，还是逻辑写完再加？</h2>
@@ -3741,6 +3816,7 @@ GROUP BY user_id, kind, word HAVING COUNT(*) &gt; 1;</code></pre>
     <div class="paper y"><b>思路</b><br>后端从"数据和规则"想起，不是从页面想起。写每段代码先问：谁能调、改什么、出错怎么办。</div>
     <div class="paper b"><b>一个文件</b><br>= 一个类 = 一个职责。一个功能由 Controller、Repository、Entity、DTO、Config 几个文件配合完成。</div>
     <div class="paper g"><b>顺序</b><br>想三句话 → 定接口契约 → 设计表 → Entity → Repository → DTO → 最小 Controller → 加规则 → 配置 → 测好坏两种 → 前端。</div>
+    <div class="paper p"><b>五问</b><br>每个接口：要不要登录（401）→ 送来的对不对（400）→ 存在吗（404）→ 有没有资格（403）→ 会不会撞（409）。再想：有没有多给、我这边出错怎么办。</div>
     <div class="paper p"><b>@ 标签</b><br>新建类、字段、方法、参数时<b>当场写</b>，它们定义"这是什么"，不是事后装饰。</div>
     <div class="paper y"><b>配置</b><br>跟着功能走，用到才加；密钥和各环境不同的值用环境变量；上线前再统一过一遍。</div>
     <div class="paper b"><b>进公司</b><br>多数时候是读和改。从路径找到 Controller，一路点到表。先跑起来，再读一个接口，再做小任务。</div>
@@ -27817,8 +27893,8 @@ const ToTop = {
 // ===================== 版本号 =====================
 // 每次改完准备发布，就改这两行：VERSION 往上加一，UPDATED 写当时的时间。
 // 首页左上角 GK 旁边会显示它们，这样打开网站一眼就知道是不是最新版
-const VERSION = "v3.24";
-const UPDATED = "2026-11-07 23:30";
+const VERSION = "v3.25";
+const UPDATED = "2026-11-08 21:20";
 const { createRouter, createWebHashHistory, createMemoryHistory } = VueRouter;
 
 // 激励语录：按"今年第几天"轮换，每天一句（都是自己写的短句）
